@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
+/* Joby design tokens. Brand name and palette are provisional (navy / amber). */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --background: #f7f8fb;
+  --surface: #ffffff;
+  --foreground: #1f2a44;
+  --muted: #5a6275;
+  --border: #d5dae3;
+  --brand: #1f2a44;
+  --brand-contrast: #ffffff;
+  --accent: #e8a33d;
+  --accent-strong: #b7791f;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f1524;
+    --surface: #182136;
+    --foreground: #eef1f7;
+    --muted: #a6aec2;
+    --border: #2a3550;
+    --brand: #e8a33d;
+    --brand-contrast: #1f2a44;
+    --accent: #e8a33d;
+    --accent-strong: #f0b95f;
   }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-contrast: var(--brand-contrast);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --font-sans: "Heebo Variable", system-ui, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
