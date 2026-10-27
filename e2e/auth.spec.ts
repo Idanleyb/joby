@@ -9,7 +9,7 @@ test("home page links to sign-in and shows categories", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "המרקטפלייס של המילואים" })).toBeVisible();
   await expect(page.getByText("תכנות וטכנולוגיה")).toBeVisible();
   await page.getByRole("link", { name: "מצאו עבודה" }).click();
-  await expectPath(page, "/login");
+  await expectPath(page, "/jobs");
 });
 
 test("login validates phone and code", async ({ page }) => {
@@ -55,8 +55,12 @@ test("new poster: phone → welcome → poster details → account → sign out 
   await page.getByLabel("שם הארגון").fill("Mor Renovations");
   await page.getByRole("button", { name: "סיום" }).click();
 
-  await expectPath(page, "/account");
+  await expectPath(page, "/home");
   await expect(page.getByRole("heading", { name: "שלום, Avi" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "+ פרסום עבודה חדשה" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "תפריט ראשי" }).getByRole("link", { name: "העבודות שלי" })).toBeVisible();
+  await page.getByRole("navigation", { name: "תפריט ראשי" }).getByRole("link", { name: "חשבון" }).click();
+  await expectPath(page, "/account");
   await expect(page.getByText("Mor Renovations · עסק · ראשון לציון")).toBeVisible();
   await expect(page.getByRole("button", { name: "אני רוצה להציע שירותים" })).toBeVisible();
 
@@ -64,9 +68,9 @@ test("new poster: phone → welcome → poster details → account → sign out 
   await expectPath(page, "/");
   await expect(page.getByRole("link", { name: "כניסה" })).toBeVisible();
 
-  // Returning user goes straight to the account.
+  // Returning user goes straight home.
   await signInWithPhone(page, "0500000001");
-  await expectPath(page, "/account");
+  await expectPath(page, "/home");
 });
 
 test("new provider goes to the verification step and can add the poster role", async ({ page }) => {
@@ -85,7 +89,13 @@ test("new provider goes to the verification step and can add the poster role", a
   await page.getByText("אדם פרטי").click();
   await page.getByLabel("עיר").fill("תל אביב-יפו");
   await page.getByRole("button", { name: "סיום" }).click();
-  await expectPath(page, "/account");
+  await expectPath(page, "/home");
+  // Both roles: the switch moves between the working and hiring menus.
+  const menu = page.getByRole("navigation", { name: "תפריט ראשי" });
+  await expect(menu.getByRole("link", { name: "הזדמנויות" })).toBeVisible();
+  await page.getByRole("button", { name: "מגייס/ת" }).click();
+  await expect(menu.getByRole("link", { name: "נותני שירות" })).toBeVisible();
+  await page.goto("/account");
   await expect(page.getByText("Noa B. · אדם פרטי · תל אביב-יפו")).toBeVisible();
 });
 

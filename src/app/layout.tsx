@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/heebo";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
+import { AppNav } from "@/components/app-nav";
 
 export const metadata: Metadata = {
   title: "Joby — המרקטפלייס של המילואים",
@@ -16,7 +17,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="he" dir="rtl">
       <body className="font-sans antialiased">
         <SiteHeader />
-        {children}
+        <div className="flex">
+          <AppNav />
+          <div className="min-w-0 flex-1 pb-20 md:pb-0">{children}</div>
+        </div>
       </body>
     </html>
   );

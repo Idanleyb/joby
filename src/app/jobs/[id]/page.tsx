@@ -46,7 +46,7 @@ export default async function JobPage({ params, searchParams }: { params: Promis
   if (!uid) cta = <Link href={`/login?next=/jobs/${id}`} className={linkBtn}>כניסה כדי להגיש מועמדות</Link>;
   else if (job.poster_id === uid) cta = <Link href={`/poster/jobs/${id}`} className={linkBtn}>זו העבודה שלך · למועמדים</Link>;
   else if (myApp) cta = (
-    <p className={note}>{applied ? "המועמדות נשלחה ✓ נעדכן אותך כשהמפרסם יגיב. " : ""}סטטוס המועמדות שלך: <b>{APP_STATUS_LABEL[myApp.status]}</b> · <Link href="/provider/applications" className="underline">המועמדויות שלי</Link></p>
+    <p className={note}>{applied ? "המועמדות נשלחה ✓ נעדכן אותך כשהמפרסם יגיב. " : ""}סטטוס המועמדות שלך: <b>{APP_STATUS_LABEL[myApp.status]}</b> · <Link href="/proposals" className="underline">ההצעות שלי</Link></p>
   );
   else if (!open) cta = <p className={note}>העבודה כבר לא פתוחה להגשות ({JOB_STATUS_LABEL[job.status] ?? "נסגרה"}).</p>;
   else if (!provider) cta = <p className={note}>רק מילואימניקים מאומתים ובני/בנות זוגם יכולים להגיש מועמדות. <Link href="/account" className="underline">הצטרפות כנותן/ת שירות</Link></p>;
@@ -62,6 +62,7 @@ export default async function JobPage({ params, searchParams }: { params: Promis
       </div>
       <Card>
         <JobDetails job={{ ...job, subName: job.sub?.name_he ?? "", onBehalfName: job.on_behalf_name }} />
+        {job.poster_id && job.poster ? <Link href={`/posters/${job.poster_id}`} className="mt-3 inline-block text-sm underline underline-offset-4">לפרופיל המפרסם</Link> : null}
         {attachments.length ? (
           <div className="mt-4 flex flex-col gap-1">
             <h2 className="text-sm font-semibold">קבצים מצורפים</h2>

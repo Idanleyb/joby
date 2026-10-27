@@ -1,29 +1,33 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getMe, nextStep } from "@/lib/onboarding";
+import { getMode } from "@/lib/mode";
+import { RoleSwitch } from "@/components/role-switch";
 
 export async function SiteHeader() {
-  let signedIn = false;
+  let me = null;
   try {
-    const supabase = await createClient();
-    const { data } = await supabase.auth.getClaims();
-    signedIn = Boolean(data?.claims?.sub);
+    me = await getMe();
   } catch {
     // Supabase not configured: render the header as signed out.
   }
+  const ready = me && nextStep(me) === "/account";
+  const mode = ready ? await getMode(me!) : null;
 
   return (
-    <header className="border-b border-border bg-surface/80 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <Link href="/" className="text-xl font-extrabold tracking-tight">
+    <header className="sticky top-0 z-20 border-b border-border bg-surface/90 backdrop-blur">
+      <div className="mx-auto flex h-14 items-center justify-between gap-3 px-4">
+        <Link href={ready ? "/home" : "/"} className="text-xl font-extrabold tracking-tight">
           Joby<span className="text-accent">.</span>
         </Link>
-        <nav className="flex items-center gap-1 text-sm font-semibold">
-          <Link href="/jobs" className="rounded-lg px-3 py-2 hover:bg-background">עבודות</Link>
-          <Link href="/jobs/new" className="rounded-lg px-3 py-2 hover:bg-background">פרסום</Link>
-          <Link href={signedIn ? "/account" : "/login"} className="rounded-lg px-3 py-2 hover:bg-background">
-            {signedIn ? "החשבון שלי" : "כניסה"}
-          </Link>
-        </nav>
+        {mode ? (
+          <RoleSwitch mode={mode} />
+        ) : (
+          <nav className="flex items-center gap-1 text-sm font-semibold">
+            <Link href="/jobs" className="rounded-lg px-3 py-2 hover:bg-background">עבודות</Link>
+            <Link href="/providers" className="rounded-lg px-3 py-2 hover:bg-background">נותני שירות</Link>
+            <Link href={me ? "/onboarding" : "/login"} className="rounded-lg px-3 py-2 hover:bg-background">{me ? "המשך הרשמה" : "כניסה"}</Link>
+          </nav>
+        )}
       </div>
     </header>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { normalizeIlPhone, formatIlPhone } from "@/lib/phone";
 import { authErrorMessage } from "@/lib/errors";
@@ -15,7 +14,6 @@ const RESEND_SECONDS = 30; // PRD 5.1
  *  mode "add":    a signed-in user without a verified phone (Google sign-up) adds one.
  */
 export function PhoneOtpForm({ mode, next = "/onboarding" }: { mode: "signin" | "add"; next?: string }) {
-  const router = useRouter();
   const supabase = useRef(createClient()).current;
   const [stage, setStage] = useState<"phone" | "code">("phone");
   const [rawPhone, setRawPhone] = useState("");
@@ -94,8 +92,8 @@ export function PhoneOtpForm({ mode, next = "/onboarding" }: { mode: "signin" | 
       showError(error);
       return;
     }
-    router.replace(next);
-    router.refresh();
+    // Full page load so the header and menu (rendered in the layout) pick up the new session.
+    window.location.assign(next);
   }
 
   if (stage === "phone") {

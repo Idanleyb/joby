@@ -33,7 +33,7 @@ export async function applyToJob(jobId: string, _prev: ApplyState, form: FormDat
   });
   if (error) return { error: appErrorMessage(error) };
   revalidatePath(`/jobs/${jobId}`);
-  revalidatePath("/provider/applications");
+  revalidatePath("/proposals");
   redirect(`/jobs/${jobId}?applied=1`);
 }
 
@@ -41,6 +41,6 @@ export async function withdrawApplication(appId: string): Promise<{ error?: stri
   const supabase = await createClient();
   const { error } = await supabase.rpc("withdraw_application", { p_app: appId });
   if (error) return { error: appErrorMessage(error) };
-  revalidatePath("/provider/applications");
+  revalidatePath("/proposals");
   return {};
 }

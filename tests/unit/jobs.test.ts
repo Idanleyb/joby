@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { applicantRange, budgetText, jobMatchesProvider, timeAgo } from "@/lib/jobs";
+import { applicantRange, budgetText, timeAgo } from "@/lib/jobs";
+// Matching by distance is tested in the database tests (supabase/tests, section 13c).
 
 describe("job helpers", () => {
   it("formats budgets", () => {
@@ -15,14 +16,11 @@ describe("job helpers", () => {
     expect(timeAgo("2026-10-27T09:00:00Z", now)).toBe("לפני 3 שעות");
     expect(timeAgo("2026-10-25T12:00:00Z", now)).toBe("לפני 2 ימים");
   });
-  it("matches jobs to providers by category and area", () => {
-    const p = { works_onsite: true, works_remote: false, city: "ראשון לציון", radius_km: 25, subs: [7] };
-    expect(jobMatchesProvider({ mode: "onsite", city: "חולון", subcategory_id: 7 }, p)).toBe(true); // same region
-    expect(jobMatchesProvider({ mode: "onsite", city: "חיפה", subcategory_id: 7 }, p)).toBe(false);
-    expect(jobMatchesProvider({ mode: "remote", city: null, subcategory_id: 7 }, p)).toBe(false);
-    expect(jobMatchesProvider({ mode: "onsite", city: "חולון", subcategory_id: 8 }, p)).toBe(false);
-    expect(jobMatchesProvider({ mode: "onsite", city: "חולון", subcategory_id: 7 }, { ...p, radius_km: 10 })).toBe(false);
-    expect(jobMatchesProvider({ mode: "onsite", city: "אילת", subcategory_id: 7 }, { ...p, radius_km: null })).toBe(true);
-    expect(jobMatchesProvider({ mode: "both", city: "אילת", subcategory_id: 7 }, { ...p, works_remote: true })).toBe(true);
+  it("ships the full locality list with the largest towns first", async () => {
+    const { IL_CITIES } = await import("@/lib/cities");
+    expect(IL_CITIES[0]).toBe("תל אביב-יפו");
+    expect(IL_CITIES.length).toBeGreaterThan(1200);
+    expect(new Set(IL_CITIES).size).toBe(IL_CITIES.length);
+    expect(IL_CITIES).toContain("קריית שמונה");
   });
 });

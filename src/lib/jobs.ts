@@ -46,28 +46,3 @@ export function timeAgo(iso: string, now = Date.now()) {
 export function daysLeft(iso: string, now = Date.now()) {
   return Math.max(0, Math.ceil((new Date(iso).getTime() - now) / 86_400_000));
 }
-
-/** Rough area matching until we have coordinates: same city, or the same region for 25/50 km. */
-const REGION: Record<string, string> = {
-  "תל אביב-יפו": "center", "רמת גן": "center", "גבעתיים": "center", "בני ברק": "center", "חולון": "center", "בת ים": "center",
-  "ראשון לציון": "center", "פתח תקווה": "center", "אור יהודה": "center", "יהוד-מונוסון": "center", "ראש העין": "center",
-  "הרצליה": "sharon", "רעננה": "sharon", "כפר סבא": "sharon", "הוד השרון": "sharon", "נתניה": "sharon", "חדרה": "sharon", "זכרון יעקב": "sharon",
-  "ירושלים": "jerusalem", "בית שמש": "jerusalem", "מעלה אדומים": "jerusalem", "מודיעין-מכבים-רעות": "jerusalem",
-  "רחובות": "shfela", "נס ציונה": "shfela", "יבנה": "shfela", "גדרה": "shfela", "לוד": "shfela", "רמלה": "shfela", "אשדוד": "shfela", "אלעד": "shfela",
-  "חיפה": "north", "קריית אתא": "north", "קריית ביאליק": "north", "קריית מוצקין": "north", "נהריה": "north", "כרמיאל": "north",
-  "עפולה": "north", "נצרת": "north", "טבריה": "north", "צפת": "north", "קריית שמונה": "north",
-  "באר שבע": "south", "אשקלון": "south", "קריית גת": "south", "שדרות": "south", "נתיבות": "south", "אופקים": "south", "דימונה": "south", "אילת": "south",
-  "אריאל": "samaria",
-};
-const sameArea = (a: string | null, b: string | null) => !!a && !!b && (a === b || (!!REGION[a] && REGION[a] === REGION[b]));
-
-export function jobMatchesProvider(
-  job: { mode: string; city: string | null; subcategory_id: number },
-  p: { works_onsite: boolean; works_remote: boolean; city: string | null; radius_km: number | null; subs: number[] },
-) {
-  if (!p.subs.includes(job.subcategory_id)) return false;
-  if (job.mode !== "onsite" && p.works_remote) return true;
-  if (job.mode === "remote" || !p.works_onsite) return false;
-  if (p.radius_km == null) return true; // nationwide
-  return p.radius_km === 10 ? job.city === p.city : sameArea(job.city, p.city);
-}

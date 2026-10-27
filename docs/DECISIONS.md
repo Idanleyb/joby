@@ -4,6 +4,16 @@ Decisions made while building, beyond what the PRD states. Add new entries at th
 
 | Date | Decision | Why |
 |---|---|---|
+| 2026-10-28 | **Founder (PRD v1.4): reserve badge shows the days band only** (30+ / 60+ / 120+), never the exact count. | Privacy; the band is already stored and Form 3010 is deleted after approval. |
+| 2026-10-28 | **Founder (PRD v1.4): address is the city only.** | Enough for distance; no street addresses stored. |
+| 2026-10-28 | **Founder (PRD v1.4): phone menu is a bottom bar**; computer menu is a sidebar. | Always visible on phones. |
+| 2026-10-28 | **Founder (PRD v1.4): "Working / Hiring" switch** for users with both roles, remembered in a cookie. Choosing a role the user lacks starts its set-up. | Like Fiverr's "Switch to selling"; keeps each menu short. |
+| 2026-10-28 | **Founder (PRD v1.4): photo gallery and availability in the MVP.** | Visual trades (gardening, renovation) sell on photos. |
+| 2026-10-28 | **Founder (PRD v1.4): job alerts in-app now**, WhatsApp/email with the notification worker. Providers can turn alerts off in Account. | Works today. |
+| 2026-10-28 | **Distance = straight line between town centres**, from the 1,263 CBS localities with coordinates (npm `israel-geolocation`, MIT, government data) in table `il_cities`. Unknown towns fall back to same-town matching. Replaces the region table. | Real radius without storing addresses or calling a maps API. |
+| 2026-10-28 | **After sign-in users land on /home** (was /account). | Home is the dashboard for the current role. |
+| 2026-10-28 | **The menu and header live in the root layout**; sign-in does a full page load and onboarding actions refresh the layout, and the bell count refreshes on every page change. | Next.js keeps layouts between client navigations. |
+| 2026-10-28 | **"Proposals" moved to /proposals** (/provider/applications redirects). | Matches the menu name. |
 | 2026-10-27 | **Jobs feed matching is by region, not distance**: same city for 10 km, same region (a city→region table) for 25/50 km, any city when nationwide; remote jobs match providers who work remotely. | No coordinates yet; good enough for the beta. Distance search is a later item. |
 | 2026-10-27 | **The jobs feed and job pages are public**; attachments, saving and applying need sign-in. | Lets posters share a job link; files stay private. |
 | 2026-10-27 | **Saved jobs** in a new table `job_saves` (owner-only). | PRD 5.9 "Saved" tab. |

@@ -5,6 +5,22 @@ const UNIT: Record<string, string> = { job: "לעבודה", hour: "לשעה", da
 const MODE: Record<string, string> = { onsite: "בשטח", remote: "מרחוק", both: "בשטח ומרחוק" };
 const BAND: Record<string, string> = { "30-59": "30+", "60-119": "60+", "120+": "120+" };
 const year = (d: string | null) => (d ? d.slice(0, 4) : "");
+const dmy = (d: string) => d.slice(0, 10).split("-").reverse().join("/");
+const MONTHS = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
+const since = (iso: string) => `${MONTHS[new Date(iso).getMonth()]} ${new Date(iso).getFullYear()}`;
+
+function Stat({ value, label }: { value: React.ReactNode; label: string }) {
+  return (
+    <div className="flex flex-col items-center rounded-xl bg-background px-2 py-3 text-center">
+      <span className="text-lg font-extrabold">{value}</span>
+      <span className="text-xs text-muted">{label}</span>
+    </div>
+  );
+}
+
+export function Stars({ n }: { n: number }) {
+  return <span aria-label={`${n} מתוך 5`} className="text-accent-strong">{"★".repeat(Math.round(n))}<span className="text-border">{"★".repeat(5 - Math.round(n))}</span></span>;
+}
 
 function Badge({ children, tone = "brand" }: { children: React.ReactNode; tone?: "brand" | "accent" | "muted" }) {
   return (
@@ -21,7 +37,7 @@ function Badge({ children, tone = "brand" }: { children: React.ReactNode; tone?:
   );
 }
 
-export function ProviderProfile({ p, cvHref }: { p: NonNullable<ProviderView>; cvHref?: string | null }) {
+export function ProviderProfile({ p, cvHref, actions }: { p: NonNullable<ProviderView>; cvHref?: string | null; actions?: React.ReactNode }) {
   const verified = p.verification_status === "approved";
   const area = [p.works_onsite ? `${p.city ?? ""}${p.radius_km ? ` · עד ${p.radius_km} ק״מ` : " · כל הארץ"}` : null, p.works_remote ? "עבודה מרחוק" : null]
     .filter(Boolean)
@@ -43,10 +59,18 @@ export function ProviderProfile({ p, cvHref }: { p: NonNullable<ProviderView>; c
           <div className="flex flex-wrap gap-1.5">
             {verified ? <Badge>{p.provider_type === "spouse" ? "בן/בת זוג של מילואימניק" : "מילואימניק מאומת"}</Badge> : <Badge tone="muted">ממתין לאימות</Badge>}
             {verified && p.show_days_band && p.days_band ? <Badge tone="accent">{BAND[p.days_band]} ימי מילואים</Badge> : null}
-            {p.rating_count >= 3 && p.rating_avg ? <Badge tone="accent">★ {p.rating_avg} ({p.rating_count})</Badge> : <Badge tone="muted">חדש ב-Joby</Badge>}
+            {p.busyNow ? <Badge tone="muted">עסוק/ה{p.busy_until ? ` עד ${dmy(p.busy_until)}` : ""}</Badge> : <Badge tone="accent">● זמין/ה עכשיו</Badge>}
           </div>
         </div>
       </header>
+
+      <div className="grid grid-cols-4 gap-2">
+        <Stat value={p.rating_count >= 3 && p.rating_avg ? `★ ${p.rating_avg}` : "חדש"} label={p.rating_count ? `${p.rating_count} חוות דעת` : "דירוג"} />
+        <Stat value={p.jobs_done} label="עבודות ב-Joby" />
+        <Stat value={p.avg_response_hours != null ? `${Math.max(1, Math.round(p.avg_response_hours))} ש׳` : "—"} label="זמן תגובה" />
+        <Stat value={<span className="text-sm">{since(p.created_at)}</span>} label="ב-Joby מאז" />
+      </div>
+      {actions}
 
       {area ? <p className="text-sm text-muted">📍 {area}{p.years_experience != null ? ` · ${p.years_experience} שנות ניסיון` : ""}</p> : null}
 
@@ -105,12 +129,42 @@ export function ProviderProfile({ p, cvHref }: { p: NonNullable<ProviderView>; c
       {p.license_number && p.hasLicensed ? (
         <p className="text-sm"><span className="font-semibold">מספר רישיון:</span> <span dir="ltr">{p.license_number}</span> <span className="text-muted">(הצהרה של נותן השירות, לא אומת על ידי Joby)</span></p>
       ) : null}
+      {p.gallery.length ? (
+        <section className="flex flex-col gap-2">
+          <h3 className="font-bold">תמונות מעבודות</h3>
+          <div className="grid grid-cols-3 gap-2">
+            {p.gallery.map((g) => (
+              <a key={g.path} href={g.url} target="_blank" rel="noopener noreferrer">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={g.url} alt="" loading="lazy" className="aspect-square w-full rounded-xl border border-border object-cover" />
+              </a>
+            ))}
+          </div>
+        </section>
+      ) : null}
       {p.portfolio_links?.length ? (
         <section className="flex flex-col gap-1 text-sm">
           <h3 className="font-bold">עבודות</h3>
           {p.portfolio_links.map((l) => <a key={l} href={l} target="_blank" rel="noopener noreferrer nofollow" dir="ltr" className="truncate text-left text-accent-strong underline">{l.replace(/^https?:\/\//, "")}</a>)}
         </section>
       ) : null}
+      <section className="flex flex-col gap-3">
+        <h3 className="font-bold">חוות דעת{p.reviews.length ? ` (${p.reviews.length})` : ""}</h3>
+        {p.reviews.length ? (
+          <ul className="flex flex-col gap-3">
+            {p.reviews.map((r) => (
+              <li key={r.id} className="flex flex-col gap-1 border-b border-border pb-3 last:border-0">
+                <div className="flex items-center justify-between gap-2 text-sm">
+                  <span className="font-semibold"><bdi>{r.author_name}</bdi></span>
+                  <span className="text-xs text-muted">{r.submitted_at ? dmy(r.submitted_at) : ""}</span>
+                </div>
+                {r.overall ? <Stars n={r.overall} /> : null}
+                {r.comment ? <p className="text-sm">{r.comment}</p> : null}
+              </li>
+            ))}
+          </ul>
+        ) : <p className="text-sm text-muted">עוד אין חוות דעת. הן מופיעות אחרי עבודה שהושלמה דרך Joby.</p>}
+      </section>
       {cvHref ? <a href={cvHref} target="_blank" rel="noopener noreferrer" className="self-start text-sm font-semibold underline">הורדת קורות חיים</a> : null}
     </article>
   );

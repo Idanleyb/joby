@@ -38,6 +38,7 @@ pg_cron (every 10 min) ──▶ private.run_timers()
 | `0900_spouse_accept_draft` | spouse invite accepted after a draft provider profile; invite lookup; deleting unsubmitted uploads | 5.6 |
 | `1000_unlimited_subcategories` | `max_subcategories` = 0 means unlimited | 5.2 (v1.3) |
 | `1100_job_saves` | saved jobs (owner-only) | 5.9 |
+| `1200_profiles_search` | `il_cities` + `distance_km`, distance matching (`my_matching_jobs`, `jobs_near`), job alerts, "application viewed" notice, `search_providers`, availability + gallery, poster "about", `portfolio` bucket | 5.5, 5.7, 5.9, 5.19, 5.20 |
 
 ## Key RPC functions
 
@@ -49,6 +50,7 @@ pg_cron (every 10 min) ──▶ private.run_timers()
 | Jobs | `create_job`, `extend_job`, `close_job`, `claim_job`, `admin_post_job`, `admin_remove_job`, `admin_release_job` |
 | Flow A | `apply_to_job`, `mark_application_viewed`, `shortlist_application`, `contact_applicant`, `decline_application`, `withdraw_application`, `hire_application`, `request_extra_hire`, `decide_extra_hire` |
 | Flow B | `send_direct_request`, `respond_direct_request` |
+| Search & matching | `my_matching_jobs`, `jobs_near(city, radius)`, `search_providers(...)`, `distance_km(a, b)` |
 | Contact | `get_contact(other_user)` — returns phone/email only after Contact, hire or an approved request |
 | Feedback | `submit_feedback`, `admin_hide_review_comment` |
 | Trust | `report_content`, `resolve_report`, `block_user`, `unblock_user`, `admin_set_account_status` |
@@ -92,14 +94,24 @@ Uploads go to `<bucket>/<user_id>/<file>`. Verification documents are private to
 | `/providers/[id]` | Public provider profile (approved only, via RLS) |
 | `/invite/[token]` | Spouse invite landing (PRD 5.6) |
 | `/account` | Roles, wizard progress, credits, spouse invite |
-| `/jobs` | Job feed: Matches / Newest / Saved, filters (category, remote, budget stated), sort (PRD 5.9) |
+| `/home` | Dashboard for the current role (PRD 5.19) |
+| `/notifications` | In-app notifications, mark read (PRD 5.19) |
+| `/profile`, `/profile/edit` | Own profile: provider (strength, availability, gallery, edit links) or poster (view + edit) |
+| `/posters/[id]` | Public poster profile (PRD 5.7) |
+| `/providers` | Provider search: category, area, available now; sort rating / distance / price / A–Z (PRD 5.20) |
+| `/proposals` | Provider's applications in tabs: active, hired, closed |
+| `/jobs` | Opportunities: Matches / Newest / Saved; category, subcategory, area + radius, remote, budget stated; sort (PRD 5.9) |
 | `/jobs/new` | Post a job: budget rule on screen, attachments, preview, publish (PRD 5.8) |
 | `/jobs/[id]` | Job page with poster trust signals and the apply form (10 credits, balance after) |
 | `/poster/jobs`, `/poster/jobs/[id]` | Poster's jobs (status, new applicants, days left, extend once, close) and applicant list |
 | `/poster/jobs/[id]/applications/[appId]` | Application detail: marks opened, shortlist, contact (phone + WhatsApp), decline, hire, extra-hire request (PRD 5.10–5.12) |
-| `/provider/applications`, `/provider/credits` | Provider's applications (withdraw, poster contact after Contact/hire) and credit ledger |
+| `/provider/credits` | Credit ledger |
 | `/admin`, `/admin/verifications[/id]` | Admin dashboard and verification queue (PRD 5.18) |
 | `/admin/jobs`, `/admin/extra-hires` | Held jobs (release / remove) and extra-hire requests (approve / decline) |
+
+## Navigation
+
+`AppNav` (sidebar on computers, bottom bar on phones) and the header's `RoleSwitch` are in the root layout. The menu depends on the mode cookie `joby_mode` ("work" / "hire", `src/lib/mode.ts`). Layouts are not re-rendered on client navigation, so sign-in does a full page load, onboarding actions call `revalidatePath("/", "layout")`, and the bell count is refetched on each page change.
 
 ## AI document reading (src/lib/ai)
 

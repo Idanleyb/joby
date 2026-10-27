@@ -20,7 +20,7 @@ async function becomePoster(page: Page, name: string) {
   await page.getByText("אדם פרטי").click();
   await page.getByLabel("עיר").fill("ראש העין");
   await page.getByRole("button", { name: "סיום" }).click();
-  await expectPath(page, "/account");
+  await expectPath(page, "/home");
 }
 
 async function balance(userId: string) {
@@ -138,7 +138,9 @@ test("poster opens the application, reveals contact and hires", async ({ page })
 
 test("provider sees the hire and the poster's phone", async ({ page }) => {
   await as(page, PROVIDER.local);
-  await page.goto("/provider/applications");
+  await page.goto("/provider/applications"); // old address → Proposals
+  await expectPath(page, "/proposals");
+  await page.getByRole("link", { name: /נבחרתי/ }).click();
   await expect(page.getByText("נבחרת! 🎉")).toBeVisible();
   await expect(page.getByRole("link", { name: "WhatsApp" })).toHaveAttribute("href", "https://wa.me/972500000010");
   await page.goto(`/jobs/${jobId}`);

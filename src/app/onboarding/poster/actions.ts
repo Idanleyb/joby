@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { appErrorMessage } from "@/lib/errors";
@@ -57,5 +58,6 @@ export async function savePosterProfile(_prev: PosterState, form: FormData): Pro
     p_website: website || undefined,
   });
   if (error) return { error: appErrorMessage(error), values };
+  revalidatePath("/", "layout");
   redirect("/onboarding");
 }

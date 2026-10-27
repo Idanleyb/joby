@@ -1,4 +1,4 @@
-**PRODUCT REQUIREMENTS DOCUMENT · v1.3**
+**PRODUCT REQUIREMENTS DOCUMENT · v1.4**
 
 **Joby — MVP**
 
@@ -7,14 +7,14 @@ The Miluim Marketplace
 *Closed beta and public launch scope for a verified, reservist-only
 supply marketplace where anyone can hire.*
 
-|              |                                                                            |
-|--------------|----------------------------------------------------------------------------|
-| **Product**  | Joby (working name) — the Miluim Marketplace                               |
-| **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027) |
-| **Owner**    | Idan Leibovitch, Founder & Product                                         |
-| **Date**     | October 25, 2026                                                           |
-| **Status**   | v1.3 — unlimited categories per provider (October 27, 2026) · in build     |
-| **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                 |
+|              |                                                                                         |
+|--------------|-----------------------------------------------------------------------------------------|
+| **Product**  | Joby (working name) — the Miluim Marketplace                                            |
+| **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027)              |
+| **Owner**    | Idan Leibovitch, Founder & Product                                                      |
+| **Date**     | October 25, 2026                                                                        |
+| **Status**   | v1.4 — menus, profiles, notifications and provider search (October 28, 2026) · in build |
+| **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                              |
 
 <table>
 <colgroup>
@@ -245,13 +245,26 @@ Approved by the founder on October 25, 2026.
 | 15     | Channels            | WhatsApp and email for notifications and support                                                                                                                                                                                                         |
 | 16     | Platform            | Responsive web app, Hebrew, right-to-left, mobile-first                                                                                                                                                                                                  |
 
-## 4.1 Changes in v1.3 (October 27, 2026)
+## 4.1 Changes in v1.4 (October 28, 2026)
+
+| **Change**           | **Detail**                                                                                                                                                                                                               |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Navigation**       | Signed-in users get a menu: sidebar on a computer, bottom bar on a phone. A "Working / Hiring" switch moves between the two menus for users with both roles (section 5.19)                                               |
+| **Home page**        | A dashboard per role after sign-in (section 5.19)                                                                                                                                                                        |
+| **Provider profile** | Adds availability (available now / busy until a date), a photo gallery of past work (up to 6), a stats row (rating, jobs done, response time, member since) and a private profile-strength meter with tips (section 5.5) |
+| **Poster profile**   | Public profile page modelled on Upwork's client profile: about, logo, stats, open jobs and reviews (section 5.7)                                                                                                         |
+| **Notifications**    | In-app notifications page with unread badge; new events: job alert and "your application was viewed" (section 5.19)                                                                                                      |
+| **Account**          | Reserve badge (days band only), phone, email, city, credits and notification settings. Address is the city only                                                                                                          |
+| **Distance**         | Israeli localities with coordinates (1,263 CBS localities). Matching, job alerts, the area filter and provider search use straight-line distance between town centres                                                    |
+| **Provider search**  | New: filters by category, area and availability; sort by rating, distance, price or A–Z (section 5.20)                                                                                                                   |
+
+## 4.2 Changes in v1.3 (October 27, 2026)
 
 | **Change**                  | **Detail**                                                                                                                                                      |
 |-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Categories per provider** | Unlimited (was up to 3). Providers choose every subcategory they work in; job alerts match on all of them. Skills stay at up to 15 and service cards at up to 3 |
 
-## 4.2 Changes in v1.2 (October 27, 2026)
+## 4.3 Changes in v1.2 (October 27, 2026)
 
 | **Change**       | **Detail**                                                                                                                                                                                           |
 |------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -259,7 +272,7 @@ Approved by the founder on October 25, 2026.
 | **Refunds**      | No refund for unopened applications when the job ends with a hire. Without a hire (closed, expired after up to 60 days, or removed), all applications are refunded except withdrawn ones             |
 | **Duplicate ID** | Accounts are unique by user and phone (enforced by the database). The same ID number on a second account goes to admin to approve or reject; a dedicated resolution process is planned for Phase 1–2 |
 
-## 4.3 Changes in v1.1
+## 4.4 Changes in v1.1
 
 | **Change**               | **Detail**                                                                                                        |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------|
@@ -449,12 +462,30 @@ education, languages, portfolio links, service cards, rating and reviews
 requests. Full name, phone and email are hidden until contact is
 revealed (sections 5.10 and 5.11).
 
-| **Badge**                        | **Shown when**                          |
-|----------------------------------|-----------------------------------------|
-| **Verified reservist**           | Form 3010 approved                      |
-| **Reservist's spouse**           | Spouse link approved                    |
-| **New on Joby**                  | Fewer than 3 revealed reviews           |
-| **Served 30+ / 60+ / 120+ days** | Provider opted in to show the days band |
+| **Badge**                        | **Shown when**                                                  |
+|----------------------------------|-----------------------------------------------------------------|
+| **Verified reservist**           | Form 3010 approved                                              |
+| **Reservist's spouse**           | Spouse link approved                                            |
+| **New on Joby**                  | Fewer than 3 revealed reviews                                   |
+| **Served 30+ / 60+ / 120+ days** | Provider opted in to show the days band                         |
+| **Available now / Busy until …** | Provider's own availability setting (not a reserve-duty status) |
+
+**ADDED IN V1.4**
+
+- **Stats row:** rating (after 3 reviews, otherwise "New"), jobs done on
+  Joby, typical response time, member since.
+
+- **Photo gallery:** up to 6 photos of past work (JPG, PNG or WEBP, 5 MB
+  each), public.
+
+- **Availability:** "Available now" or "Busy", with an optional date.
+  Busy providers are hidden by the "Available now" search filter.
+
+- **Reviews:** revealed reviews from posters, newest first.
+
+- **My profile (private):** profile-strength meter with the next "add X
+  (+N%)" tips, availability and gallery editors, and links to edit each
+  part.
 
 **SERVICE CARDS (UP TO 3)**
 
@@ -501,6 +532,15 @@ Poster trust signals are computed automatically and shown on every job
 and direct request: **phone verified**, **member since**, **jobs
 posted**, **hire rate** (hires ÷ closed jobs) and **poster rating**
 (after 3 reviews).
+
+**POSTER PROFILE (V1.4)**
+
+Public page modelled on Upwork's client profile: logo or photo, name
+(private posters as "First L."), type, city, website, member since,
+phone verified; stats row (jobs posted, hire rate, open jobs, rating); a
+short "about" (≤ 500 chars); open jobs; and reviews written by
+providers. Linked from every job page and from the provider's proposals.
+The poster edits city, about, website, logo and company name.
 
 ## 5.8 Job posting (JOB)
 
@@ -551,8 +591,14 @@ posted**, **hire rate** (hires ÷ closed jobs) and **poster rating**
 - Tabs: **Matches** (provider's subcategories plus area or remote),
   **Newest**, **Saved**.
 
-- Filters: category, subcategory, area and radius, remote only, budget
-  range, budget stated, posted within. Sort: newest, highest budget.
+- Filters: category, subcategory, area (town plus 5 / 10 / 25 / 50 / 100
+  km), remote only, budget stated. Sort: newest, highest budget. Remote
+  jobs are not tied to a place, so the area filter shows them only when
+  "Remote" is also on. Budget range and "posted within" move to P1.
+
+- Matching (v1.4): straight-line distance between town centres. 10 / 25
+  / 50 km radius, or nationwide; remote and hybrid jobs match providers
+  who work remotely.
 
 - Job card: title, subcategory, location or Remote, budget or "Open to
   quotes", posted time, applicant range (0–4 / 5–9 / 10–19 / 20+),
@@ -755,6 +801,58 @@ or rejects them. Meanwhile the provider can register under Others →
 | **Dashboard** | KPIs in section 12                                                                                                     |
 | **Audit log** | Every admin action with who, what, when, and before/after values                                                       |
 | **Access**    | Roles: Admin (all) and Reviewer (queues only). 2FA is mandatory                                                        |
+
+## 5.19 Navigation, home and notifications (NAV)
+
+|          | **Working (provider)**                                                                                 | **Hiring (poster)**                                                     |
+|----------|--------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| **Menu** | Opportunities · Proposals · Notifications · Profile · Account                                          | My jobs · Find providers · Notifications · Profile · Account            |
+| **Home** | Profile strength, credits, matching jobs, active proposals, unread notifications, newest matching jobs | "Post a job", open jobs with new applicants, suggested providers nearby |
+
+- Computer: sidebar. Phone: bottom bar with the five items; the logo
+  leads home.
+
+- Users with both roles switch with "Working / Hiring" in the header;
+  the choice is remembered. Choosing a role the user does not have yet
+  starts its set-up.
+
+- **Proposals** tabs: Active (sent, viewed, shortlisted, contacted),
+  Hired, Closed (not selected, refunded, withdrawn). Each shows "Viewed
+  ✓" once the poster opened it, and the poster's contact details after
+  Contact or hire.
+
+- **Notifications**: every in-app message, newest first, unread
+  highlighted, with a badge count in the menu; opening one marks it
+  read; "Mark all as read". Events include job alerts, application
+  viewed, contacted, hired, not selected, credits refunded, verification
+  results, new applicants, job expiring and feedback reminders.
+
+- **Job alerts**: when a job opens (or is released by an admin), every
+  verified provider it matches gets an alert, unless they turned alerts
+  off in Account. WhatsApp and email delivery come with the notification
+  worker.
+
+- **Account**: reserve badge (verified reservist / spouse, and the days
+  band — never the exact count), name, phone, email, city, credits with
+  history, notification settings, roles, spouse link, sign out. The
+  address is the city only.
+
+## 5.20 Provider search (SRC)
+
+- Anyone can search verified providers (approved profiles only).
+
+- Filters: category, subcategory, area (town plus radius), "Available
+  now".
+
+- Sort: rating (providers with 3+ reviews first, then by number of
+  reviews), distance (from the chosen town, or the poster's own town),
+  price (lowest service-card starting price; providers without a price
+  last), A–Z.
+
+- Provider card: photo, name, verified badge, availability, headline,
+  subcategories, town and distance, rating, jobs done, starting price.
+
+- Blocked users do not see each other.
 
 # 6 Category Taxonomy
 

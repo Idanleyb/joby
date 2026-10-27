@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getMe, nextStep } from "@/lib/onboarding";
 import { createClient } from "@/lib/supabase/server";
 
 // Temporary home page: proves the app is live and connected to the database.
@@ -24,6 +26,10 @@ async function getCategories() {
 
 export default async function Home() {
   const result = await getCategories();
+  if (result.ok) {
+    const me = await getMe().catch(() => null);
+    if (me && nextStep(me) === "/account") redirect("/home");
+  }
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-10 px-4 py-12 sm:px-6">
@@ -35,8 +41,8 @@ export default async function Home() {
           לפרסם עבודה.
         </p>
         <div className="flex flex-wrap gap-3">
-          <Link href="/login" className="rounded-lg bg-brand px-5 py-3 font-semibold text-brand-contrast">מצאו עבודה</Link>
-          <Link href="/login" className="rounded-lg border border-border bg-surface px-5 py-3 font-semibold">גייסו מילואימניק</Link>
+          <Link href="/jobs" className="rounded-lg bg-brand px-5 py-3 font-semibold text-brand-contrast">מצאו עבודה</Link>
+          <Link href="/providers" className="rounded-lg border border-border bg-surface px-5 py-3 font-semibold">גייסו מילואימניק</Link>
         </div>
       </header>
 

@@ -483,6 +483,67 @@ select public.accept_spouse_invite(current_setting('test.invite2'));
 select test.check((select provider_type from public.provider_profiles where user_id = auth.uid()) = 'spouse', 'draft converted to spouse');
 reset role;
 
+\echo ' 13c. distance, matching, job alerts, "viewed" notice, provider search'
+select test.check(public.distance_km('ראש העין', 'פתח תקווה') between 5 and 10, 'Rosh HaAyin to Petah Tikva about 7 km');
+select test.check(public.distance_km('קרית שמונה', 'קריית שמונה') = 0, 'spelling normalized');
+select test.check(public.distance_km('תל אביב', 'חיפה') between 75 and 95, 'Tel Aviv found by prefix');
+select test.check(public.distance_km('Atlantis', 'חיפה') is null, 'unknown town gives null');
+update public.provider_profiles set city = 'ראש העין', radius_km = 25, works_onsite = true, works_remote = false
+ where user_id = test.uid('eli');
+insert into public.provider_subcategories values (test.uid('eli'), test.sub('electricity')) on conflict do nothing;
+insert into auth.users (phone, phone_confirmed_at, raw_user_meta_data)
+values ('972500000008', now(), '{"full_name": "Gal Peretz"}');
+insert into test.users select 'gal', id from auth.users where phone = '972500000008';
+select test.login('gal'); set role authenticated;
+select public.complete_signup('Gal Peretz', false, true);
+select public.upsert_poster_profile('Gal Peretz', 'private', 'פתח תקווה');
+select set_config('test.job_near', public.create_job(test.sub('electricity'), 'New sockets in the kitchen',
+  'Need four new sockets and a dedicated line for the oven in a kitchen renovation, this month.',
+  'onsite', 'פתח תקווה', 'fixed', 500, 800, 'month')::text, false);
+select set_config('test.job_far', public.create_job(test.sub('electricity'), 'Lighting for a hotel lobby',
+  'Replace lobby lighting with LED fixtures; around twenty fixtures, ceiling height four meters.',
+  'onsite', 'אילת', 'fixed', 3000, 5000, 'month')::text, false);
+reset role;
+select test.check(exists (select 1 from public.notifications where user_id = test.uid('eli') and event = 'job_alert'
+                          and payload ->> 'job_id' = current_setting('test.job_near')), 'job alert for a job 7 km away');
+select test.check(not exists (select 1 from public.notifications where user_id = test.uid('eli') and event = 'job_alert'
+                              and payload ->> 'job_id' = current_setting('test.job_far')), 'no alert for Eilat (25 km radius)');
+select test.login('eli'); set role authenticated;
+select test.check(current_setting('test.job_near')::uuid in (select public.my_matching_jobs()), 'near job in Matches');
+select test.check(current_setting('test.job_far')::uuid not in (select public.my_matching_jobs()), 'far job not in Matches');
+select set_config('test.app_near', public.apply_to_job(current_setting('test.job_near')::uuid,
+  'Licensed electrician, kitchens are my specialty. Can come for a quote on Sunday morning.')::text, false);
+update public.provider_profiles set availability = 'busy', busy_until = current_date + 10 where user_id = auth.uid();
+reset role;
+select test.login('gal'); set role authenticated;
+select public.mark_application_viewed(current_setting('test.app_near')::uuid);
+select public.mark_application_viewed(current_setting('test.app_near')::uuid);
+reset role;
+select test.check((select count(*) from public.notifications where user_id = test.uid('eli') and event = 'application_viewed') = 1,
+                  '"viewed" notice sent once');
+select set_config('request.jwt.claim.sub', '', false); set role anon;
+select test.check(current_setting('test.job_near')::uuid in (select public.jobs_near('ראש העין', 10)), 'area filter: 10 km');
+select test.check(current_setting('test.job_far')::uuid not in (select public.jobs_near('ראש העין', 50)), 'area filter excludes Eilat');
+select test.check(test.uid('eli') in (select user_id from public.search_providers(p_subcategory => test.sub('electricity'),
+                  p_city => 'פתח תקווה', p_radius => 25, p_sort => 'distance')), 'search finds the electrician nearby');
+select test.check(test.uid('eli') not in (select user_id from public.search_providers(p_subcategory => test.sub('electricity'),
+                  p_city => 'אילת', p_radius => 25)), 'search by area excludes far providers');
+select test.check(test.uid('eli') not in (select user_id from public.search_providers(p_available_only => true)), 'busy hidden by "available now"');
+select test.check(test.uid('dana') not in (select user_id from public.search_providers()), 'only approved providers');
+reset role;
+select test.login('eli'); set role authenticated;
+select public.mark_notifications_read();
+select test.check(not exists (select 1 from public.notifications where user_id = auth.uid() and read_at is null and in_app), 'nothing unread');
+select test.expect_error($$update public.provider_profiles set verification_status = 'approved' where user_id = auth.uid()$$, 'permission denied');
+reset role;
+select test.login('gal'); set role authenticated;
+update public.poster_profiles set about = 'Family home in Petah Tikva' where user_id = auth.uid();
+select test.check((select about from public.poster_profiles where user_id = auth.uid()) = 'Family home in Petah Tikva', 'poster edits about');
+update public.poster_profiles set about = 'hack' where user_id = test.uid('dana');
+select test.check((select about from public.poster_profiles where user_id = test.uid('dana')) is null, 'cannot edit another poster');
+select test.expect_error($$update public.poster_profiles set hires = 99 where user_id = auth.uid()$$, 'permission denied');
+reset role;
+
 \echo ' 14. ledger integrity'
 select test.check(not exists (
   select 1 from public.provider_wallets w

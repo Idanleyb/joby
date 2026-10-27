@@ -118,9 +118,11 @@ test("admin approves the reservist; documents are deleted; profile goes public w
 
   await page.context().clearCookies();
   await signInWithPhone(page, "050-000-0005");
-  await expectPath(page, "/account");
+  await expectPath(page, "/home");
+  await expect(page.getByRole("link", { name: /100\s*קרדיטים/ })).toBeVisible();
+  await page.goto("/account");
   await expect(page.getByText("מאומת ✓")).toBeVisible();
-  await expect(page.getByText("יתרת קרדיטים: 100")).toBeVisible();
+  await expect(page.getByText("60+ ימי מילואים מאז 7 באוקטובר 2023")).toBeVisible();
 });
 
 test("rejection with a reason, then upload again", async ({ page }) => {
@@ -146,6 +148,7 @@ test("rejection with a reason, then upload again", async ({ page }) => {
 
   await page.context().clearCookies();
   await signInWithPhone(page, "050-000-0008");
+  await page.goto("/account");
   await expect(page.getByText("האימות נדחה")).toBeVisible();
   await page.getByRole("link", { name: "לפרטים ולהעלאה מחדש" }).click();
   await expect(page.getByText("האימות הקודם נדחה: פחות מ-30 ימי מילואים")).toBeVisible();
@@ -154,6 +157,7 @@ test("rejection with a reason, then upload again", async ({ page }) => {
 
 test("spouse invite: link, sign-up, proof of marriage, admin approval", async ({ page, browser }) => {
   await signInWithPhone(page, "050-000-0005");
+  await page.goto("/account");
   await page.getByLabel("שם בן/בת הזוג").fill("Noa Mizrahi");
   await page.getByLabel("טלפון נייד").fill("050-000-0007");
   await page.getByRole("button", { name: "יצירת הזמנה" }).click();
@@ -191,7 +195,7 @@ test("spouse invite: link, sign-up, proof of marriage, admin approval", async ({
 
   await spouse.goto("/account");
   await expect(spouse.getByText("מאומת ✓")).toBeVisible();
-  await expect(spouse.getByText("בן/בת זוג של מילואימניק")).toBeVisible();
-  await expect(spouse.getByText("יתרת קרדיטים: 100")).toBeVisible();
+  await expect(spouse.getByText("בן/בת זוג של מילואימניק מאומת")).toBeVisible();
+  await expect(spouse.locator("dd", { hasText: "100" })).toBeVisible();
   await ctx.close();
 });

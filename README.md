@@ -2,7 +2,7 @@
 
 A two-sided marketplace: **verified reservists** (30+ reserve days since 7 Oct 2023) and their **approved spouses** offer services; **anyone** can post a job or approach a provider directly. Providers spend credits to apply (10) or to accept a direct request (2). Both sides rate each other after every engagement.
 
-- Product spec: [`docs/PRD.md`](docs/PRD.md) (v1.1)
+- Product spec: [`docs/PRD.md`](docs/PRD.md) (v1.4)
 - How the code is organized and why: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - Decisions made while building: [`docs/DECISIONS.md`](docs/DECISIONS.md)
 
@@ -113,6 +113,10 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
    select id, 'admin' from public.profiles where phone = '+9725XXXXXXXX';
    ```
 6. **Vercel**: import the GitHub repo, framework Next.js, and set the variables from `.env.example` (Production and Preview separately). `SUPABASE_SECRET_KEY` and `ID_HASH_SALT` are server-only — never prefix them with `NEXT_PUBLIC_`.
+
+## Data credits
+
+Israeli localities and coordinates (`il_cities`, `src/lib/il-localities.json`) come from the npm package `israel-geolocation` 1.0.1 (MIT), built from Israeli government (CBS) data.
 
 ## Accounts and ownership
 

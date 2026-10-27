@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { appErrorMessage } from "@/lib/errors";
@@ -35,6 +36,7 @@ export async function completeSignup(_prev: WelcomeState, form: FormData): Promi
   });
   if (error) return { error: appErrorMessage(error), values };
   const next = safeNext(String(form.get("next") ?? ""));
+  revalidatePath("/", "layout");
   if (next) redirect(`/onboarding?next=${encodeURIComponent(next)}`);
   redirect(asProvider && !asPoster ? "/provider/onboarding" : "/onboarding");
 }

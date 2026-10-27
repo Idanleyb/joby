@@ -9,6 +9,7 @@ import { normalizeIlPhone } from "@/lib/phone";
 export async function becomeProvider() {
   const supabase = await createClient();
   await supabase.rpc("start_provider_onboarding");
+  revalidatePath("/", "layout");
   redirect("/provider/onboarding");
 }
 
@@ -29,5 +30,13 @@ export async function inviteSpouse(_prev: InviteState, form: FormData): Promise<
 export async function cancelSpouseInvite(linkId: string) {
   const supabase = await createClient();
   await supabase.rpc("cancel_spouse_invite", { p_link: linkId });
+  revalidatePath("/account");
+}
+
+export async function saveNotificationPrefs(prefs: { job_alerts: "instant" | "off"; whatsapp: boolean; email_digest: boolean }) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+  await supabase.from("profiles").update({ notification_prefs: prefs }).eq("id", user.id);
   revalidatePath("/account");
 }

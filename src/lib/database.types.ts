@@ -755,6 +755,31 @@ export type Database = {
           },
         ];
       };
+      il_cities: {
+        Row: {
+          id: number;
+          lat: number;
+          lng: number;
+          name_en: string | null;
+          name_he: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          id: number;
+          lat: number;
+          lng: number;
+          name_en?: string | null;
+          name_he: string;
+        };
+        Update: {
+          id?: number;
+          lat?: number;
+          lng?: number;
+          name_en?: string | null;
+          name_he?: string;
+        };
+        Relationships: [];
+      };
       job_saves: {
         Row: {
           created_at: string;
@@ -955,6 +980,7 @@ export type Database = {
       };
       poster_profiles: {
         Row: {
+          about: string | null;
           city: string;
           company_name: string | null;
           created_at: string;
@@ -972,6 +998,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          about?: string | null;
           city: string;
           company_name?: string | null;
           created_at?: string;
@@ -988,6 +1015,7 @@ export type Database = {
           website?: string | null;
         };
         Update: {
+          about?: string | null;
           city?: string;
           company_name?: string | null;
           created_at?: string;
@@ -1142,6 +1170,9 @@ export type Database = {
       };
       provider_profiles: {
         Row: {
+          availability: string;
+          busy_until: string | null;
+          gallery_paths: string[];
           avg_response_hours: number | null;
           bio: string | null;
           city: string | null;
@@ -1173,6 +1204,9 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          availability?: string;
+          busy_until?: string | null;
+          gallery_paths?: string[];
           avg_response_hours?: number | null;
           bio?: string | null;
           city?: string | null;
@@ -1203,6 +1237,9 @@ export type Database = {
           years_experience?: number | null;
         };
         Update: {
+          availability?: string;
+          busy_until?: string | null;
+          gallery_paths?: string[];
           avg_response_hours?: number | null;
           bio?: string | null;
           city?: string | null;
@@ -1787,6 +1824,8 @@ export type Database = {
       };
       decline_application: { Args: { p_app: string }; Returns: undefined };
       extend_job: { Args: { p_job: string }; Returns: string };
+      city_norm: { Args: { p: string }; Returns: string };
+      distance_km: { Args: { a: string; b: string }; Returns: number };
       get_contact: {
         Args: { p_other: string };
         Returns: {
@@ -1824,9 +1863,30 @@ export type Database = {
         Args: { p_request: string };
         Returns: undefined;
       };
+      jobs_near: {
+        Args: { p_city: string; p_radius?: number };
+        Returns: string[];
+      };
+      my_matching_jobs: { Args: Record<PropertyKey, never>; Returns: string[] };
       mark_notifications_read: {
         Args: { p_ids?: number[] };
         Returns: undefined;
+      };
+      search_providers: {
+        Args: {
+          p_available_only?: boolean;
+          p_category?: number;
+          p_city?: string;
+          p_limit?: number;
+          p_radius?: number;
+          p_sort?: string;
+          p_subcategory?: number;
+        };
+        Returns: {
+          distance_km: number | null;
+          min_price: number | null;
+          user_id: string;
+        }[];
       };
       normalize_il_phone: { Args: { p_raw: string }; Returns: string };
       raise_app_error: {
