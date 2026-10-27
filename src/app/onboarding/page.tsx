@@ -1,7 +1,12 @@
 import { redirect } from "next/navigation";
 import { getMe, nextStep } from "@/lib/onboarding";
+import { safeNext } from "@/lib/next-param";
 
-/** Sends the user to the next onboarding step (or their account when done). */
-export default async function OnboardingRouter() {
-  redirect(nextStep(await getMe()));
+/** Sends the user to the next onboarding step (or their account / the page they came for). */
+export default async function OnboardingRouter({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
+  const next = safeNext((await searchParams).next);
+  const step = nextStep(await getMe());
+  if (next && step === "/account") redirect(next);
+  if (next && (step === "/onboarding/phone" || step === "/onboarding/welcome")) redirect(`${step}?next=${encodeURIComponent(next)}`);
+  redirect(step);
 }

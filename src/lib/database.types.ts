@@ -1761,6 +1761,15 @@ export type Database = {
           phone: string;
         }[];
       };
+      get_spouse_invite: {
+        Args: { p_token: string };
+        Returns: {
+          expires_at: string;
+          invite_name: string;
+          reservist_name: string;
+          status: string;
+        }[];
+      };
       hire_application: { Args: { p_app: string }; Returns: string };
       invite_spouse: {
         Args: { p_name: string; p_phone: string };

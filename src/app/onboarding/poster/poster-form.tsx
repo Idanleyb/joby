@@ -1,5 +1,6 @@
 "use client";
 
+import { submitWith } from "@/components/use-form-submit";
 import { useActionState, useState } from "react";
 import { savePosterProfile, type PosterState } from "./actions";
 import { IL_CITIES } from "@/lib/cities";
@@ -20,7 +21,7 @@ export function PosterForm() {
   const isOrg = type !== "" && type !== "private";
 
   return (
-    <form action={action} className="flex flex-col gap-6" noValidate>
+    <form onSubmit={submitWith(action)} className="flex flex-col gap-6" noValidate>
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1.5 text-sm font-semibold">מי מפרסם?</legend>
         {TYPES.map((t) => (

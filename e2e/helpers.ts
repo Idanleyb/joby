@@ -8,10 +8,17 @@ export const TEST_CODE = "123456";
 /** Signs in with a test phone number through the UI. */
 export async function signInWithPhone(page: Page, localPhone: string) {
   await page.goto("/login");
+  await enterPhoneAndCode(page, localPhone);
+}
+
+/** Phone + code on the current page (keeps ?next= on the login URL). */
+export async function enterPhoneAndCode(page: Page, localPhone: string) {
   await page.getByLabel("מספר טלפון נייד").fill(localPhone);
   await page.getByRole("button", { name: "שלחו לי קוד" }).click();
   await page.getByLabel("קוד אימות").fill(TEST_CODE);
   await page.getByRole("button", { name: "אישור" }).click();
+  // Wait until sign-in has navigated on (to onboarding, the account, or the requested page).
+  await page.waitForURL((u) => !u.pathname.startsWith("/login") && !u.pathname.startsWith("/onboarding/phone") && u.pathname !== "/onboarding");
 }
 
 /** Form error messages (ignores Next.js's hidden route announcer). */
@@ -58,4 +65,41 @@ export async function injectSession(context: BrowserContext, baseURL: string, em
       sameSite: "Lax" as const,
     })),
   );
+}
+
+/** Service-role REST call (test setup only). */
+export async function serviceRest(path: string, init: RequestInit = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...init,
+    headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, "content-type": "application/json", Prefer: "return=representation", ...(init.headers ?? {}) },
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(`${path}: ${res.status} ${text}`);
+  return text ? JSON.parse(text) : null;
+}
+
+export async function userIdByPhone(e164: string): Promise<string> {
+  const rows = await serviceRest(`profiles?select=id&phone=eq.${encodeURIComponent(e164)}`);
+  if (!rows?.[0]) throw new Error(`no profile for ${e164}`);
+  return rows[0].id;
+}
+
+export async function storageExists(bucket: string, path: string) {
+  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
+    headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+  });
+  return res.ok;
+}
+
+/** Tiny valid files for upload tests. */
+export const PDF = Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Kids[]/Count 0>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n");
+export const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==", "base64");
+
+/** Welcome screen: name, roles, terms. */
+export async function completeWelcome(page: Page, name: string, roles: ("provider" | "poster")[]) {
+  await page.getByLabel("שם מלא").fill(name);
+  if (roles.includes("provider")) await page.getByText("להציע שירותים", { exact: true }).click();
+  if (roles.includes("poster")) await page.getByText("לפרסם עבודות ולגייס").click();
+  await page.getByText("קראתי ואני מאשר/ת").click();
+  await page.getByRole("button", { name: "המשך" }).click();
 }

@@ -57,6 +57,7 @@ Local phone sign-in sends no SMS: test numbers `972500000001`–`972500000003` a
 ### Tests
 
 ```bash
+npm run test:unit      # pure logic (reserve-day counting, AI output cleaning)
 npm run test:db        # database rules; needs PostgreSQL 15+ binaries OR a running local Supabase
 npm run lint && npm run typecheck && npm run build
 ```
@@ -66,14 +67,14 @@ npm run lint && npm run typecheck && npm run build
 End-to-end (real browser, phone width) — needs the app and the local Supabase stack running, on a fresh database:
 
 ```bash
-npm run db:reset && npm run build && npm start      # app on :3000 against local Supabase
+npm run db:reset && JOBY_AI_FAKE=1 npm run build && JOBY_AI_FAKE=1 npm start   # app on :3000, canned AI readings
 E2E_SUPABASE_URL=http://127.0.0.1:54321 \
 E2E_SUPABASE_ANON_KEY=<anon key from supabase status> \
 E2E_SUPABASE_SERVICE_KEY=<service_role key from supabase status> \
 npm run test:e2e
 ```
 
-They use the test phone numbers from `supabase/config.toml` (code `123456`), so no SMS is sent.
+They use the test phone numbers from `supabase/config.toml` (code `123456`), so no SMS is sent. `JOBY_AI_FAKE=1` makes Form 3010 / CV reading return canned results based on the file name (see `src/lib/ai/form3010.ts`), and is refused on Vercel production.
 
 CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests on every push and pull request.
 
@@ -93,6 +94,7 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
    npx supabase db push                     # applies all migrations
    ```
    Run `supabase/seed.sql` once in the SQL Editor (categories).
+   **Updating an existing project without the CLI:** `bash scripts/make-bootstrap-sql.sh --after <last applied version> > update.sql`, paste into the SQL Editor, Run. It applies only the newer migrations and records them.
    **No command line?** On an empty project you can instead run `bash scripts/make-bootstrap-sql.sh > bootstrap.sql` (or use the file from the founder chat), paste it into the SQL Editor and click Run. It applies every migration and the seed in one transaction and records the migration history, so later `supabase db push` runs only newer migrations.
 2. **Supabase → Authentication → Providers**:
    - **Phone**: enable, SMS provider **Twilio Verify** (Account SID, Auth Token, Verify Service SID from the Twilio console → Verify → Services). Verify handles sender IDs and code delivery, which is simpler than running our own sender for Israel. Add test numbers with fixed codes if you want to test without SMS charges. Two traps seen in setup:

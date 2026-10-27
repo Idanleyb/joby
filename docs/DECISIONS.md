@@ -4,6 +4,15 @@ Decisions made while building, beyond what the PRD states. Add new entries at th
 
 | Date | Decision | Why |
 |---|---|---|
+| 2026-10-27 | **Form 3010 is submitted at wizard step 1**, not at the end of the wizard. | Review starts while the provider finishes the profile; faster approval. The profile is still hidden until approved. |
+| 2026-10-27 | **AI reading is optional at runtime**: without `ANTHROPIC_API_KEY` (or if reading fails) the provider types the total days and the reviewer checks the documents. | The product keeps working if the AI is down. |
+| 2026-10-27 | **Claude reads documents through a forced tool call** with a fixed schema; output is normalized and treated as untrusted. DOCX CVs are converted to text (mammoth) since the API does not read .docx. | Predictable structure; resistant to text inside documents. |
+| 2026-10-27 | **The AI summary is signed (HMAC)** between "read" and "confirm", so the browser cannot change the counted days. The ID number never leaves the server; only its salted hash is stored. | Integrity and privacy. |
+| 2026-10-27 | **Verification documents are deleted immediately** after approve/reject (PRD allowed up to 24h). Uploads removed before submitting can be deleted by the user. Uploads abandoned without submitting are not yet cleaned up automatically — a cleanup job is a later item. | Data minimization. |
+| 2026-10-27 | **CV autofill fills only empty fields** unless the provider ticks "replace". | Never overwrite what the provider wrote. |
+| 2026-10-27 | **Spouse invite is shared by the reservist** (WhatsApp button / copy link) until the WhatsApp notification worker exists. | Works today without the WhatsApp API. |
+| 2026-10-27 | **A spouse who ticked "offer services" before opening the invite** has the draft reservist profile converted to a spouse profile (if no verification was submitted). | Avoids a dead end in sign-up. |
+| 2026-10-27 | **Forms submit without React's automatic reset** (`submitWith`). | The reset could wipe text typed right after a validation error. |
 | 2026-10-27 | **Google user whose phone already has an account** is told to sign in with that phone instead; accounts are not merged automatically. Linking Google to an existing phone account is a later item. | Automatic merging needs identity linking; not needed for the beta. PRD 5.1 deviation. |
 | 2026-10-27 | **Private posters are shown as "First L."**; organizations by their name. No separate display-name field. | Privacy, and one field fewer. |
 | 2026-10-27 | **Phone codes via Twilio Verify** (recommended in README). | Handles sender IDs and delivery to Israel without managing our own sender. |

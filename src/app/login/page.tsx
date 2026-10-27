@@ -2,15 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getMe } from "@/lib/onboarding";
+import { safeNext } from "@/lib/next-param";
 import { PhoneOtpForm } from "@/components/phone-otp-form";
 import { GoogleButton } from "@/components/google-button";
 import { Card, PageShell } from "@/components/ui";
 
 export const metadata: Metadata = { title: "כניסה · Joby" };
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
-  if (await getMe()) redirect("/onboarding");
-  const { error } = await searchParams;
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string; next?: string }> }) {
+  const { error, next: rawNext } = await searchParams;
+  const next = safeNext(rawNext);
+  const after = next ? `/onboarding?next=${encodeURIComponent(next)}` : "/onboarding";
+  if (await getMe()) redirect(after);
 
   return (
     <PageShell title="כניסה או הרשמה" subtitle="משתמשים חדשים וקיימים נכנסים באותה דרך.">
@@ -20,14 +23,14 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         </p>
       ) : null}
       <Card>
-        <PhoneOtpForm mode="signin" />
+        <PhoneOtpForm mode="signin" next={after} />
       </Card>
       <div className="flex items-center gap-3 text-sm text-muted">
         <span className="h-px flex-1 bg-border" />
         או
         <span className="h-px flex-1 bg-border" />
       </div>
-      <GoogleButton />
+      <GoogleButton next={after} />
       <p className="text-center text-xs text-muted">
         בהמשך את/ה מאשר/ת את <Link href="/terms" className="underline">תנאי השימוש</Link> ואת{" "}
         <Link href="/privacy" className="underline">מדיניות הפרטיות</Link>.

@@ -1,5 +1,6 @@
 "use client";
 
+import { submitWith } from "@/components/use-form-submit";
 import Link from "next/link";
 import { useActionState } from "react";
 import { completeSignup, type WelcomeState } from "./actions";
@@ -22,13 +23,15 @@ function RoleOption({ name, title, text, checked }: { name: string; title: strin
   );
 }
 
-export function WelcomeForm({ defaultName }: { defaultName: string }) {
+export function WelcomeForm({ defaultName, next, invited }: { defaultName: string; next: string | null; invited?: boolean }) {
   const [state, action, pending] = useActionState<WelcomeState, FormData>(completeSignup, {});
   const fe = state.fieldErrors ?? {};
   const v = state.values;
 
   return (
-    <form action={action} className="flex flex-col gap-6" noValidate>
+    <form onSubmit={submitWith(action)} className="flex flex-col gap-6" noValidate>
+      {next ? <input type="hidden" name="next" value={next} /> : null}
+      {invited ? <p className="rounded-xl bg-accent/15 px-4 py-3 text-sm">הוזמנת כבן/בת זוג של מילואימניק. בחר/י ״להציע שירותים״ כדי להמשיך להזמנה.</p> : null}
       <Field label="שם מלא" htmlFor="fullName" error={fe.fullName} hint="השם המלא נשאר פרטי. בפרופיל מוצג שם פרטי ואות ראשונה משם המשפחה.">
         <Input id="fullName" name="fullName" autoComplete="name" defaultValue={v?.fullName ?? defaultName} required />
       </Field>

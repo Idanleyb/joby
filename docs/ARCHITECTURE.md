@@ -80,6 +80,21 @@ The database only writes rows to `public.notifications` (the outbox). A worker (
 
 Uploads go to `<bucket>/<user_id>/<file>`. Verification documents are private to the owner and admins, and are deleted by the server after the admin decision (`decide_verification` returns the paths; `mark_documents_deleted` records it).
 
+## App structure (src/app)
+
+| Route | What |
+|---|---|
+| `/login`, `/auth/callback`, `/onboarding/*` | Sign-in (phone code, Google), phone step, welcome (roles, terms), poster details |
+| `/provider/onboarding/{proof,cv,categories,area,about,services,photo}` | Provider wizard (PRD 5.2–5.5) |
+| `/providers/[id]` | Public provider profile (approved only, via RLS) |
+| `/invite/[token]` | Spouse invite landing (PRD 5.6) |
+| `/account` | Roles, wizard progress, credits, spouse invite |
+| `/admin`, `/admin/verifications[/id]` | Admin dashboard and verification queue (PRD 5.18) |
+
+## AI document reading (src/lib/ai)
+
+`client.ts` sends a PDF / image (or DOCX converted to text) with a forced tool call; `form3010.ts` and `cv.ts` define the schemas and clean the output. `reserve-days.ts` merges periods and counts days from 7 Oct 2023. Files go browser → Supabase Storage directly; the server downloads them with the service key only to read them.
+
 ## What is not built yet
 
-UI screens, the verification intake route (AI extraction + ID hash), the notification worker, payments (P1). See the build plan in the project chat.
+Jobs, applications, direct requests and feedback screens; the notification worker (WhatsApp/email); payments (P1). See the build plan in the project chat.

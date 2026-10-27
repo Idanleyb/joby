@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { appErrorMessage } from "@/lib/errors";
+import { safeNext } from "@/lib/next-param";
 
 export type WelcomeValues = { fullName: string; asProvider: boolean; asPoster: boolean; terms: boolean; marketing: boolean };
 export type WelcomeState = {
@@ -33,5 +34,7 @@ export async function completeSignup(_prev: WelcomeState, form: FormData): Promi
     p_marketing_opt_in: marketing,
   });
   if (error) return { error: appErrorMessage(error), values };
-  redirect("/onboarding");
+  const next = safeNext(String(form.get("next") ?? ""));
+  if (next) redirect(`/onboarding?next=${encodeURIComponent(next)}`);
+  redirect(asProvider && !asPoster ? "/provider/onboarding" : "/onboarding");
 }

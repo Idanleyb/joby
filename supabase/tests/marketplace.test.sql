@@ -457,6 +457,25 @@ select test.login('noa'); set role authenticated;
 select test.expect_error(format($$select public.apply_to_job(%L, repeat('suspended ', 8))$$, current_setting('test.job_cap')), 'account_suspended');
 reset role;
 
+\echo ' 13b. spouse invite accepted after choosing "offer services" at sign-up'
+-- approve Eli (pending, flagged duplicate) so he can invite
+select test.login('admin'); set role authenticated;
+select public.decide_verification((select id from public.verification_requests where user_id = test.uid('eli') and status = 'pending'), 'approved');
+reset role;
+select test.login('eli'); set role authenticated;
+select public.invite_spouse('Ruth Amsalem', '050-000-0007');
+reset role;
+select set_config('test.invite2', (select invite_token from public.spouse_links where invite_phone = '+972500000007'), false);
+set role anon;
+select test.check((select reservist_name from public.get_spouse_invite(current_setting('test.invite2'))) = 'Eli C.', 'invite readable by token');
+reset role;
+select test.login('ruth'); set role authenticated;
+select public.complete_signup('Ruth Amsalem', true, false);
+select test.check((select provider_type from public.provider_profiles where user_id = auth.uid()) = 'reservist', 'draft reservist before accepting');
+select public.accept_spouse_invite(current_setting('test.invite2'));
+select test.check((select provider_type from public.provider_profiles where user_id = auth.uid()) = 'spouse', 'draft converted to spouse');
+reset role;
+
 \echo ' 14. ledger integrity'
 select test.check(not exists (
   select 1 from public.provider_wallets w

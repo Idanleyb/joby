@@ -69,12 +69,14 @@ test("new poster: phone → welcome → poster details → account → sign out 
   await expectPath(page, "/account");
 });
 
-test("new provider sees verification as the next step and can add the poster role", async ({ page }) => {
+test("new provider goes to the verification step and can add the poster role", async ({ page }) => {
   await signInWithPhone(page, "+972 50 000 0002");
   await page.getByLabel("שם מלא").fill("Noa Barak");
   await page.getByText("להציע שירותים").click();
   await page.getByText("קראתי ואני מאשר/ת").click();
   await page.getByRole("button", { name: "המשך" }).click();
+  await expectPath(page, "/provider/onboarding/proof");
+  await page.getByRole("link", { name: "אמשיך אחר כך" }).click();
   await expectPath(page, "/account");
   await expect(page.getByText("טרם הוגש אימות")).toBeVisible();
 
