@@ -81,6 +81,7 @@ CI (`.github/workflows/ci.yml`) runs all of the above on every push and pull req
    npx supabase db push                     # applies all migrations
    ```
    Run `supabase/seed.sql` once in the SQL Editor (categories).
+   **No command line?** On an empty project you can instead run `bash scripts/make-bootstrap-sql.sh > bootstrap.sql` (or use the file from the founder chat), paste it into the SQL Editor and click Run. It applies every migration and the seed in one transaction and records the migration history, so later `supabase db push` runs only newer migrations.
 2. **Supabase → Authentication → Providers**: enable **Phone** (Twilio: Account SID, Auth Token, Messaging Service SID) and **Google** (OAuth client from Google Cloud Console).
 3. **Supabase → Authentication → URL Configuration**: Site URL = your Vercel URL; add `https://<your-domain>/auth/callback` to Redirect URLs.
 4. **Supabase → Database → Extensions**: confirm `pg_cron` is enabled and the job `joby-run-timers` exists (`select * from cron.job;`). If the migration ran before pg_cron was enabled, run:
