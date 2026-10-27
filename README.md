@@ -95,7 +95,10 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
    Run `supabase/seed.sql` once in the SQL Editor (categories).
    **No command line?** On an empty project you can instead run `bash scripts/make-bootstrap-sql.sh > bootstrap.sql` (or use the file from the founder chat), paste it into the SQL Editor and click Run. It applies every migration and the seed in one transaction and records the migration history, so later `supabase db push` runs only newer migrations.
 2. **Supabase → Authentication → Providers**:
-   - **Phone**: enable, SMS provider **Twilio Verify** (Account SID, Auth Token, Verify Service SID from the Twilio console → Verify → Services). Verify handles sender IDs and code delivery, which is simpler than running our own sender for Israel. Add test numbers with fixed codes if you want to test without SMS charges.
+   - **Phone**: enable, SMS provider **Twilio Verify** (Account SID, Auth Token, Verify Service SID from the Twilio console → Verify → Services). Verify handles sender IDs and code delivery, which is simpler than running our own sender for Israel. Add test numbers with fixed codes if you want to test without SMS charges. Two traps seen in setup:
+     - Twilio refuses to send until its identity check is approved (error *"Primary compliance profile is not approved"*): complete **Trust Hub → Profiles → Primary** (individual or business) and wait for approval.
+     - Error *"Invalid From Number (caller ID): VA…"* means the dropdown is set to **Twilio** instead of **Twilio Verify**. The `VA…` service SID only works with Twilio Verify.
+     - The sign-in form shows the technical error code in small print under the message, which is usually enough to diagnose.
    - **Google**: in Google Cloud Console → APIs & Services → Credentials, create an *OAuth client ID* (type: Web application) with the authorized redirect URI `https://<project-ref>.supabase.co/auth/v1/callback`, then paste the client ID and secret into Supabase.
 3. **Supabase → Authentication → URL Configuration**: Site URL = your Vercel URL; add `https://<your-domain>/auth/callback` to Redirect URLs.
 4. **Supabase → Database → Extensions**: confirm `pg_cron` is enabled and the job `joby-run-timers` exists (`select * from cron.job;`). If the migration ran before pg_cron was enabled, run:
