@@ -410,6 +410,37 @@ select private.run_timers();
 select test.check((select revealed_at is not null from public.feedback where engagement_id = current_setting('test.eng_req')::uuid), 'one-sided revealed after 14 days');
 select test.check((select rating_count from public.provider_profiles where user_id = test.uid('yossi')) = 1, '"No" answers do not count in the score');
 
+\echo ' 12b. job lifetime (30 + 30 days) and no refund for unopened applications after a hire'
+select test.login('avi'); set role authenticated;
+select set_config('test.job_life', public.create_job(test.sub('carpentry'), 'Custom bookshelf for a living room',
+  'Wall 3.2 meters wide, floor to ceiling, oak veneer, in Rishon LeZion. Measurements are ready.',
+  'onsite', 'Rishon LeZion', 'open_to_quotes', null, null, 'flexible')::text, false);
+select test.check((select expires_at between now() + interval '29 days 23 hours' and now() + interval '30 days 1 hour'
+                   from public.jobs where id = current_setting('test.job_life')::uuid), 'job open 30 days');
+select public.extend_job(current_setting('test.job_life')::uuid);
+select test.check((select expires_at between now() + interval '59 days 23 hours' and now() + interval '60 days 1 hour'
+                   from public.jobs where id = current_setting('test.job_life')::uuid), 'extension to 60 days');
+select test.expect_error(format($$select public.extend_job(%L)$$, current_setting('test.job_life')), 'cannot_extend');
+reset role;
+select set_config('test.bal_yossi', test.balance('yossi')::text, false);
+select test.login('yossi'); set role authenticated;
+select set_config('test.app_life_yossi', public.apply_to_job(current_setting('test.job_life')::uuid,
+  'Carpenter with a workshop in Rishon. Oak veneer shelving is a regular job for me; photos on request.')::text, false);
+reset role;
+select test.login('noa'); set role authenticated;
+select set_config('test.app_life_noa', public.apply_to_job(current_setting('test.job_life')::uuid,
+  'We build custom shelving and finish it on site; can measure this week and deliver in three weeks.')::text, false);
+reset role;
+select test.login('avi'); set role authenticated;
+select public.mark_application_viewed(current_setting('test.app_life_noa')::uuid);
+select public.hire_application(current_setting('test.app_life_noa')::uuid);
+reset role;
+update public.applications set sent_at = now() - interval '31 days' where job_id = current_setting('test.job_life')::uuid;
+select private.run_timers();
+select test.check((select status from public.applications where id = current_setting('test.app_life_yossi')::uuid) = 'not_selected',
+                  'unopened application not refunded after a hire');
+select test.check(test.balance('yossi') = current_setting('test.bal_yossi')::int - 10, 'no credit-back after a hire');
+
 \echo ' 13. reports hide a job; suspended accounts cannot act'
 select test.login('yossi'); set role authenticated; select public.report_content('job', current_setting('test.job_dev')::uuid, 'spam'); reset role;
 select test.login('noa');   set role authenticated; select public.report_content('job', current_setting('test.job_dev')::uuid, 'spam'); reset role;

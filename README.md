@@ -96,4 +96,15 @@ CI (`.github/workflows/ci.yml`) runs all of the above on every push and pull req
 
 ## Accounts and ownership
 
-All service accounts (GitHub organization, Vercel team, Supabase organization, Meta/WhatsApp, Twilio, Resend, Anthropic) are registered with the project email, not a personal one, and the credentials live in the shared password manager. Rename them when the brand name is final.
+The MVP starts on the founder's personal accounts and moves to dedicated company accounts if it succeeds. To keep that move cheap:
+
+| Service | Start (personal) | Moving later |
+|---|---|---|
+| GitHub | Personal account, private repo used only for Joby | Transfer the repository to the company organization (history, issues and pull requests move with it) |
+| Supabase | A separate **organization** named for Joby inside the personal account, holding only Joby's projects | Transfer the projects to the company organization; keys and URL stay the same |
+| Vercel | Personal account, one project for Joby. Hobby is fine while building; **upgrade to Pro before real users**, because Hobby is for non-commercial use only | Transfer the project to the company team; re-check environment variables and domain |
+| Domain | Registered in the founder's name | Transfer to the company registrar account |
+| WhatsApp (Meta) | Create a **Meta business portfolio for Joby** from day one, even if owned by the personal Facebook account | Add the company admins to the portfolio; avoid re-registering the number |
+| Twilio, Resend, Anthropic | Personal accounts, with a separate project or API key for Joby | Create company accounts and swap the keys in Vercel and Supabase |
+
+Rules that apply from day one: every secret lives only in environment variables (never in code), each service uses keys created only for Joby, and the list of accounts and where each key is used is kept up to date in the password manager.

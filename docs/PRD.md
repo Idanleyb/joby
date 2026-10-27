@@ -1,4 +1,4 @@
-**PRODUCT REQUIREMENTS DOCUMENT · v1.1**
+**PRODUCT REQUIREMENTS DOCUMENT · v1.2**
 
 **Joby — MVP**
 
@@ -7,14 +7,14 @@ The Miluim Marketplace
 *Closed beta and public launch scope for a verified, reservist-only
 supply marketplace where anyone can hire.*
 
-|              |                                                                                     |
-|--------------|-------------------------------------------------------------------------------------|
-| **Product**  | Joby (working name) — the Miluim Marketplace                                        |
-| **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027)          |
-| **Owner**    | Idan Leibovitch, Founder & Product                                                  |
-| **Date**     | October 25, 2026                                                                    |
-| **Status**   | v1.1 — founder review applied; open questions resolved · ready for design and build |
-| **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                          |
+|              |                                                                                          |
+|--------------|------------------------------------------------------------------------------------------|
+| **Product**  | Joby (working name) — the Miluim Marketplace                                             |
+| **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027)               |
+| **Owner**    | Idan Leibovitch, Founder & Product                                                       |
+| **Date**     | October 25, 2026                                                                         |
+| **Status**   | v1.2 — job lifetime, refund and duplicate-ID rules updated (October 27, 2026) · in build |
+| **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                               |
 
 <table>
 <colgroup>
@@ -179,20 +179,21 @@ reference for browsing providers (Flow B).
 
 ## 2.3 Out of scope
 
-| **Feature**                                       | **Why not now**                                                     | **Earliest**  |
-|---------------------------------------------------|---------------------------------------------------------------------|---------------|
-| **In-app chat**                                   | Contact details are revealed; parties continue on WhatsApp or phone | Phase 4       |
-| **Payments between users, escrow**                | Joby does not handle money between parties in year 1                | Year 2        |
-| **Contracts, milestones, user-to-user invoicing** | Adds weight without testing the hypothesis                          | Not planned   |
-| **AI matching and recommendations**               | Needs feedback data collected by the MVP first                      | Phase 4       |
-| **Featured posts, boost, employer packages**      | No poster monetization in year 1                                    | Phase 4 pilot |
-| **Referral credits and earn-credits loop**        | Growth lever, not needed to validate                                | Phase 3       |
-| **SEO category × city landing pages**             | Comes after public launch                                           | Phase 3       |
-| **Native iOS and Android apps**                   | Responsive web covers traffic from WhatsApp links                   | Later         |
-| **License verification (medical, legal)**         | Self-declared license number in the MVP                             | Later         |
-| **Company accounts with multiple seats**          | Single-user posters are enough for beta                             | Later         |
-| **English and Arabic interface**                  | Hebrew only at launch; strings built for translation                | Later         |
-| **"On reserve duty" status**                      | Removed from the MVP by the founder (v1.1)                          | Later         |
+| **Feature**                                       | **Why not now**                                                                                                           | **Earliest**                     |
+|---------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|----------------------------------|
+| **In-app chat**                                   | Contact details are revealed; parties continue on WhatsApp or phone                                                       | Phase 4                          |
+| **Payments between users, escrow**                | Joby does not handle money between parties in year 1                                                                      | Year 2                           |
+| **Contracts, milestones, user-to-user invoicing** | Adds weight without testing the hypothesis                                                                                | Not planned                      |
+| **AI matching and recommendations**               | Needs feedback data collected by the MVP first                                                                            | Phase 4                          |
+| **Featured posts, boost, employer packages**      | No poster monetization in year 1                                                                                          | Phase 4 pilot                    |
+| **Referral credits and earn-credits loop**        | Growth lever, not needed to validate                                                                                      | Phase 3                          |
+| **SEO category × city landing pages**             | Comes after public launch                                                                                                 | Phase 3                          |
+| **Native iOS and Android apps**                   | Responsive web covers traffic from WhatsApp links                                                                         | Later                            |
+| **License verification (medical, legal)**         | Self-declared license number in the MVP                                                                                   | Later                            |
+| **Company accounts with multiple seats**          | Single-user posters are enough for beta                                                                                   | Later                            |
+| **English and Arabic interface**                  | Hebrew only at launch; strings built for translation                                                                      | Later                            |
+| **"On reserve duty" status**                      | Removed from the MVP by the founder (v1.1)                                                                                | Later                            |
+| **Duplicate-identity resolution workflow**        | MVP flags the request in the verification queue and admin approves or rejects; a dedicated end-to-end process comes later | Phase 1–2 (not required for MVP) |
 
 # 3 Users & Roles
 
@@ -225,26 +226,34 @@ verification.
 
 Approved by the founder on October 25, 2026.
 
-| **\#** | **Decision**        | **Approved value**                                                                                                                                                                     |
-|--------|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1      | Eligibility         | 30+ cumulative reserve days on or after October 7, 2023, proven by one cumulative Form 3010 or several per-period forms                                                                |
-| 2      | Sign-up             | Phone OTP or Google account; Google users must verify a phone number                                                                                                                   |
-| 3      | Welcome credits     | 100 credits on approval (equal to 10 applications), for reservists and spouses                                                                                                         |
-| 4      | Apply cost          | 10 credits, paid by the provider when the application is sent                                                                                                                          |
-| 5      | Direct request cost | 2 credits, paid by the provider, charged only when the provider approves a poster's direct request                                                                                     |
-| 6      | Posting             | Free for all posters                                                                                                                                                                   |
-| 7      | Credit-back         | Automatic refund if the application is still unopened 30 days after sending, or if the job closes or expires without a hire                                                            |
-| 8      | Credit purchases    | Ship at public launch (March 2027). The beta runs on welcome credits plus admin grants                                                                                                 |
-| 9      | Budget              | Mandatory for Programming & Tech, Digital Marketing, Business, Finance and Lawyers, and for any remote job. Optional elsewhere ("Open to quotes")                                      |
-| 10     | Feedback            | Mandatory two-way feedback after every hire and every approved direct request; reminders after 7 and 14 days (the third warns of a block); account blocked after 30 days; blind reveal |
-| 11     | Spouse              | Added by a verified reservist; proof of marriage or common-law partnership; manual admin approval. Admin decides manually on the spouse's eligibility if the reservist account changes |
-| 12     | CV                  | Upload with AI autofill; manual fill always available                                                                                                                                  |
-| 13     | Categories          | Ten launch categories (section 6) plus "Missing your occupation? Tell us"                                                                                                              |
-| 14     | Beta coverage       | Nationwide for on-site work, and remote work nationally                                                                                                                                |
-| 15     | Channels            | WhatsApp and email for notifications and support                                                                                                                                       |
-| 16     | Platform            | Responsive web app, Hebrew, right-to-left, mobile-first                                                                                                                                |
+| **\#** | **Decision**        | **Approved value**                                                                                                                                                                                                                                       |
+|--------|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1      | Eligibility         | 30+ cumulative reserve days on or after October 7, 2023, proven by one cumulative Form 3010 or several per-period forms                                                                                                                                  |
+| 2      | Sign-up             | Phone OTP or Google account; Google users must verify a phone number                                                                                                                                                                                     |
+| 3      | Welcome credits     | 100 credits on approval (equal to 10 applications), for reservists and spouses                                                                                                                                                                           |
+| 4      | Apply cost          | 10 credits, paid by the provider when the application is sent                                                                                                                                                                                            |
+| 5      | Direct request cost | 2 credits, paid by the provider, charged only when the provider approves a poster's direct request                                                                                                                                                       |
+| 6      | Posting             | Free for all posters                                                                                                                                                                                                                                     |
+| 7      | Credit-back         | Unopened for 30 days while the job is still open → refunded. Job ends with a hire → no refund, even for unopened applications. Job closes, expires (after up to 60 days) or is removed without a hire → every application refunded except withdrawn ones |
+| 8      | Credit purchases    | Ship at public launch (March 2027). The beta runs on welcome credits plus admin grants                                                                                                                                                                   |
+| 9      | Budget              | Mandatory for Programming & Tech, Digital Marketing, Business, Finance and Lawyers, and for any remote job. Optional elsewhere ("Open to quotes")                                                                                                        |
+| 10     | Feedback            | Mandatory two-way feedback after every hire and every approved direct request; reminders after 7 and 14 days (the third warns of a block); account blocked after 30 days; blind reveal                                                                   |
+| 11     | Spouse              | Added by a verified reservist; proof of marriage or common-law partnership; manual admin approval. Admin decides manually on the spouse's eligibility if the reservist account changes                                                                   |
+| 12     | CV                  | Upload with AI autofill; manual fill always available                                                                                                                                                                                                    |
+| 13     | Categories          | Ten launch categories (section 6) plus "Missing your occupation? Tell us"                                                                                                                                                                                |
+| 14     | Beta coverage       | Nationwide for on-site work, and remote work nationally                                                                                                                                                                                                  |
+| 15     | Channels            | WhatsApp and email for notifications and support                                                                                                                                                                                                         |
+| 16     | Platform            | Responsive web app, Hebrew, right-to-left, mobile-first                                                                                                                                                                                                  |
 
-## 4.1 Changes in v1.1
+## 4.1 Changes in v1.2 (October 27, 2026)
+
+| **Change**       | **Detail**                                                                                                                                                                                           |
+|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Job lifetime** | Open 30 days; the poster can approve one extension of 30 more days (60 days maximum)                                                                                                                 |
+| **Refunds**      | No refund for unopened applications when the job ends with a hire. Without a hire (closed, expired after up to 60 days, or removed), all applications are refunded except withdrawn ones             |
+| **Duplicate ID** | Accounts are unique by user and phone (enforced by the database). The same ID number on a second account goes to admin to approve or reject; a dedicated resolution process is planned for Phase 1–2 |
+
+## 4.2 Changes in v1.1
 
 | **Change**               | **Detail**                                                                                                        |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------|
@@ -352,8 +361,14 @@ area of the reserves website. Joby accepts both.
   Days before that date never count, even when a form spans it.
 
 - Stored after the decision: status, decision date, reviewer, days band
-  (30–59 / 60–119 / 120+), and a salted hash of the ID number to block
-  duplicate provider accounts. Nothing else is kept.
+  (30–59 / 60–119 / 120+), and a salted hash of the ID number. Nothing
+  else is kept.
+
+- Duplicates: a user account can never be duplicated (unique user and
+  phone number, enforced by the database). If the same ID number appears
+  on a second account, the request enters the queue flagged "Possible
+  duplicate identity" and admin approves or rejects it. A dedicated
+  resolution process is planned for Phase 1–2.
 
 - The provider may choose to show the days band on the profile ("Served
   120+ days"). Default: off.
@@ -503,9 +518,10 @@ posted**, **hire rate** (hires ÷ closed jobs) and **poster rating**
 
 **RULES**
 
-- Lifecycle: Open (21 days) → one optional extension of 21 days →
-  Expired. Other end states: Hired, Closed without hire, Removed by
-  admin.
+- Lifecycle: Open (30 days) → one optional extension of 30 days,
+  approved by the poster (60 days maximum) → Expired. Other end states:
+  Hired, Closed without hire, Removed by admin. The "expires in 2 days"
+  notice offers the extension.
 
 - Category and budget are locked after the first application; the
   description can still be edited.
@@ -571,10 +587,15 @@ availability date, optional attached service card. Confirmation sheet:
 - One application per provider per job. Requires verified status and at
   least 10 credits. No editing after sending.
 
-- **Credit-back:** refunded automatically if the application is still in
-  "Sent" 30 days after sending, or when the job ends as Closed without
-  hire, Expired or Removed by admin (all of that job's applications are
-  refunded).
+- **Credit-back while the job is open:** refunded automatically if the
+  poster has not opened the application 30 days after it was sent.
+
+- **Job ends with a hire:** no refund, including applications the poster
+  never opened.
+
+- **Job ends without a hire** (Closed without hire, Expired after up to
+  60 days, or Removed by admin): every application of that job is
+  refunded, except withdrawn ones.
 
 ## 5.11 Flow B — Poster approaches a provider directly (REQ)
 
@@ -755,29 +776,29 @@ that Joby has not verified it.
 
 All values are configurable by admin without a code release.
 
-| **Rule**                                       | **Value**                                                             |
-|------------------------------------------------|-----------------------------------------------------------------------|
-| **Eligibility threshold**                      | 30 cumulative reserve days on or after October 7, 2023                |
-| **Verification decision SLA**                  | 24 hours (queue alert at 20 hours)                                    |
-| **Document deletion after decision**           | Within 24 hours                                                       |
-| **Spouse invite validity**                     | 14 days                                                               |
-| **Welcome credits**                            | 100                                                                   |
-| **Apply cost · direct request cost**           | 10 credits · 2 credits                                                |
-| **Credit-back for unopened application**       | 30 days after sending                                                 |
-| **Job open period**                            | 21 days, one extension of 21 days                                     |
-| **Applicant cap per job**                      | 30                                                                    |
-| **Maximum open jobs per poster**               | 10                                                                    |
-| **Direct request expiry**                      | 7 days                                                                |
-| **Maximum direct requests per poster per day** | 20                                                                    |
-| **Feedback request**                           | 3 days after the engagement                                           |
-| **Feedback reminders**                         | 7 and 14 days after the request (the third carries the block warning) |
-| **Feedback block**                             | 30 days after the request; lifted as soon as feedback is submitted    |
-| **Blind reveal**                               | When both submit, or 14 days after the first submission               |
-| **Score visible after**                        | 3 revealed reviews                                                    |
-| **Subcategories per provider · service cards** | 3 · 3                                                                 |
-| **Low-balance nudge**                          | Below 20 credits                                                      |
-| **Mistaken-hire reversal window**              | 48 hours, through support                                             |
-| **Hires per job**                              | One by default; extra hires need admin approval                       |
+| **Rule**                                       | **Value**                                                                                   |
+|------------------------------------------------|---------------------------------------------------------------------------------------------|
+| **Eligibility threshold**                      | 30 cumulative reserve days on or after October 7, 2023                                      |
+| **Verification decision SLA**                  | 24 hours (queue alert at 20 hours)                                                          |
+| **Document deletion after decision**           | Within 24 hours                                                                             |
+| **Spouse invite validity**                     | 14 days                                                                                     |
+| **Welcome credits**                            | 100                                                                                         |
+| **Apply cost · direct request cost**           | 10 credits · 2 credits                                                                      |
+| **Credit-back for unopened application**       | 30 days after sending, only while the job is open (no refund once the job ends with a hire) |
+| **Job open period**                            | 30 days, plus one 30-day extension approved by the poster (60 days maximum)                 |
+| **Applicant cap per job**                      | 30                                                                                          |
+| **Maximum open jobs per poster**               | 10                                                                                          |
+| **Direct request expiry**                      | 7 days                                                                                      |
+| **Maximum direct requests per poster per day** | 20                                                                                          |
+| **Feedback request**                           | 3 days after the engagement                                                                 |
+| **Feedback reminders**                         | 7 and 14 days after the request (the third carries the block warning)                       |
+| **Feedback block**                             | 30 days after the request; lifted as soon as feedback is submitted                          |
+| **Blind reveal**                               | When both submit, or 14 days after the first submission                                     |
+| **Score visible after**                        | 3 revealed reviews                                                                          |
+| **Subcategories per provider · service cards** | 3 · 3                                                                                       |
+| **Low-balance nudge**                          | Below 20 credits                                                                            |
+| **Mistaken-hire reversal window**              | 48 hours, through support                                                                   |
+| **Hires per job**                              | One by default; extra hires need admin approval                                             |
 
 # 8 Notifications Matrix
 
@@ -796,7 +817,7 @@ All values are configurable by admin without a code release.
 | **Request approved (contacts revealed)**                     | Poster + provider  | ✓                                 | ✓            | ✓          |
 | **Request declined / expired**                               | Poster             | —                                 | ✓            | ✓          |
 | **You were hired**                                           | Provider           | ✓                                 | ✓            | ✓          |
-| **Job expires in 2 days**                                    | Poster             | —                                 | ✓            | ✓          |
+| **Job expires in 2 days (with Extend button)**               | Poster             | ✓                                 | ✓            | ✓          |
 | **Feedback request / reminders (request, +7, +14 days)**     | Both               | ✓                                 | ✓            | ✓          |
 | **Account blocked / unblocked for missing feedback**         | Blocked user       | ✓                                 | ✓            | ✓          |
 | **Extra hire approved / declined**                           | Poster + applicant | ✓                                 | ✓            | ✓          |
@@ -1037,10 +1058,12 @@ idempotent and retried</td>
 | **A form spans October 7, 2023**                          | Only days on or after October 7 count                                                                    |
 | **Two forms overlap**                                     | Overlapping days counted once                                                                            |
 | **Name on 3010 differs from the account name**            | Admin requests clarification; account name corrected through support                                     |
-| **Same ID hash on another account**                       | Submission blocked and routed to admin                                                                   |
+| **Same ID number on another account**                     | Request flagged "Possible duplicate identity" in the queue; admin approves or rejects                    |
 | **Provider runs out of credits during beta**              | "Contact support for more credits"; admin grants with a reason                                           |
 | **Poster deletes a job with applicants**                  | Treated as Closed without hire: all applications refunded                                                |
 | **Poster hires the wrong person**                         | Reversed through support within 48 hours; engagement cancelled                                           |
+| **Poster hires without opening every application**        | No refund for the unopened applications                                                                  |
+| **No hire after 60 days**                                 | Job expires; all applications refunded except withdrawn ones                                             |
 | **Poster wants a second provider for the same job**       | "Hire another applicant" request; admin decides; both sides notified                                     |
 | **Provider is called up for reserve duty mid-engagement** | No special status in the MVP; support can extend the feedback deadline on request                        |
 | **Only one side submits feedback**                        | Revealed 14 days after submission; the other side is blocked 30 days after the request until they submit |
@@ -1054,17 +1077,19 @@ idempotent and retried</td>
 
 ## 16.1 Resolved in founder review (October 25, 2026)
 
-| **\#** | **Question**                                                        | **Decision**                                                            | **Where in the PRD** |
-|--------|---------------------------------------------------------------------|-------------------------------------------------------------------------|----------------------|
-| 1      | Accept common-law partners as spouses?                              | Yes: notarized affidavit or an official recognition document            | 5.6                  |
-| 2      | Spouse status if the reservist account is deleted or unlinked       | Admin decides manually; spouse notified                                 | 5.6, 15              |
-| 3      | Add "Project management" under Business?                            | Yes                                                                     | 6                    |
-| 4      | Store a salted hash of the ID number to prevent duplicate accounts? | Yes, store it                                                           | 5.3                  |
-| 6      | WhatsApp channel                                                    | Joby WhatsApp Business account                                          | 13                   |
-| 8      | Refund when a provider withdraws an application?                    | No refund                                                               | 5.10                 |
-| 9      | More than one hire per job?                                         | Admin decides per request; poster and applicant notified                | 5.12                 |
-| —      | "On reserve duty" status                                            | Removed from the MVP                                                    | 2.3                  |
-| —      | Feedback enforcement                                                | Reminders after 7 and 14 days, block after 30 days with a clear warning | 5.14                 |
+| **\#** | **Question**                                                        | **Decision**                                                                                        | **Where in the PRD** |
+|--------|---------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|----------------------|
+| 1      | Accept common-law partners as spouses?                              | Yes: notarized affidavit or an official recognition document                                        | 5.6                  |
+| 2      | Spouse status if the reservist account is deleted or unlinked       | Admin decides manually; spouse notified                                                             | 5.6, 15              |
+| 3      | Add "Project management" under Business?                            | Yes                                                                                                 | 6                    |
+| 4      | Store a salted hash of the ID number to prevent duplicate accounts? | Yes, store it                                                                                       | 5.3                  |
+| 6      | WhatsApp channel                                                    | Joby WhatsApp Business account                                                                      | 13                   |
+| 8      | Refund when a provider withdraws an application?                    | No refund                                                                                           | 5.10                 |
+| 9      | More than one hire per job?                                         | Admin decides per request; poster and applicant notified                                            | 5.12                 |
+| —      | "On reserve duty" status                                            | Removed from the MVP                                                                                | 2.3                  |
+| —      | Feedback enforcement                                                | Reminders after 7 and 14 days, block after 30 days with a clear warning                             | 5.14                 |
+| —      | Job lifetime and refunds (v1.2)                                     | 30 + 30 days maximum; refunds only when the job ends without a hire, or unopened 30 days while open | 5.8, 5.10            |
+| —      | Duplicate ID (v1.2)                                                 | Admin approves or rejects; resolution process in Phase 1–2                                          | 5.3                  |
 
 ## 16.2 Still open
 

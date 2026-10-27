@@ -62,9 +62,9 @@ Errors are raised as stable codes (e.g. `insufficient_credits`); `src/lib/errors
 
 ## Timers (`private.run_timers`, every 10 minutes)
 
-1. Expire jobs past `expires_at` → refund applications in play.
+1. Expire jobs past `expires_at` (30 days, or 60 with the poster's extension) → refund every application except withdrawn ones.
 2. "Job expires in 2 days" notice.
-3. Refund applications never opened after 30 days.
+3. Refund applications never opened after 30 days, only while the job is still open.
 4. Expire unanswered direct requests after 7 days.
 5. Create feedback requests 3 days after an engagement.
 6. Reminders at +7 and +14 days (the second warns of the block).

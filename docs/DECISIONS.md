@@ -6,10 +6,11 @@ Decisions made while building, beyond what the PRD states. Add new entries at th
 |---|---|---|
 | 2026-10-27 | **Stack**: GitHub + Supabase + Vercel, Next.js 16 / TypeScript / Tailwind. | Mainstream, easy to hand over; Supabase covers phone OTP, Google, storage, cron. |
 | 2026-10-27 | **Business rules in Postgres functions**, RLS for reads, no direct writes except owner-edited content. | One place for the rules; cannot be bypassed from the browser; testable without UI. |
-| 2026-10-27 | **Credit-back for unopened applications** uses "never opened by the poster" rather than "still in Sent". | If a poster hires someone else without ever opening an application, that provider still gets refunded at 30 days. |
-| 2026-10-27 | **Closing / expiring / removing a job without a hire refunds every application still in play**, including ones the poster declined. Withdrawn ones are not refunded. | PRD 5.10: "all of that job's applications are refunded". |
+| 2026-10-27 | **Founder (PRD v1.2): job lifetime** is 30 days plus one 30-day extension approved by the poster (60 days maximum). | Gives more providers a chance to apply. |
+| 2026-10-27 | **Founder (PRD v1.2): no refund for unopened applications once the job ends with a hire.** The 30-day unopened refund applies only while the job is still open. | The poster used the platform to hire. |
+| 2026-10-27 | **Founder (PRD v1.2): job ends without a hire** (closed, expired after up to 60 days, removed) → every application refunded, including declined ones; withdrawn ones are not. | PRD 5.10. |
+| 2026-10-27 | **Founder (PRD v1.2): duplicate identity.** User accounts cannot be duplicated (unique user id and phone, enforced by the database). The same ID *document number* on a second account is flagged for admin to approve or reject. A dedicated resolution process is planned for Phase 1–2. | Not required for MVP. |
 | 2026-10-27 | **Withdrawing frees a slot** under the 30-applicant cap. | The cap is about posters' review load. |
-| 2026-10-27 | **Duplicate ID hash** does not reject automatically: the request enters the queue flagged `duplicate_suspected`. | PRD §15 "blocked and routed to admin"; admin decides. |
 | 2026-10-27 | **ID hash** is computed on the server with a secret salt (`ID_HASH_SALT`); `submit_verification` is callable only with the server key. | The salt never reaches the browser. |
 | 2026-10-27 | **Wallet balance in its own table** (`provider_wallets`), not on the profile. | Profiles are public; balances are private. |
 | 2026-10-27 | **Post-on-behalf claims** (phone + token) in a separate admin-only table `job_claims`. | Keeps the claimant's phone off the public jobs table. |

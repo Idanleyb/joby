@@ -34,11 +34,14 @@ begin
     v_expiry_warn := v_expiry_warn + 1;
   end loop;
 
-  -- 3. Applications still unopened 30 days after sending → refund.
-  for r in select id from public.applications
-            where viewed_at is null and credited_back_at is null
-              and status not in ('hired', 'withdrawn', 'credited_back')
-              and sent_at <= now() - make_interval(days => public.setting_int('credit_back_unopened_days')) loop
+  -- 3. Applications still unopened 30 days after sending, while the job is still open → refund.
+  --    Once the job ends with a hire, unopened applications are not refunded (decision v1.2).
+  for r in select a.id from public.applications a
+             join public.jobs j on j.id = a.job_id
+            where a.viewed_at is null and a.credited_back_at is null
+              and a.status not in ('hired', 'withdrawn', 'credited_back')
+              and j.status in ('open', 'held')
+              and a.sent_at <= now() - make_interval(days => public.setting_int('credit_back_unopened_days')) loop
     perform private.credit_back(r.id, 'unopened_30_days');
     v_credit_backs := v_credit_backs + 1;
   end loop;
