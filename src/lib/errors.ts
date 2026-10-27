@@ -69,3 +69,22 @@ export function appErrorMessage(error: { message?: string } | null | undefined):
   const code = error?.message ?? "";
   return APP_ERRORS[code] ?? "משהו השתבש. נסו שוב.";
 }
+
+/** Supabase Auth errors (sign-in, codes, phone change) → Hebrew. */
+export function authErrorMessage(error: { code?: string; message?: string; status?: number } | null | undefined): string {
+  const code = error?.code ?? "";
+  const msg = (error?.message ?? "").toLowerCase();
+  if (code === "otp_expired" || msg.includes("token has expired") || msg.includes("invalid")) {
+    if (msg.includes("phone")) return "מספר הטלפון אינו תקין.";
+    return "הקוד שגוי או שפג תוקפו. נסו שוב או בקשו קוד חדש.";
+  }
+  if (code === "phone_exists" || msg.includes("already been registered")) {
+    return "המספר הזה כבר רשום לחשבון אחר. התנתקו והתחברו עם קוד SMS למספר הזה.";
+  }
+  if (code.startsWith("over_") || error?.status === 429 || msg.includes("rate limit") || msg.includes("security purposes")) {
+    return "יותר מדי ניסיונות. המתינו מעט ונסו שוב.";
+  }
+  if (code === "sms_send_failed" || msg.includes("sms")) return "לא הצלחנו לשלוח SMS. בדקו את המספר ונסו שוב.";
+  if (code === "provider_disabled") return "שיטת הכניסה הזו אינה זמינה כרגע.";
+  return "משהו השתבש. נסו שוב.";
+}

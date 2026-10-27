@@ -4,6 +4,10 @@ Decisions made while building, beyond what the PRD states. Add new entries at th
 
 | Date | Decision | Why |
 |---|---|---|
+| 2026-10-27 | **Google user whose phone already has an account** is told to sign in with that phone instead; accounts are not merged automatically. Linking Google to an existing phone account is a later item. | Automatic merging needs identity linking; not needed for the beta. PRD 5.1 deviation. |
+| 2026-10-27 | **Private posters are shown as "First L."**; organizations by their name. No separate display-name field. | Privacy, and one field fewer. |
+| 2026-10-27 | **Phone codes via Twilio Verify** (recommended in README). | Handles sender IDs and delivery to Israel without managing our own sender. |
+| 2026-10-27 | **Forms keep what the user typed after a validation error** (server action echoes values). | React resets forms after an action; losing input is bad UX. |
 | 2026-10-27 | **Stack**: GitHub + Supabase + Vercel, Next.js 16 / TypeScript / Tailwind. | Mainstream, easy to hand over; Supabase covers phone OTP, Google, storage, cron. |
 | 2026-10-27 | **Business rules in Postgres functions**, RLS for reads, no direct writes except owner-edited content. | One place for the rules; cannot be bypassed from the browser; testable without UI. |
 | 2026-10-27 | **Founder (PRD v1.2): job lifetime** is 30 days plus one 30-day extension approved by the poster (60 days maximum). | Gives more providers a chance to apply. |

@@ -1,0 +1,59 @@
+import "server-only";
+import { createClient } from "@/lib/supabase/server";
+
+export type OnboardingStep = "/login" | "/onboarding/phone" | "/onboarding/welcome" | "/onboarding/poster" | "/account";
+
+export type Me = {
+  userId: string;
+  fullName: string | null;
+  phone: string | null;
+  phoneVerified: boolean;
+  termsAccepted: boolean;
+  isPoster: boolean;
+  isProvider: boolean;
+  suspended: boolean;
+  hasPosterProfile: boolean;
+};
+
+/** The signed-in user and their onboarding state, or null when signed out. */
+export async function getMe(): Promise<Me | null> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const [{ data: profile }, { data: poster }] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("full_name, phone, phone_verified, terms_accepted_at, is_poster, is_provider, status")
+      .eq("id", user.id)
+      .maybeSingle(),
+    supabase.from("poster_profiles").select("user_id").eq("user_id", user.id).maybeSingle(),
+  ]);
+
+  return {
+    userId: user.id,
+    fullName: profile?.full_name ?? null,
+    phone: profile?.phone ?? null,
+    phoneVerified: profile?.phone_verified ?? false,
+    termsAccepted: Boolean(profile?.terms_accepted_at),
+    isPoster: profile?.is_poster ?? false,
+    isProvider: profile?.is_provider ?? false,
+    suspended: profile?.status === "suspended",
+    hasPosterProfile: Boolean(poster),
+  };
+}
+
+/**
+ * Where the user should be right now (PRD 5.1, 5.7):
+ * sign in → verified phone → name, roles and terms → poster details → account.
+ * The provider wizard (Form 3010, CV, …) is added in the next build step.
+ */
+export function nextStep(me: Me | null): OnboardingStep {
+  if (!me) return "/login";
+  if (!me.phoneVerified) return "/onboarding/phone";
+  if (!me.termsAccepted) return "/onboarding/welcome";
+  if (me.isPoster && !me.hasPosterProfile) return "/onboarding/poster";
+  return "/account";
+}

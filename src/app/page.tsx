@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 // Temporary home page: proves the app is live and connected to the database.
@@ -34,8 +35,8 @@ export default async function Home() {
           לפרסם עבודה.
         </p>
         <div className="flex flex-wrap gap-3">
-          <span className="rounded-lg bg-brand px-5 py-3 font-semibold text-brand-contrast">מצאו עבודה</span>
-          <span className="rounded-lg border border-border bg-surface px-5 py-3 font-semibold">גייסו מילואימניק</span>
+          <Link href="/login" className="rounded-lg bg-brand px-5 py-3 font-semibold text-brand-contrast">מצאו עבודה</Link>
+          <Link href="/login" className="rounded-lg border border-border bg-surface px-5 py-3 font-semibold">גייסו מילואימניק</Link>
         </div>
       </header>
 

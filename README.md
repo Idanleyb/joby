@@ -63,7 +63,19 @@ npm run lint && npm run typecheck && npm run build
 
 `test:db` without Docker: install PostgreSQL (`brew install postgresql@16` on Mac) and run it as is. With the local Supabase stack running instead: `TEST_DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres npm run test:db`.
 
-CI (`.github/workflows/ci.yml`) runs all of the above on every push and pull request.
+End-to-end (real browser, phone width) — needs the app and the local Supabase stack running, on a fresh database:
+
+```bash
+npm run db:reset && npm run build && npm start      # app on :3000 against local Supabase
+E2E_SUPABASE_URL=http://127.0.0.1:54321 \
+E2E_SUPABASE_ANON_KEY=<anon key from supabase status> \
+E2E_SUPABASE_SERVICE_KEY=<service_role key from supabase status> \
+npm run test:e2e
+```
+
+They use the test phone numbers from `supabase/config.toml` (code `123456`), so no SMS is sent.
+
+CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests on every push and pull request.
 
 ## Environments
 
@@ -82,7 +94,9 @@ CI (`.github/workflows/ci.yml`) runs all of the above on every push and pull req
    ```
    Run `supabase/seed.sql` once in the SQL Editor (categories).
    **No command line?** On an empty project you can instead run `bash scripts/make-bootstrap-sql.sh > bootstrap.sql` (or use the file from the founder chat), paste it into the SQL Editor and click Run. It applies every migration and the seed in one transaction and records the migration history, so later `supabase db push` runs only newer migrations.
-2. **Supabase → Authentication → Providers**: enable **Phone** (Twilio: Account SID, Auth Token, Messaging Service SID) and **Google** (OAuth client from Google Cloud Console).
+2. **Supabase → Authentication → Providers**:
+   - **Phone**: enable, SMS provider **Twilio Verify** (Account SID, Auth Token, Verify Service SID from the Twilio console → Verify → Services). Verify handles sender IDs and code delivery, which is simpler than running our own sender for Israel. Add test numbers with fixed codes if you want to test without SMS charges.
+   - **Google**: in Google Cloud Console → APIs & Services → Credentials, create an *OAuth client ID* (type: Web application) with the authorized redirect URI `https://<project-ref>.supabase.co/auth/v1/callback`, then paste the client ID and secret into Supabase.
 3. **Supabase → Authentication → URL Configuration**: Site URL = your Vercel URL; add `https://<your-domain>/auth/callback` to Redirect URLs.
 4. **Supabase → Database → Extensions**: confirm `pg_cron` is enabled and the job `joby-run-timers` exists (`select * from cron.job;`). If the migration ran before pg_cron was enabled, run:
    ```sql
