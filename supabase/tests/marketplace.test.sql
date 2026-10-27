@@ -164,7 +164,14 @@ select test.expect_error($$update public.provider_profiles set verification_stat
 select test.expect_error($$update public.provider_wallets set balance = 9999$$, 'permission denied');
 insert into public.provider_subcategories (provider_id, subcategory_id) values
   (auth.uid(), test.sub('electricity')), (auth.uid(), test.sub('plumbing')), (auth.uid(), test.sub('repairs-handyman'));
-select test.expect_error($$insert into public.provider_subcategories (provider_id, subcategory_id) values (auth.uid(), test.sub('painting'))$$, 'limit_reached');
+-- unlimited subcategories (v1.3): a 4th and 5th are fine
+insert into public.provider_subcategories (provider_id, subcategory_id) values (auth.uid(), test.sub('painting')), (auth.uid(), test.sub('carpentry'));
+select test.check((select count(*) from public.provider_subcategories where provider_id = auth.uid()) = 5, 'unlimited subcategories');
+delete from public.provider_subcategories where provider_id = auth.uid() and subcategory_id in (test.sub('painting'), test.sub('carpentry'));
+-- skills keep their limit of 15
+insert into public.provider_skills (provider_id, skill) select auth.uid(), 'skill ' || g from generate_series(1, 15) g;
+select test.expect_error($$insert into public.provider_skills (provider_id, skill) values (auth.uid(), 'one too many')$$, 'limit_reached');
+delete from public.provider_skills where provider_id = auth.uid();
 select test.expect_error(format($$insert into public.provider_skills (provider_id, skill) values (%L, 'hack')$$, test.uid('avi')), 'row-level security');
 reset role;
 

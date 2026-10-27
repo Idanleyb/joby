@@ -20,6 +20,7 @@ const server = http.createServer((req, res) => {
 
 beforeAll(async () => {
   await new Promise<void>((ok) => server.listen(0, "127.0.0.1", ok));
+  delete process.env.JOBY_AI_FAKE; // these tests must hit the stand-in API, never the canned answers
   process.env.ANTHROPIC_API_KEY = "test-key";
   process.env.ANTHROPIC_BASE_URL = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
 });

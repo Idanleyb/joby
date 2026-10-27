@@ -1,4 +1,4 @@
-**PRODUCT REQUIREMENTS DOCUMENT · v1.2**
+**PRODUCT REQUIREMENTS DOCUMENT · v1.3**
 
 **Joby — MVP**
 
@@ -7,14 +7,14 @@ The Miluim Marketplace
 *Closed beta and public launch scope for a verified, reservist-only
 supply marketplace where anyone can hire.*
 
-|              |                                                                                          |
-|--------------|------------------------------------------------------------------------------------------|
-| **Product**  | Joby (working name) — the Miluim Marketplace                                             |
-| **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027)               |
-| **Owner**    | Idan Leibovitch, Founder & Product                                                       |
-| **Date**     | October 25, 2026                                                                         |
-| **Status**   | v1.2 — job lifetime, refund and duplicate-ID rules updated (October 27, 2026) · in build |
-| **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                               |
+|              |                                                                            |
+|--------------|----------------------------------------------------------------------------|
+| **Product**  | Joby (working name) — the Miluim Marketplace                               |
+| **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027) |
+| **Owner**    | Idan Leibovitch, Founder & Product                                         |
+| **Date**     | October 25, 2026                                                           |
+| **Status**   | v1.3 — unlimited categories per provider (October 27, 2026) · in build     |
+| **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                 |
 
 <table>
 <colgroup>
@@ -245,7 +245,13 @@ Approved by the founder on October 25, 2026.
 | 15     | Channels            | WhatsApp and email for notifications and support                                                                                                                                                                                                         |
 | 16     | Platform            | Responsive web app, Hebrew, right-to-left, mobile-first                                                                                                                                                                                                  |
 
-## 4.1 Changes in v1.2 (October 27, 2026)
+## 4.1 Changes in v1.3 (October 27, 2026)
+
+| **Change**                  | **Detail**                                                                                                                                                      |
+|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Categories per provider** | Unlimited (was up to 3). Providers choose every subcategory they work in; job alerts match on all of them. Skills stay at up to 15 and service cards at up to 3 |
+
+## 4.2 Changes in v1.2 (October 27, 2026)
 
 | **Change**       | **Detail**                                                                                                                                                                                           |
 |------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -253,7 +259,7 @@ Approved by the founder on October 25, 2026.
 | **Refunds**      | No refund for unopened applications when the job ends with a hire. Without a hire (closed, expired after up to 60 days, or removed), all applications are refunded except withdrawn ones             |
 | **Duplicate ID** | Accounts are unique by user and phone (enforced by the database). The same ID number on a second account goes to admin to approve or reject; a dedicated resolution process is planned for Phase 1–2 |
 
-## 4.2 Changes in v1.1
+## 4.3 Changes in v1.1
 
 | **Change**               | **Detail**                                                                                                        |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------|
@@ -313,7 +319,7 @@ every step, resumable from any device.
 |----------|------------------|--------------|-----------------------------------------------------------------------------------------------------------|
 | **1**    | Proof of service | Yes          | Form 3010 upload (section 5.3). Spouses see the proof-of-marriage step instead (section 5.6)              |
 | **2**    | Your CV          | No           | Upload a CV for AI autofill (section 5.4), or "Fill manually instead"                                     |
-| **3**    | What you do      | Yes          | 1–3 subcategories and up to 15 skills; "Missing your occupation? Tell us"                                 |
+| **3**    | What you do      | Yes          | One or more subcategories (no limit) and up to 15 skills; "Missing your occupation? Tell us"              |
 | **4**    | Where you work   | Yes          | On-site (city + radius: 10 / 25 / 50 km / nationwide) and/or remote                                       |
 | **5**    | About you        | Yes          | Headline (≤ 70 chars), bio (≤ 1,000), years of experience. Optional: portfolio links (up to 5), languages |
 | **6**    | Your services    | No           | Up to 3 service cards (section 5.5)                                                                       |
@@ -752,8 +758,8 @@ or rejects them. Meanwhile the provider can register under Others →
 
 # 6 Category Taxonomy
 
-Providers choose up to 3 subcategories. Job alerts match on subcategory
-plus area or remote.
+Providers choose as many subcategories as they work in (no limit). Job
+alerts match on subcategory plus area or remote.
 
 | **Category**           | **Launch subcategories**                                                                                                                             | **Budget** |
 |------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
@@ -795,7 +801,7 @@ All values are configurable by admin without a code release.
 | **Feedback block**                             | 30 days after the request; lifted as soon as feedback is submitted                          |
 | **Blind reveal**                               | When both submit, or 14 days after the first submission                                     |
 | **Score visible after**                        | 3 revealed reviews                                                                          |
-| **Subcategories per provider · service cards** | 3 · 3                                                                                       |
+| **Subcategories per provider · service cards** | Unlimited · 3                                                                               |
 | **Low-balance nudge**                          | Below 20 credits                                                                            |
 | **Mistaken-hire reversal window**              | 48 hours, through support                                                                   |
 | **Hires per job**                              | One by default; extra hires need admin approval                                             |
@@ -849,7 +855,7 @@ finalizes types and indexes.
 | **VerificationRequest**                 | id, user_id, kind (3010 / spouse), status, days_total, days_band, id_hash, reviewer_id, decision, reason, submitted_at, decided_at, documents_deleted_at                                                                            | Files live in temporary private storage only |
 | **SpouseLink**                          | reservist_id, spouse_user_id, invite_phone, status, created_at                                                                                                                                                                      | One active link per reservist                |
 | **Category / Subcategory**              | id, name_he, name_en, budget_mandatory, licensed, active                                                                                                                                                                            | Admin-managed                                |
-| **ProviderSubcategory · ProviderSkill** | provider_id, subcategory_id / skill                                                                                                                                                                                                 | Max 3 subcategories, 15 skills               |
+| **ProviderSubcategory · ProviderSkill** | provider_id, subcategory_id / skill                                                                                                                                                                                                 | Unlimited subcategories, max 15 skills       |
 | **ServiceCard**                         | provider_id, title, subcategory_id, description, price_from, unit, mode                                                                                                                                                             | Max 3                                        |
 | **Experience · Education**              | provider_id, title / degree, organization, start, end                                                                                                                                                                               | From CV or manual                            |
 | **Job**                                 | id, poster_id, subcategory_id, title, description, mode, city, budget_type, budget_min, budget_max, open_to_quotes, timeline, start_date, skills, attachments, status, expires_at, extended, application_count, created_by_admin    |                                              |

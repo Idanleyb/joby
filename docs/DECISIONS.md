@@ -4,6 +4,7 @@ Decisions made while building, beyond what the PRD states. Add new entries at th
 
 | Date | Decision | Why |
 |---|---|---|
+| 2026-10-27 | **Founder (PRD v1.3): unlimited subcategories per provider.** Setting `max_subcategories` = 0 means no limit. Skills (15) and service cards (3) keep their limits; CV autofill still suggests up to 3. | Providers often work in several trades. |
 | 2026-10-27 | **Form 3010 is submitted at wizard step 1**, not at the end of the wizard. | Review starts while the provider finishes the profile; faster approval. The profile is still hidden until approved. |
 | 2026-10-27 | **AI reading is optional at runtime**: without `ANTHROPIC_API_KEY` (or if reading fails) the provider types the total days and the reviewer checks the documents. | The product keeps working if the AI is down. |
 | 2026-10-27 | **Claude reads documents through a tool call** with a fixed schema (`tool_choice: auto` + instruction + one retry — Sonnet/Opus 5.5 reject *forced* tool use with a 400); output is normalized and treated as untrusted. DOCX CVs are converted to text (mammoth) since the API does not read .docx. | Predictable structure; resistant to text inside documents. |

@@ -20,7 +20,7 @@ export async function saveCategories(_prev: CatState, form: FormData): Promise<C
   const otherTitle = String(form.get("otherTitle") ?? "").trim().slice(0, 60);
   const values = { subs, skills: skillsRaw, license, otherTitle };
 
-  if (subs.length < 1 || subs.length > 3) return { error: "יש לבחור בין תחום אחד לשלושה.", values };
+  if (subs.length < 1) return { error: "יש לבחור לפחות תחום אחד.", values };
   const { data: chosen } = await supabase.from("subcategories").select("id, licensed, is_other").in("id", subs);
   if (chosen?.some((s) => s.licensed) && !license) return { error: "במקצוע הדורש רישיון יש להזין מספר רישיון.", values };
   if (chosen?.some((s) => s.is_other) && otherTitle.length < 2) return { error: "בחרתם \"אחר\" — כתבו מה אתם עושים.", values };

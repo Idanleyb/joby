@@ -17,14 +17,14 @@ export function CategoriesForm({ cats, initial }: { cats: Cat[]; initial: { subs
   const isOther = selected.some((id) => all.find((s) => s.id === id)?.is_other);
 
   const toggle = (id: number) =>
-    setSelected((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : cur.length >= 3 ? cur : [...cur, id]));
+    setSelected((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
 
   return (
     <form onSubmit={submitWith(action)} className="flex flex-col gap-5" noValidate>
       <Card className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <p className="font-semibold">בחרו עד 3 תחומים</p>
-          <span className="text-sm text-muted">{selected.length}/3</span>
+          <p className="font-semibold">בחרו את כל התחומים שבהם אתם עובדים</p>
+          <span className="text-sm text-muted">נבחרו {selected.length}</span>
         </div>
         {cats.map((c) => {
           const count = c.subs.filter((s) => selected.includes(s.id)).length;
@@ -43,7 +43,6 @@ export function CategoriesForm({ cats, initial }: { cats: Cat[]; initial: { subs
                       className={cx(
                         "cursor-pointer rounded-full border px-3 py-1.5 text-sm",
                         on ? "border-accent bg-accent/15 font-semibold" : "border-border",
-                        !on && selected.length >= 3 && "cursor-not-allowed opacity-50",
                       )}
                     >
                       <input type="checkbox" name="sub" value={s.id} checked={on} onChange={() => toggle(s.id)} className="sr-only" />

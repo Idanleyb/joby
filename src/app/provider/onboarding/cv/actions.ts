@@ -79,7 +79,7 @@ export async function saveCvReview(form: FormData) {
   }
 
   // Suggested subcategories: only when none chosen yet (or replacing).
-  const chosen = form.getAll("sub").map(String).slice(0, 3);
+  const chosen = form.getAll("sub").map(String);
   if (chosen.length) {
     const { count } = await supabase.from("provider_subcategories").select("*", { count: "exact", head: true }).eq("provider_id", userId);
     if (replace || !count) {

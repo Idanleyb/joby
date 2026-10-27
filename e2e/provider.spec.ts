@@ -42,7 +42,7 @@ test("reservist completes the provider wizard with Form 3010 and CV autofill", a
 
   // Step 3: categories prefilled from the CV (invalid AI slug dropped).
   await expectPath(page, "/provider/onboarding/categories");
-  await expect(page.getByText("2/3")).toBeVisible();
+  await expect(page.getByText("נבחרו 2")).toBeVisible();
   await page.getByRole("button", { name: "המשך" }).click();
 
   // Step 4: area.
