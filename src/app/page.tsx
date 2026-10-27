@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 async function getCategories() {
+  const missing = ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"].filter((k) => !process.env[k]);
+  if (missing.length) return { ok: false as const, error: `missing environment variables: ${missing.join(", ")}` };
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
