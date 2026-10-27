@@ -69,8 +69,10 @@ async function toContent(doc: DocInput): Promise<Anthropic.ContentBlockParam> {
 }
 
 /**
- * Ask Claude to fill a JSON schema by forcing a single tool call. The document is
- * untrusted input: we only ever read the structured result, never act on its text.
+ * Ask Claude to fill a JSON schema through a single tool call. Current models
+ * (Sonnet/Opus 5.5) reject *forced* tool use with a 400, so we use tool_choice
+ * "auto" with an explicit instruction, and retry once if Claude answers in text.
+ * The document is untrusted input: we only read the structured result.
  */
 export async function extractWithTool<T>(opts: {
   doc: DocInput;
@@ -81,15 +83,23 @@ export async function extractWithTool<T>(opts: {
 }): Promise<T> {
   const anthropic = getClient();
   if (!anthropic) throw new AiError("AI-NOKEY");
-  const response = await anthropic.messages.create({
-    model: AI_MODEL,
-    max_tokens: opts.maxTokens ?? 2000,
-    system: opts.system,
-    tools: [opts.tool],
-    tool_choice: { type: "tool", name: opts.tool.name },
-    messages: [{ role: "user", content: [await toContent(opts.doc), { type: "text", text: opts.instruction }] }],
-  });
-  const block = response.content.find((b) => b.type === "tool_use");
-  if (!block || block.type !== "tool_use") throw new AiError(`AI-NORESULT-${response.stop_reason}`);
-  return block.input as T;
+  const content: Anthropic.ContentBlockParam[] = [
+    await toContent(opts.doc),
+    { type: "text", text: `${opts.instruction}\nRespond only by calling the ${opts.tool.name} tool exactly once. Do not answer in text.` },
+  ];
+  let stop = "";
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const response = await anthropic.messages.create({
+      model: AI_MODEL,
+      max_tokens: opts.maxTokens ?? 4000,
+      system: opts.system,
+      tools: [opts.tool],
+      tool_choice: { type: "auto" },
+      messages: [{ role: "user", content }],
+    });
+    const block = response.content.find((b) => b.type === "tool_use" && b.name === opts.tool.name);
+    if (block && block.type === "tool_use") return block.input as T;
+    stop = response.stop_reason ?? "none";
+  }
+  throw new AiError(`AI-NORESULT-${stop}`);
 }
