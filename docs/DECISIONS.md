@@ -4,6 +4,12 @@ Decisions made while building, beyond what the PRD states. Add new entries at th
 
 | Date | Decision | Why |
 |---|---|---|
+| 2026-10-27 | **Jobs feed matching is by region, not distance**: same city for 10 km, same region (a city→region table) for 25/50 km, any city when nationwide; remote jobs match providers who work remotely. | No coordinates yet; good enough for the beta. Distance search is a later item. |
+| 2026-10-27 | **The jobs feed and job pages are public**; attachments, saving and applying need sign-in. | Lets posters share a job link; files stay private. |
+| 2026-10-27 | **Saved jobs** in a new table `job_saves` (owner-only). | PRD 5.9 "Saved" tab. |
+| 2026-10-27 | **An application counts as opened only on its detail page** (recorded after the page loads), not in the list. | PRD 5.10: stops the 30-day credit-back timer only when the poster really looked. |
+| 2026-10-27 | **Confirmations are shown inside the page**, never as browser pop-ups (hire, close, extend, contact, withdraw, apply). | Works on every phone; clearer. |
+| 2026-10-27 | **Budget ranges are shown left-to-right** inside Hebrew text. | Otherwise "₪1,500–₪2,500" appears reversed. |
 | 2026-10-27 | **Founder (PRD v1.3): unlimited subcategories per provider.** Setting `max_subcategories` = 0 means no limit. Skills (15) and service cards (3) keep their limits; CV autofill still suggests up to 3. | Providers often work in several trades. |
 | 2026-10-27 | **Form 3010 is submitted at wizard step 1**, not at the end of the wizard. | Review starts while the provider finishes the profile; faster approval. The profile is still hidden until approved. |
 | 2026-10-27 | **AI reading is optional at runtime**: without `ANTHROPIC_API_KEY` (or if reading fails) the provider types the total days and the reviewer checks the documents. | The product keeps working if the AI is down. |

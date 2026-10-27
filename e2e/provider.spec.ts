@@ -97,7 +97,7 @@ test("admin approves the reservist; documents are deleted; profile goes public w
   await expect(page.getByText("אימותים ממתינים")).toBeVisible();
   await page.goto("/admin/verifications");
   await expect(page.getByRole("cell", { name: "Yossi Mizrahi" })).toBeVisible();
-  await page.getByRole("link", { name: "בדיקה" }).click();
+  await page.getByRole("link", { name: "בדיקה", exact: true }).click();
   await expect(page.getByText("סה״כ נספרו")).toBeVisible();
   await expect(page.getByLabel("סך הימים (אחרי בדיקה)")).toHaveValue("116");
   await page.getByRole("button", { name: "שמירת ההחלטה" }).click();
@@ -137,7 +137,7 @@ test("rejection with a reason, then upload again", async ({ page }) => {
   await page.context().clearCookies();
   await signInWithPhone(page, "050-000-0006");
   await page.goto("/admin/verifications");
-  await page.getByRole("link", { name: "בדיקה" }).click();
+  await page.getByRole("link", { name: "בדיקה", exact: true }).click();
   await expect(page.getByText("הערת המשתמש: יש לי עוד טפסים, אעלה")).toBeVisible();
   await page.getByText("דחייה", { exact: true }).click();
   await page.getByLabel("סיבת הדחייה").selectOption("under_30_days");
@@ -184,7 +184,7 @@ test("spouse invite: link, sign-up, proof of marriage, admin approval", async ({
   await page.context().clearCookies();
   await signInWithPhone(page, "050-000-0006");
   await page.goto("/admin/verifications");
-  await page.getByRole("link", { name: "בדיקה" }).click();
+  await page.getByRole("link", { name: "בדיקה", exact: true }).click();
   await expect(page.getByText("מילואימניק מאומת")).toBeVisible();
   await page.getByRole("button", { name: "שמירת ההחלטה" }).click();
   await expectPath(page, "/admin/verifications");

@@ -755,6 +755,40 @@ export type Database = {
           },
         ];
       };
+      job_saves: {
+        Row: {
+          created_at: string;
+          job_id: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          job_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          job_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "job_saves_job_id_fkey";
+            columns: ["job_id"];
+            isOneToOne: false;
+            referencedRelation: "jobs";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "job_saves_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       jobs: {
         Row: {
           application_count: number;

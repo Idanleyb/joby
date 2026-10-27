@@ -17,12 +17,13 @@ export async function SiteHeader() {
         <Link href="/" className="text-xl font-extrabold tracking-tight">
           Joby<span className="text-accent">.</span>
         </Link>
-        <Link
-          href={signedIn ? "/account" : "/login"}
-          className="rounded-lg px-3 py-2 text-sm font-semibold hover:bg-background"
-        >
-          {signedIn ? "החשבון שלי" : "כניסה"}
-        </Link>
+        <nav className="flex items-center gap-1 text-sm font-semibold">
+          <Link href="/jobs" className="rounded-lg px-3 py-2 hover:bg-background">עבודות</Link>
+          <Link href="/jobs/new" className="rounded-lg px-3 py-2 hover:bg-background">פרסום</Link>
+          <Link href={signedIn ? "/account" : "/login"} className="rounded-lg px-3 py-2 hover:bg-background">
+            {signedIn ? "החשבון שלי" : "כניסה"}
+          </Link>
+        </nav>
       </div>
     </header>
   );

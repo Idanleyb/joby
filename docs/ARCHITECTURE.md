@@ -35,6 +35,9 @@ pg_cron (every 10 min) ──▶ private.run_timers()
 | `0600_timers` | `private.run_timers()` + pg_cron schedule | §7 |
 | `0700_security` | RLS on every table, column-level update grants, function privileges | §11 |
 | `0800_storage` | buckets and file policies (avatars, verification docs, CVs, attachments) | 5.3, 5.4 |
+| `0900_spouse_accept_draft` | spouse invite accepted after a draft provider profile; invite lookup; deleting unsubmitted uploads | 5.6 |
+| `1000_unlimited_subcategories` | `max_subcategories` = 0 means unlimited | 5.2 (v1.3) |
+| `1100_job_saves` | saved jobs (owner-only) | 5.9 |
 
 ## Key RPC functions
 
@@ -89,7 +92,14 @@ Uploads go to `<bucket>/<user_id>/<file>`. Verification documents are private to
 | `/providers/[id]` | Public provider profile (approved only, via RLS) |
 | `/invite/[token]` | Spouse invite landing (PRD 5.6) |
 | `/account` | Roles, wizard progress, credits, spouse invite |
+| `/jobs` | Job feed: Matches / Newest / Saved, filters (category, remote, budget stated), sort (PRD 5.9) |
+| `/jobs/new` | Post a job: budget rule on screen, attachments, preview, publish (PRD 5.8) |
+| `/jobs/[id]` | Job page with poster trust signals and the apply form (10 credits, balance after) |
+| `/poster/jobs`, `/poster/jobs/[id]` | Poster's jobs (status, new applicants, days left, extend once, close) and applicant list |
+| `/poster/jobs/[id]/applications/[appId]` | Application detail: marks opened, shortlist, contact (phone + WhatsApp), decline, hire, extra-hire request (PRD 5.10–5.12) |
+| `/provider/applications`, `/provider/credits` | Provider's applications (withdraw, poster contact after Contact/hire) and credit ledger |
 | `/admin`, `/admin/verifications[/id]` | Admin dashboard and verification queue (PRD 5.18) |
+| `/admin/jobs`, `/admin/extra-hires` | Held jobs (release / remove) and extra-hire requests (approve / decline) |
 
 ## AI document reading (src/lib/ai)
 
@@ -97,4 +107,4 @@ Uploads go to `<bucket>/<user_id>/<file>`. Verification documents are private to
 
 ## What is not built yet
 
-Jobs, applications, direct requests and feedback screens; the notification worker (WhatsApp/email); payments (P1). See the build plan in the project chat.
+Direct requests (Flow B) and feedback screens; the notification worker (WhatsApp/email); reports UI; cleanup of abandoned uploads; payments (P1).

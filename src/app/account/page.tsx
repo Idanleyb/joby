@@ -63,7 +63,15 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               סטטוס: <span className="font-semibold">{VERIFICATION_LABEL[provider.verification_status]}</span>
               {provider.provider_type === "spouse" ? " · בן/בת זוג של מילואימניק" : null}
             </p>
-            {approved ? <p className="text-sm">יתרת קרדיטים: <span className="font-bold">{wallet?.balance ?? 0}</span></p> : null}
+            {approved ? (
+              <>
+                <p className="text-sm">יתרת קרדיטים: <span className="font-bold">{wallet?.balance ?? 0}</span> · <Link href="/provider/credits" className="underline">פירוט</Link></p>
+                <div className="grid grid-cols-2 gap-2">
+                  <Link href="/jobs" className={`${linkCls} bg-brand text-brand-contrast`}>מציאת עבודות</Link>
+                  <Link href="/provider/applications" className={`${linkCls} border border-border`}>המועמדויות שלי</Link>
+                </div>
+              </>
+            ) : null}
             {provider.onboarding_step < 8 ? (
               <Link href="/provider/onboarding" className={`${linkCls} bg-brand text-brand-contrast`}>המשך לבנות את הפרופיל</Link>
             ) : (
@@ -105,7 +113,10 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         {poster ? (
           <>
             <p className="text-sm"><bdi>{poster.display_name}</bdi> · {POSTER_TYPE_LABEL[poster.poster_type]} · {poster.city}</p>
-            <p className="text-sm text-muted">פרסום עבודות יגיע בשלב הבנייה הבא.</p>
+            <div className="grid grid-cols-2 gap-2">
+              <Link href="/jobs/new" className={`${linkCls} bg-brand text-brand-contrast`}>פרסום עבודה</Link>
+              <Link href="/poster/jobs" className={`${linkCls} border border-border`}>העבודות שלי</Link>
+            </div>
           </>
         ) : (
           <Link href="/onboarding/poster" className={`${linkCls} border border-border bg-surface hover:bg-background`}>אני רוצה לפרסם עבודות</Link>

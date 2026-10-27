@@ -11,6 +11,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       <nav className="flex flex-wrap items-center gap-4 border-b border-border pb-3 text-sm font-semibold">
         <Link href="/admin">לוח בקרה</Link>
         <Link href="/admin/verifications">אימותים</Link>
+        <Link href="/admin/jobs">עבודות בבדיקה</Link>
+        <Link href="/admin/extra-hires">גיוס נוסף</Link>
         <span className="ms-auto text-xs font-normal text-muted">{role === "admin" ? "Admin" : "Reviewer"}</span>
       </nav>
       {children}

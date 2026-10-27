@@ -8,7 +8,7 @@ export function Card({ children, className }: { children: ReactNode; className?:
   return <div className={cx("rounded-2xl border border-border bg-surface p-5 sm:p-6", className)}>{children}</div>;
 }
 
-export function PageShell({ title, subtitle, children }: { title: string; subtitle?: ReactNode; children: ReactNode }) {
+export function PageShell({ title, subtitle, children }: { title: ReactNode; subtitle?: ReactNode; children: ReactNode }) {
   return (
     <main className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-8 sm:py-12">
       <header className="flex flex-col gap-2">

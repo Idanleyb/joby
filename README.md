@@ -45,7 +45,7 @@ cp .env.example .env.local        # paste the URL and keys printed by `supabase 
 npm run dev                       # http://localhost:3000
 ```
 
-Local phone sign-in sends no SMS: test numbers `972500000001`–`972500000003` accept code `123456` (see `supabase/config.toml`). Studio (database UI) runs at http://127.0.0.1:54323.
+Local phone sign-in sends no SMS: test numbers `972500000001`–`972500000012` accept code `123456` (see `supabase/config.toml`). Studio (database UI) runs at http://127.0.0.1:54323.
 
 ### Changing the database
 
