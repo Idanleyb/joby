@@ -20,8 +20,10 @@ export function aiErrorCode(e: unknown): string {
   if (e instanceof Anthropic.APIConnectionTimeoutError) return "AI-TIMEOUT";
   if (e instanceof Anthropic.APIConnectionError) return "AI-NET";
   if (e instanceof Anthropic.APIError) {
-    const type = (e.error as { error?: { type?: string } } | undefined)?.error?.type;
-    return `AI-${e.status ?? "ERR"}${type ? `-${type}` : ""}`;
+    const body = (e.error as { error?: { type?: string; message?: string } } | undefined)?.error;
+    const code = `AI-${e.status ?? "ERR"}${body?.type ? `-${body.type}` : ""}`;
+    // For request errors the API's own message says why (e.g. "credit balance is too low").
+    return e.status === 400 && body?.message ? `${code}: ${body.message.slice(0, 140)}` : code;
   }
   const msg = e instanceof Error ? e.message : String(e);
   if (msg.includes("SUPABASE_SECRET_KEY")) return "AI-NOSVC";

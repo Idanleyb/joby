@@ -8,6 +8,9 @@ describe("aiErrorCode", () => {
     expect(aiErrorCode(new AiError("AI-NOKEY"))).toBe("AI-NOKEY");
     expect(aiErrorCode(Anthropic.APIError.generate(401, { type: "error", error: { type: "authentication_error", message: "x" } }, "x", new Headers()))).toBe("AI-401-authentication_error");
     expect(aiErrorCode(Anthropic.APIError.generate(404, { type: "error", error: { type: "not_found_error", message: "model" } }, "x", new Headers()))).toBe("AI-404-not_found_error");
+    expect(aiErrorCode(Anthropic.APIError.generate(400, { type: "error", error: { type: "invalid_request_error", message: "Your credit balance is too low to access the Anthropic API." } }, "x", new Headers()))).toBe(
+      "AI-400-invalid_request_error: Your credit balance is too low to access the Anthropic API.",
+    );
     expect(aiErrorCode(new Error("SUPABASE_SECRET_KEY is not set"))).toBe("AI-NOSVC");
     expect(aiErrorCode(new Error("boom"))).toBe("AI-ERR");
   });
