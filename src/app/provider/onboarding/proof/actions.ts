@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
-import { aiAvailable, type DocInput } from "@/lib/ai/client";
+import { aiAvailable, aiErrorCode, AiError, type DocInput } from "@/lib/ai/client";
 import { isValidIsraeliId, readForm3010 } from "@/lib/ai/form3010";
 import { countReserveDays, type Period } from "@/lib/reserve-days";
 import { hashIdNumber, sign, verify } from "@/lib/signing";
@@ -28,7 +28,7 @@ function checkPaths(userId: string, paths: string[]) {
 export type FileReading = { name: string; ok: boolean; kind: string; fullName: string | null; periods: Period[]; reportedDays: number | null; note: string };
 export type Analysis =
   | { mode: "ai"; token: string; days: number; files: FileReading[]; warnings: string[]; idFound: boolean; multipleIds: boolean }
-  | { mode: "manual"; reason: "ai_unavailable" | "ai_failed" };
+  | { mode: "manual"; reason: "ai_unavailable" | "ai_failed"; code: string };
 
 type Signed = { userId: string; paths: string[]; days: number; idHash: string | null; files: FileReading[]; warnings: string[] };
 
@@ -36,14 +36,14 @@ type Signed = { userId: string; paths: string[]; days: number; idHash: string | 
 export async function analyzeForms(paths: string[]): Promise<Analysis> {
   const userId = await currentUserId();
   checkPaths(userId, paths);
-  if (!aiAvailable()) return { mode: "manual", reason: "ai_unavailable" };
+  if (!aiAvailable()) return { mode: "manual", reason: "ai_unavailable", code: "AI-NOKEY" };
 
   const admin = createServiceClient();
   try {
     const docs: DocInput[] = await Promise.all(
       paths.map(async (path) => {
         const { data, error } = await admin.storage.from(BUCKET).download(path);
-        if (error || !data) throw new Error("download_failed");
+        if (error || !data) throw new AiError("AI-DL", error?.message);
         return { bytes: Buffer.from(await data.arrayBuffer()), mediaType: data.type || "application/pdf", name: path.split("/").pop()! };
       }),
     );
@@ -72,8 +72,9 @@ export async function analyzeForms(paths: string[]): Promise<Analysis> {
     const token = sign<Signed>({ userId, paths, days, idHash, files, warnings });
     return { mode: "ai", token, days, files, warnings, idFound: ids.length === 1, multipleIds: ids.length > 1 };
   } catch (e) {
-    console.error("analyzeForms failed", e);
-    return { mode: "manual", reason: "ai_failed" };
+    const code = aiErrorCode(e);
+    console.error("analyzeForms failed", code, e);
+    return { mode: "manual", reason: "ai_failed", code };
   }
 }
 

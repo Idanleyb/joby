@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
-import { aiAvailable } from "@/lib/ai/client";
+import { aiAvailable, aiErrorCode, AiError } from "@/lib/ai/client";
 import { readCv, type CvReading } from "@/lib/ai/cv";
 import { advanceFrom } from "../actions";
 
@@ -15,26 +15,27 @@ async function ctx() {
   return { supabase, userId: user.id };
 }
 
-export type CvRead = { ok: true; reading: CvReading; subNames: Record<string, string> } | { ok: false; reason: "ai_unavailable" | "ai_failed" };
+export type CvRead = { ok: true; reading: CvReading; subNames: Record<string, string> } | { ok: false; reason: "ai_unavailable" | "ai_failed"; code: string };
 
 /** Reads an uploaded CV and returns a profile suggestion. Nothing is saved yet. */
 export async function readUploadedCv(path: string): Promise<CvRead> {
   const { supabase, userId } = await ctx();
-  if (!path.startsWith(`${userId}/`) || path.includes("..")) return { ok: false, reason: "ai_failed" };
+  if (!path.startsWith(`${userId}/`) || path.includes("..")) return { ok: false, reason: "ai_failed", code: "AI-PATH" };
   await supabase.from("provider_profiles").update({ cv_path: path }).eq("user_id", userId);
-  if (!aiAvailable()) return { ok: false, reason: "ai_unavailable" };
+  if (!aiAvailable()) return { ok: false, reason: "ai_unavailable", code: "AI-NOKEY" };
   try {
     const { data: subs } = await supabase.from("subcategories").select("slug, name_he").eq("active", true);
     const { data: file, error } = await createServiceClient().storage.from("cvs").download(path);
-    if (error || !file) throw new Error("download_failed");
+    if (error || !file) throw new AiError("AI-DL", error?.message);
     const reading = await readCv(
       { bytes: Buffer.from(await file.arrayBuffer()), mediaType: file.type, name: path.split("/").pop()! },
       (subs ?? []).map((s) => s.slug),
     );
     return { ok: true, reading, subNames: Object.fromEntries((subs ?? []).map((s) => [s.slug, s.name_he])) };
   } catch (e) {
-    console.error("readUploadedCv failed", e);
-    return { ok: false, reason: "ai_failed" };
+    const code = aiErrorCode(e);
+    console.error("readUploadedCv failed", code, e);
+    return { ok: false, reason: "ai_failed", code };
   }
 }
 

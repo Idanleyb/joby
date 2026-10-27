@@ -73,6 +73,7 @@ export function ReservistProofForm({ userId }: { userId: string }) {
           {analysis.reason === "ai_failed" ? "לא הצלחנו לקרוא את הטפסים אוטומטית." : "קריאה אוטומטית אינה זמינה כרגע."} הזינו את מספר
           הימים הכולל מאז 7 באוקטובר 2023, והצוות יבדוק מול המסמכים.
         </p>
+        <p dir="ltr" className="-mt-3 text-left text-xs text-muted">{analysis.code}</p>
         <Field label="סך ימי מילואים מאז 7.10.2023" htmlFor="days">
           <Input id="days" inputMode="numeric" dir="ltr" className="text-left" value={manualDays} onChange={(e) => setManualDays(e.target.value.replace(/\D/g, ""))} />
         </Field>

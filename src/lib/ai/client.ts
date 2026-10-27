@@ -7,6 +7,28 @@ export const AI_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-5-5";
 
 export type DocInput = { bytes: Buffer; mediaType: string; name: string };
 
+/** A failure with a short code that is safe to show on screen and helps support diagnose. */
+export class AiError extends Error {
+  constructor(public code: string, message?: string) {
+    super(message ?? code);
+  }
+}
+
+/** Maps any failure while reading a document to a short diagnostic code. */
+export function aiErrorCode(e: unknown): string {
+  if (e instanceof AiError) return e.code;
+  if (e instanceof Anthropic.APIConnectionTimeoutError) return "AI-TIMEOUT";
+  if (e instanceof Anthropic.APIConnectionError) return "AI-NET";
+  if (e instanceof Anthropic.APIError) {
+    const type = (e.error as { error?: { type?: string } } | undefined)?.error?.type;
+    return `AI-${e.status ?? "ERR"}${type ? `-${type}` : ""}`;
+  }
+  const msg = e instanceof Error ? e.message : String(e);
+  if (msg.includes("SUPABASE_SECRET_KEY")) return "AI-NOSVC";
+  if (msg.startsWith("unsupported_media_type")) return "AI-TYPE";
+  return "AI-ERR";
+}
+
 /**
  * Test hook: JOBY_AI_FAKE=1 returns canned results (e2e tests without an API key).
  * Refused on Vercel production so it can never be switched on for real users.
@@ -56,7 +78,7 @@ export async function extractWithTool<T>(opts: {
   maxTokens?: number;
 }): Promise<T> {
   const anthropic = getClient();
-  if (!anthropic) throw new Error("ai_unavailable");
+  if (!anthropic) throw new AiError("AI-NOKEY");
   const response = await anthropic.messages.create({
     model: AI_MODEL,
     max_tokens: opts.maxTokens ?? 2000,
@@ -66,6 +88,6 @@ export async function extractWithTool<T>(opts: {
     messages: [{ role: "user", content: [await toContent(opts.doc), { type: "text", text: opts.instruction }] }],
   });
   const block = response.content.find((b) => b.type === "tool_use");
-  if (!block || block.type !== "tool_use") throw new Error("ai_no_result");
+  if (!block || block.type !== "tool_use") throw new AiError(`AI-NORESULT-${response.stop_reason}`);
   return block.input as T;
 }

@@ -56,3 +56,21 @@ describe("countReserveDays", () => {
     expect(countReserveDays([{ from: "2023-10-07", to: "2023-11-05" }], today).days).toBe(30);
   });
 });
+
+describe("real Form 3010 layout (multi-row table)", () => {
+  it("sums the table rows; adjacent rows merge without changing the total", () => {
+    // Rows from a cumulative 3010 for Apr–Jul 2026 (dates only).
+    const r = countReserveDays(
+      [
+        { from: "2026-07-27", to: "2026-07-29" },
+        { from: "2026-07-20", to: "2026-07-22" },
+        { from: "2026-07-12", to: "2026-07-14" },
+        { from: "2026-06-21", to: "2026-07-09" },
+        { from: "2026-04-09", to: "2026-06-16" },
+        { from: "2026-04-05", to: "2026-04-08" },
+      ],
+      today,
+    );
+    expect(r.days).toBe(3 + 3 + 3 + 19 + 69 + 4);
+  });
+});

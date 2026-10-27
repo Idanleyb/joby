@@ -35,6 +35,7 @@ export function CvStep({ userId, hasCv, hasProfileData }: { userId: string; hasC
         <p role="status" className="rounded-xl bg-amber-50 px-4 py-3 text-sm dark:bg-amber-950/30">
           {result.reason === "ai_failed" ? "לא הצלחנו לקרוא את הקובץ אוטומטית." : "מילוי אוטומטי אינו זמין כרגע."} הקובץ נשמר
           בפרופיל — נמשיך במילוי ידני.
+          <span dir="ltr" className="mt-1 block text-left text-xs text-muted">{result.code}</span>
         </p>
       ) : null}
       <div className="flex flex-col gap-2">
