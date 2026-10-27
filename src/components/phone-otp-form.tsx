@@ -22,6 +22,7 @@ export function PhoneOtpForm({ mode, next = "/onboarding" }: { mode: "signin" | 
   const [phone, setPhone] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const codeInput = useRef<HTMLInputElement>(null);
@@ -36,6 +37,12 @@ export function PhoneOtpForm({ mode, next = "/onboarding" }: { mode: "signin" | 
     if (stage === "code") codeInput.current?.focus();
   }, [stage]);
 
+  // The technical code is shown in small print so support can diagnose (e.g. Twilio setup).
+  function showError(err: { code?: string; message?: string; status?: number }) {
+    setError(authErrorMessage(err));
+    setErrorCode([err.code, err.status, err.message].filter(Boolean).join(" · ").slice(0, 200));
+  }
+
   async function sendCode(target: string) {
     setBusy(true);
     setError(null);
@@ -45,7 +52,7 @@ export function PhoneOtpForm({ mode, next = "/onboarding" }: { mode: "signin" | 
         : await supabase.auth.updateUser({ phone: target });
     setBusy(false);
     if (error) {
-      setError(authErrorMessage(error));
+      showError(error);
       return false;
     }
     setSecondsLeft(RESEND_SECONDS);
@@ -57,6 +64,7 @@ export function PhoneOtpForm({ mode, next = "/onboarding" }: { mode: "signin" | 
     const normalized = normalizeIlPhone(rawPhone);
     if (!normalized) {
       setError("יש להזין מספר נייד ישראלי, למשל 050-123-4567.");
+      setErrorCode(null);
       return;
     }
     setPhone(normalized);
@@ -71,6 +79,7 @@ export function PhoneOtpForm({ mode, next = "/onboarding" }: { mode: "signin" | 
     if (!phone) return;
     if (!/^\d{6}$/.test(code)) {
       setError("הקוד כולל 6 ספרות.");
+      setErrorCode(null);
       return;
     }
     setBusy(true);
@@ -82,7 +91,7 @@ export function PhoneOtpForm({ mode, next = "/onboarding" }: { mode: "signin" | 
     });
     if (error) {
       setBusy(false);
-      setError(authErrorMessage(error));
+      showError(error);
       return;
     }
     router.replace(next);
@@ -108,6 +117,7 @@ export function PhoneOtpForm({ mode, next = "/onboarding" }: { mode: "signin" | 
           />
         </Field>
         <FormError message={error} />
+        {error && errorCode ? <p dir="ltr" className="-mt-2 text-left text-xs text-muted">{errorCode}</p> : null}
         <Button type="submit" disabled={busy}>
           {busy ? "שולחים…" : "שלחו לי קוד"}
         </Button>
@@ -139,6 +149,7 @@ export function PhoneOtpForm({ mode, next = "/onboarding" }: { mode: "signin" | 
         />
       </Field>
       <FormError message={error} />
+      {error && errorCode ? <p dir="ltr" className="-mt-2 text-left text-xs text-muted">{errorCode}</p> : null}
       <Button type="submit" disabled={busy || code.length !== 6}>
         {busy ? "מאמתים…" : "אישור"}
       </Button>
