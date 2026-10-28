@@ -37,7 +37,7 @@ export default async function CreditsPage() {
               <span className="font-semibold">{TX[t.tx_type] ?? t.tx_type}</span>
               <span className="text-xs text-muted">{new Date(t.created_at).toLocaleDateString("he-IL")}{t.reason ? ` · ${REASON[t.reason] ?? t.reason}` : ""}</span>
             </div>
-            <span className={cx("font-bold", t.amount > 0 ? "text-emerald-700 dark:text-emerald-400" : "")} dir="ltr">{t.amount > 0 ? `+${t.amount}` : t.amount}</span>
+            <span className={cx("font-bold", t.amount > 0 ? "text-foreground" : "")} dir="ltr">{t.amount > 0 ? `+${t.amount}` : t.amount}</span>
           </li>
         ))}
       </ul>

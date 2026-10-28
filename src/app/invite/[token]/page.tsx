@@ -46,7 +46,7 @@ export default async function InvitePage({ params, searchParams }: Props) {
         ) : (
           <form action={accept} className="flex flex-col gap-3">
             <p className="text-sm text-muted">אחרי האישור תתבקש/י להעלות מסמך שמאשר את הזוגיות (תעודת נישואין, ספח ת״ז, או לידועים בציבור — תצהיר).</p>
-            {error ? <p role="alert" className="text-sm font-medium text-red-600">{appErrorMessage({ message: error })}</p> : null}
+            {error ? <p role="alert" className="text-sm font-medium text-danger">{appErrorMessage({ message: error })}</p> : null}
             <Button type="submit">אישור ההזמנה</Button>
           </form>
         )}

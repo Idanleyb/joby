@@ -10,8 +10,8 @@ import { PageShell, cx } from "@/components/ui";
 export const metadata: Metadata = { title: "פניות שנשלחו · Joby" };
 
 const STATUS_CLS: Record<string, string> = {
-  approved: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300",
-  pending: "bg-accent/20 text-accent-strong",
+  approved: "bg-brand text-brand-contrast",
+  pending: "bg-action text-foreground",
 };
 
 export default async function SentRequestsPage({ searchParams }: { searchParams: Promise<{ sent?: string }> }) {
@@ -31,7 +31,7 @@ export default async function SentRequestsPage({ searchParams }: { searchParams:
 
   return (
     <PageShell title="פניות ישירות שנשלחו" subtitle={<><Link href="/providers" className="underline underline-offset-4">לחיפוש נותני שירות</Link> · <Link href="/poster/jobs" className="underline underline-offset-4">העבודות שלי</Link></>}>
-      {sent ? <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm dark:bg-emerald-950/30">הפנייה נשלחה ✓ נעדכן אותך כשתגיע תשובה (עד 7 ימים).</p> : null}
+      {sent ? <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">הפנייה נשלחה ✓ נעדכן אותך כשתגיע תשובה (עד 7 ימים).</p> : null}
       {!requests?.length ? <p className="rounded-2xl bg-background p-6 text-center text-muted">עוד לא שלחת פניות. אפשר לפנות לנותן שירות מהפרופיל שלו.</p> : null}
       <ul className="flex flex-col gap-3">
         {requests?.map((r) => {

@@ -38,13 +38,13 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
     <PageShell title={<bdi>{p?.display_name ?? ""}</bdi>} subtitle={<>על העבודה: <Link href={`/poster/jobs/${job.id}`} className="underline underline-offset-4">{job.title}</Link></>}>
       <MarkViewed jobId={job.id} appId={a.id} />
       {a.status === "hired" ? (
-        <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm dark:bg-emerald-950/30">
+        <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">
           בחרת בנותן/ת השירות הזה/ו ✓ שאר המועמדים קיבלו עדכון. בעוד 3 ימים נבקש משניכם משוב קצר.
         </p>
       ) : null}
       <Card className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          <span className="rounded-lg bg-emerald-100 px-2 py-0.5 font-semibold text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+          <span className="rounded-lg bg-brand px-2 py-0.5 font-semibold text-brand-contrast">
             ✓ {p?.provider_type === "spouse" ? "בן/בת זוג של מילואימניק מאומת" : "מילואימניק מאומת"}
           </span>
           <span className="text-muted">{APP_STATUS_LABEL[a.status] === "נבחרת! 🎉" ? "נבחר/ה" : APP_STATUS_LABEL[a.status]}</span>

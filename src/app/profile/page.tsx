@@ -31,7 +31,7 @@ export default async function MyProfilePage() {
           <h1 className="text-2xl font-extrabold">הפרופיל שלי כמפרסם/ת</h1>
           <Link href="/profile/edit" className={chip}>עריכה</Link>
         </div>
-        {!p.about ? <p className="rounded-xl bg-accent/10 p-3 text-sm">טיפ: הוסיפו כמה מילים עליכם — נותני שירות מגישים יותר למפרסמים שהם מכירים. <Link href="/profile/edit" className="underline">להוספה</Link></p> : null}
+        {!p.about ? <p className="rounded-xl bg-info p-3 text-sm">טיפ: הוסיפו כמה מילים עליכם — נותני שירות מגישים יותר למפרסמים שהם מכירים. <Link href="/profile/edit" className="underline">להוספה</Link></p> : null}
         <Card><PosterProfile p={p} /></Card>
       </main>
     );
@@ -53,7 +53,7 @@ export default async function MyProfilePage() {
           <span className="text-xl font-extrabold">{value}%</span>
         </div>
         <div className="h-2.5 overflow-hidden rounded-full bg-background" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100} aria-label="חוזק הפרופיל">
-          <div className="h-full rounded-full bg-accent" style={{ width: `${value}%` }} />
+          <div className="h-full rounded-full bg-brand" style={{ width: `${value}%` }} />
         </div>
         {tips.length ? (
           <ul className="flex flex-col gap-1 text-sm">

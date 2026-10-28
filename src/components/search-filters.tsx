@@ -67,7 +67,7 @@ export function ParamChip({ name, value = "1", label }: { name: string; value?: 
   return (
     <button type="button" aria-pressed={on}
       onClick={() => { const n = new URLSearchParams(sp.toString()); if (on) n.delete(name); else n.set(name, value); router.replace(`${path}${n.size ? `?${n}` : ""}`, { scroll: false }); }}
-      className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${on ? "border-accent bg-accent/15" : "border-border bg-surface"}`}>
+      className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${on ? "border-foreground bg-action" : "border-border bg-surface"}`}>
       {label}
     </button>
   );

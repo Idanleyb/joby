@@ -21,10 +21,10 @@ const TABS = {
 type Tab = keyof typeof TABS | "requests";
 
 const STATUS_CLS: Record<string, string> = {
-  viewed: "bg-sky-100 text-sky-800 dark:bg-sky-950/40 dark:text-sky-300",
-  shortlisted: "bg-accent/20 text-accent-strong",
-  contacted: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300",
-  hired: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300",
+  viewed: "bg-info text-foreground",
+  shortlisted: "bg-action text-foreground",
+  contacted: "bg-brand text-brand-contrast",
+  hired: "bg-brand text-brand-contrast",
 };
 
 export default async function ProposalsPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
@@ -75,7 +75,7 @@ export default async function ProposalsPage({ searchParams }: { searchParams: Pr
         ))}
         <Link href="/proposals?tab=requests" aria-current={tab === "requests" ? "page" : undefined}
           className={cx("relative flex-1 rounded-lg px-3 py-2 text-center", tab === "requests" && "bg-surface shadow-sm")}>
-          פניות{pendingRequests ? <span className="ms-1 rounded-full bg-red-600 px-1.5 text-[11px] text-white">{pendingRequests}</span> : null}
+          פניות{pendingRequests ? <span className="ms-1 rounded-full bg-danger px-1.5 text-[11px] text-white">{pendingRequests}</span> : null}
         </Link>
       </nav>
       {tab === "requests" ? (
@@ -87,7 +87,7 @@ export default async function ProposalsPage({ searchParams }: { searchParams: Pr
               const live = r.status === "pending" && new Date(r.expires_at) > new Date();
               const c = requestContacts.get(r.id);
               return (
-                <li key={r.id} className={cx("flex flex-col gap-3 rounded-2xl border bg-surface p-4", live ? "border-accent" : "border-border")}>
+                <li key={r.id} className={cx("flex flex-col gap-3 rounded-2xl border bg-surface p-4", live ? "border-foreground" : "border-border")}>
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="font-bold leading-snug">{r.title}</h3>
                     <span className="shrink-0 text-xs font-semibold text-muted">{live ? `עוד ${daysLeft(r.expires_at)} ימים` : REQUEST_STATUS[r.status === "pending" ? "expired" : r.status]}</span>

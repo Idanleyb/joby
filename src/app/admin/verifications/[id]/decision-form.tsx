@@ -28,7 +28,7 @@ export function DecisionForm({ id, kind, days }: { id: string; kind: string; day
       <input type="hidden" name="id" value={id} />
       <fieldset className="grid grid-cols-3 gap-2 text-sm">
         {[["approved", "אישור"], ["more_info", "בקשת מידע"], ["rejected", "דחייה"]].map(([v, l]) => (
-          <label key={v} className="flex cursor-pointer items-center justify-center gap-1 rounded-xl border border-border p-3 font-semibold has-[:checked]:border-accent has-[:checked]:bg-accent/15">
+          <label key={v} className="flex cursor-pointer items-center justify-center gap-1 rounded-xl border border-border p-3 font-semibold has-[:checked]:border-foreground has-[:checked]:bg-action">
             <input type="radio" name="decision" value={v} checked={decision === v} onChange={() => setDecision(v)} className="sr-only" />
             {l}
           </label>

@@ -47,7 +47,7 @@ export function ServicesForm({ cards, subs, defaultMode }: { cards: CardRow[]; s
             </Field>
           </div>
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" name="quote" className="size-5 accent-[var(--accent-strong)]" /> הצעת מחיר לפי בקשה (בלי מחיר)
+            <input type="checkbox" name="quote" className="size-5 accent-[var(--brand)]" /> הצעת מחיר לפי בקשה (בלי מחיר)
           </label>
           <Field label="איפה" htmlFor="mode">
             <select id="mode" name="mode" defaultValue={defaultMode} className="min-h-12 rounded-xl border border-border bg-surface px-3">

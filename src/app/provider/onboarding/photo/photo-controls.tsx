@@ -34,7 +34,7 @@ export function PhotoUpload({ userId, hasPhoto }: { userId: string; hasPhoto: bo
         {pending ? "מעלים…" : hasPhoto ? "החלפת תמונה" : "העלאת תמונת פרופיל"}
       </Button>
       <input ref={input} type="file" accept={TYPES.join(",")} className="sr-only" aria-label="תמונת פרופיל" onChange={(e) => onPick(e.target.files?.[0])} />
-      {error ? <p role="alert" className="text-sm text-red-600">{error}</p> : null}
+      {error ? <p role="alert" className="text-sm text-danger">{error}</p> : null}
     </div>
   );
 }
@@ -43,7 +43,7 @@ export function DaysBandToggle({ checked }: { checked: boolean }) {
   const [pending, start] = useTransition();
   return (
     <label className="flex items-center gap-2 text-sm">
-      <input type="checkbox" defaultChecked={checked} disabled={pending} onChange={(e) => start(() => setShowDaysBand(e.target.checked))} className="size-5 accent-[var(--accent-strong)]" />
+      <input type="checkbox" defaultChecked={checked} disabled={pending} onChange={(e) => start(() => setShowDaysBand(e.target.checked))} className="size-5 accent-[var(--brand)]" />
       להציג בפרופיל את טווח ימי המילואים (למשל ״60+ ימי מילואים״)
     </label>
   );

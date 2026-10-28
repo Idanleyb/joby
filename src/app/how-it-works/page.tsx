@@ -44,7 +44,7 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
   return (
     <section id={id} className="flex scroll-mt-20 flex-col gap-4 rounded-2xl border border-border bg-surface p-5 sm:p-6">
       <header className="flex flex-col gap-1">
-        <span className="text-xs font-bold tracking-wide text-accent-strong">{eyebrow}</span>
+        <span className="text-xs font-bold tracking-wide text-foreground">{eyebrow}</span>
         <h2 className="text-xl font-extrabold sm:text-2xl">{title}</h2>
       </header>
       {children}
@@ -59,7 +59,7 @@ export default async function HowItWorksPage() {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-8 sm:py-12">
       <header className="flex flex-col gap-3">
-        <span className="text-sm font-semibold text-accent-strong">איך זה עובד</span>
+        <span className="text-sm font-semibold text-foreground">איך זה עובד</span>
         <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl">המרקטפלייס של המילואים</h1>
         <p className="text-lg leading-relaxed text-muted">מילואימניקים מאומתים ובני ובנות הזוג שלהם מציעים שירותים — מגינון ושיפוצים ועד פיתוח תוכנה וייעוץ. כל אחד יכול לפרסם עבודה או לפנות ישירות לנותן שירות.</p>
         <nav aria-label="בעמוד הזה" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
@@ -91,7 +91,7 @@ export default async function HowItWorksPage() {
           ["בונים פרופיל", "אפשר להעלות קורות חיים והפרופיל מתמלא לבד. בוחרים תחומים (ללא הגבלה), אזור עבודה או עבודה מרחוק, כותבים קצת על עצמכם ומוסיפים שירותים עם מחירים ותמונות מעבודות."],
           ["מקבלים עבודה", <>מגישים מועמדות לעבודות שמתאימות לכם ({s.apply_cost} קרדיטים), או מקבלים פניות ישירות ממפרסמים ומאשרים ({s.request_cost} קרדיטים). כשיש התאמה, נחשפים פרטי הקשר של שני הצדדים.</>],
         ]} />
-        <p className="rounded-xl bg-accent/10 p-3 text-sm">עם אישור האימות מקבלים <b>{s.welcome_credits} קרדיטים מתנה</b> — מספיק ל-{Math.floor(s.welcome_credits / s.apply_cost)} הגשות.</p>
+        <p className="rounded-xl bg-info p-3 text-sm">עם אישור האימות מקבלים <b>{s.welcome_credits} קרדיטים מתנה</b> — מספיק ל-{Math.floor(s.welcome_credits / s.apply_cost)} הגשות.</p>
       </Section>
 
       <Section id="spouses" eyebrow="בני ובנות זוג" title="בן או בת זוג של מילואימניק">

@@ -37,9 +37,9 @@ export default async function PosterJobPage({ params, searchParams }: { params: 
 
   return (
     <PageShell title={job.title} subtitle={<>{JOB_STATUS_LABEL[job.status]} · {budgetText(job)} · <Link href={`/jobs/${job.id}`} className="underline underline-offset-4">צפייה במודעה</Link></>}>
-      {posted && job.status === "open" ? <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm dark:bg-emerald-950/30">העבודה פורסמה ✓ נודיע לך כשיגיעו מועמדים.</p> : null}
+      {posted && job.status === "open" ? <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">העבודה פורסמה ✓ נודיע לך כשיגיעו מועמדים.</p> : null}
       {job.status === "held" ? (
-        <p role="status" className="rounded-xl bg-amber-50 px-4 py-3 text-sm dark:bg-amber-950/30">העבודה ממתינה לבדיקה קצרה של הצוות לפני שתוצג לנותני שירות. בדרך כלל זה לוקח עד יום עבודה.</p>
+        <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">העבודה ממתינה לבדיקה קצרה של הצוות לפני שתוצג לנותני שירות. בדרך כלל זה לוקח עד יום עבודה.</p>
       ) : null}
 
       {live ? (
@@ -63,9 +63,9 @@ export default async function PosterJobPage({ params, searchParams }: { params: 
         <ul className="flex flex-col gap-3">
           {sorted.map((a) => (
             <li key={a.id}>
-              <Link href={`/poster/jobs/${job.id}/applications/${a.id}`} className={cx("flex flex-col gap-1.5 rounded-2xl border bg-surface p-4 hover:bg-background", a.viewed_at ? "border-border" : "border-accent")}>
+              <Link href={`/poster/jobs/${job.id}/applications/${a.id}`} className={cx("flex flex-col gap-1.5 rounded-2xl border bg-surface p-4 hover:bg-background", a.viewed_at ? "border-border" : "border-foreground")}>
                 <div className="flex items-start justify-between gap-3">
-                  <span className="font-bold"><bdi>{a.provider?.display_name}</bdi>{!a.viewed_at ? <span className="ms-2 rounded bg-accent/20 px-1.5 text-xs">חדש</span> : null}</span>
+                  <span className="font-bold"><bdi>{a.provider?.display_name}</bdi>{!a.viewed_at ? <span className="ms-2 rounded bg-action px-1.5 text-xs">חדש</span> : null}</span>
                   <span className="shrink-0 text-xs text-muted">{POSTER_LABEL[a.status]}{extraOf.get(a.id) === "open" ? " · בקשה לגיוס נוסף" : ""}</span>
                 </div>
                 {a.provider?.headline ? <p className="text-sm text-muted">{a.provider.headline}</p> : null}

@@ -14,19 +14,20 @@ export async function SiteHeader() {
   const mode = ready ? await getMode(me!) : null;
 
   return (
-    <header className="sticky top-0 z-20 border-b border-border bg-surface/90 backdrop-blur">
+    <header className="sticky top-0 z-20 bg-brand text-brand-contrast">
       <div className="mx-auto flex h-14 items-center justify-between gap-3 px-4">
-        <Link href={ready ? "/home" : "/"} className="text-xl font-extrabold tracking-tight">
-          Joby<span className="text-accent">.</span>
+        <Link href={ready ? "/home" : "/"} className="flex items-center gap-2 font-display text-xl font-bold">
+          <span aria-hidden="true" className="flex size-8 items-center justify-center rounded-lg bg-surface text-lg text-foreground">J</span>
+          Joby
         </Link>
         {mode ? (
           <RoleSwitch mode={mode} />
         ) : (
           <nav className="flex items-center gap-1 text-sm font-semibold">
-            <Link href="/how-it-works" className="hidden rounded-lg px-3 py-2 hover:bg-background sm:inline">איך זה עובד</Link>
-            <Link href="/jobs" className="rounded-lg px-3 py-2 hover:bg-background">עבודות</Link>
-            <Link href="/providers" className="rounded-lg px-3 py-2 hover:bg-background">נותני שירות</Link>
-            <Link href={me ? "/onboarding" : "/login"} className="rounded-lg px-3 py-2 hover:bg-background">{me ? "המשך הרשמה" : "כניסה"}</Link>
+            <Link href="/how-it-works" className="hidden rounded-lg px-3 py-2 hover:bg-white/10 sm:inline">איך זה עובד</Link>
+            <Link href="/jobs" className="rounded-lg px-3 py-2 hover:bg-white/10">עבודות</Link>
+            <Link href="/providers" className="rounded-lg px-3 py-2 hover:bg-white/10">נותני שירות</Link>
+            <Link href={me ? "/onboarding" : "/login"} className="rounded-lg px-3 py-2 hover:bg-white/10">{me ? "המשך הרשמה" : "כניסה"}</Link>
           </nav>
         )}
       </div>

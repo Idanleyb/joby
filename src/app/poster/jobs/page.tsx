@@ -8,9 +8,9 @@ import { PageShell, cx } from "@/components/ui";
 export const metadata: Metadata = { title: "העבודות שלי · Joby" };
 
 const STATUS_CLS: Record<string, string> = {
-  open: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300",
-  held: "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
-  hired: "bg-sky-100 text-sky-800 dark:bg-sky-950/40 dark:text-sky-300",
+  open: "bg-brand text-brand-contrast",
+  held: "border border-dashed border-muted text-foreground",
+  hired: "bg-info text-foreground",
 };
 
 export default async function PosterJobsPage() {

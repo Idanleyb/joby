@@ -19,7 +19,7 @@ function Stat({ value, label }: { value: React.ReactNode; label: string }) {
 }
 
 export function Stars({ n }: { n: number }) {
-  return <span aria-label={`${n} מתוך 5`} className="text-accent-strong">{"★".repeat(Math.round(n))}<span className="text-border">{"★".repeat(5 - Math.round(n))}</span></span>;
+  return <span aria-label={`${n} מתוך 5`} className="text-foreground">{"★".repeat(Math.round(n))}<span className="text-border">{"★".repeat(5 - Math.round(n))}</span></span>;
 }
 
 function Badge({ children, tone = "brand" }: { children: React.ReactNode; tone?: "brand" | "accent" | "muted" }) {
@@ -28,7 +28,7 @@ function Badge({ children, tone = "brand" }: { children: React.ReactNode; tone?:
       className={cx(
         "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold",
         tone === "brand" && "bg-brand text-brand-contrast",
-        tone === "accent" && "bg-accent/20 text-accent-strong",
+        tone === "accent" && "bg-action text-foreground",
         tone === "muted" && "bg-background text-muted",
       )}
     >
@@ -145,7 +145,7 @@ export function ProviderProfile({ p, cvHref, actions }: { p: NonNullable<Provide
       {p.portfolio_links?.length ? (
         <section className="flex flex-col gap-1 text-sm">
           <h3 className="font-bold">עבודות</h3>
-          {p.portfolio_links.map((l) => <a key={l} href={l} target="_blank" rel="noopener noreferrer nofollow" dir="ltr" className="truncate text-left text-accent-strong underline">{l.replace(/^https?:\/\//, "")}</a>)}
+          {p.portfolio_links.map((l) => <a key={l} href={l} target="_blank" rel="noopener noreferrer nofollow" dir="ltr" className="truncate text-left text-foreground underline">{l.replace(/^https?:\/\//, "")}</a>)}
         </section>
       ) : null}
       <section className="flex flex-col gap-3">
@@ -161,7 +161,7 @@ export function ProviderProfile({ p, cvHref, actions }: { p: NonNullable<Provide
                 {r.engagement_title ? <span className="text-sm font-semibold">{r.engagement_title}</span> : null}
                 {r.overall ? <Stars n={r.overall} /> : null}
                 {r.comment ? <p className="text-sm">{r.comment}</p> : null}
-                {r.would_again ? <span className="text-xs text-emerald-700 dark:text-emerald-400">✓ יעסיק/ה שוב</span> : null}
+                {r.would_again ? <span className="text-xs text-foreground">✓ יעסיק/ה שוב</span> : null}
               </li>
             ))}
           </ul>

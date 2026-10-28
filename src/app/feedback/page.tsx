@@ -8,9 +8,9 @@ import { PageShell, cx } from "@/components/ui";
 export const metadata: Metadata = { title: "משובים · Joby" };
 
 const STATE: Record<string, [string, string]> = {
-  blocked: ["החשבון חסום עד המשוב", "bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300"],
-  warning: ["דחוף", "bg-amber-100 text-amber-900 dark:bg-amber-950/40 dark:text-amber-200"],
-  due: ["ממתין למשוב", "bg-accent/20 text-accent-strong"],
+  blocked: ["החשבון חסום עד המשוב", "bg-danger-bg text-danger"],
+  warning: ["דחוף", "border border-action-border bg-action font-bold text-foreground"],
+  due: ["ממתין למשוב", "bg-action text-foreground"],
   early: ["אפשר כבר עכשיו", "bg-background text-muted"],
 };
 const DONE: Record<string, string> = {
@@ -27,7 +27,7 @@ export default async function FeedbackListPage({ searchParams }: { searchParams:
   const items = await loadFeedbackDue(me.userId);
   return (
     <PageShell title="משובים" subtitle="אחרי כל עבודה, שני הצדדים משאירים משוב. כך נבנה אמון במרקטפלייס.">
-      {done && DONE[done] ? <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm dark:bg-emerald-950/30">{DONE[done]}</p> : null}
+      {done && DONE[done] ? <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">{DONE[done]}</p> : null}
       {!items.length ? <p className="rounded-2xl bg-background p-6 text-center text-muted">אין משובים פתוחים.</p> : null}
       <ul className="flex flex-col gap-3">
         {items.map((i) => (

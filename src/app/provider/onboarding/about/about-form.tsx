@@ -27,7 +27,7 @@ export function AboutForm({ initial }: { initial: AboutValues }) {
           <legend className="mb-1 text-sm font-semibold">שפות (לא חובה)</legend>
           <div className="flex flex-wrap gap-2">
             {[...new Set([...LANGS, ...v.languages])].map((l) => (
-              <label key={l} className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm has-[:checked]:border-accent has-[:checked]:bg-accent/15">
+              <label key={l} className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm has-[:checked]:border-foreground has-[:checked]:bg-action">
                 <input type="checkbox" name="languages" value={l} defaultChecked={v.languages.includes(l)} className="sr-only" />
                 {l}
               </label>

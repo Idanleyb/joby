@@ -75,7 +75,7 @@ export function GalleryEditor({ userId, initial }: { userId: string; initial: { 
           {busy ? "מעלים…" : `הוספת תמונות (${items.length}/${MAX})`}
         </Button>
       ) : null}
-      {error ? <p role="alert" className="text-sm font-medium text-red-600 dark:text-red-400">{error}</p> : null}
+      {error ? <p role="alert" className="text-sm font-medium text-danger">{error}</p> : null}
     </div>
   );
 }

@@ -29,7 +29,7 @@ export function PosterEditForm({ userId, p }: { userId: string; p: { poster_type
       <FileUpload bucket="avatars" userId={userId} folder="logo" accept={["image/jpeg", "image/png", "image/webp"]} maxFiles={1} maxMb={2}
         label={p.poster_type === "private" ? "תמונה (לא חובה)" : "לוגו (לא חובה)"} onChange={(f) => setLogo(f[0]?.path ?? "")} />
       <FormError message={state.error} />
-      {state.ok ? <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm dark:bg-emerald-950/30">נשמר ✓</p> : null}
+      {state.ok ? <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">נשמר ✓</p> : null}
       <Button type="submit" disabled={pending}>{pending ? "שומרים…" : "שמירה"}</Button>
     </form>
   );

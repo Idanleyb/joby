@@ -41,15 +41,15 @@ export default async function VerificationQueue({ searchParams }: { searchParams
                   <tr key={r.id} className="border-t border-border">
                     <td className="p-3 font-semibold">
                       {name.get(r.user_id) ?? "—"}
-                      {r.duplicate_suspected ? <span className="ms-2 rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-700">ת״ז כפולה?</span> : null}
+                      {r.duplicate_suspected ? <span className="ms-2 rounded-full bg-danger-bg px-2 py-0.5 text-xs text-danger">ת״ז כפולה?</span> : null}
                     </td>
                     <td className="p-3">{r.kind === "spouse" ? "בן/בת זוג" : "טופס 3010"}</td>
                     <td className="p-3">{r.days_total ?? r.days_band ?? "—"}</td>
                     <td className="p-3">{STATUS[r.status]}{r.decision_reason && view === "done" ? ` · ${reasonText(r.decision_reason)}` : ""}</td>
-                    <td className={cx("p-3", view === "open" && age >= 20 && "font-bold text-amber-700")}>
+                    <td className={cx("p-3", view === "open" && age >= 20 && "font-bold text-danger")}>
                       {view === "open" ? `${age} ש׳` : r.decided_at?.slice(0, 10)}
                     </td>
-                    <td className="p-3">{view === "open" ? <Link href={`/admin/verifications/${r.id}`} className="font-semibold text-accent-strong underline">בדיקה</Link> : null}</td>
+                    <td className="p-3">{view === "open" ? <Link href={`/admin/verifications/${r.id}`} className="font-semibold text-foreground underline">בדיקה</Link> : null}</td>
                   </tr>
                 );
               })}

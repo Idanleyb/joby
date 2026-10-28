@@ -66,11 +66,11 @@ export function FileUpload({
       <label
         className={cx(
           "flex cursor-pointer flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-border bg-background px-4 py-8 text-center",
-          "hover:border-accent focus-within:border-accent",
+          "hover:border-foreground focus-within:border-foreground",
           (busy || disabled) && "pointer-events-none opacity-60",
         )}
       >
-        <svg aria-hidden="true" viewBox="0 0 24 24" className="size-8 text-accent-strong" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <svg aria-hidden="true" viewBox="0 0 24 24" className="size-8 text-foreground" fill="none" stroke="currentColor" strokeWidth="1.8">
           <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <span className="font-semibold">{busy ? "מעלים…" : label}</span>
@@ -85,7 +85,7 @@ export function FileUpload({
           disabled={busy || disabled}
         />
       </label>
-      {error ? <p role="alert" className="text-sm font-medium text-red-600 dark:text-red-400">{error}</p> : null}
+      {error ? <p role="alert" className="text-sm font-medium text-danger">{error}</p> : null}
       {files.length ? (
         <ul className="flex flex-col gap-2">
           {files.map((f) => (

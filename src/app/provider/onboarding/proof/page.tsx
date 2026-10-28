@@ -26,7 +26,7 @@ export default async function ProofStep() {
       }
     >
       {status === "more_info" || status === "rejected" ? (
-        <p role="status" className="rounded-xl bg-amber-50 px-4 py-3 text-sm dark:bg-amber-950/30">
+        <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">
           {status === "more_info" ? "הבודק ביקש מידע נוסף" : "האימות הקודם נדחה"}
           {v?.decision_reason ? `: ${reasonText(v.decision_reason)}` : ""}. אפשר להעלות שוב.
         </p>

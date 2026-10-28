@@ -27,7 +27,7 @@ export function ActionButton({ action, label, pendingLabel, confirm, confirmLabe
   return (
     <div className={cx("flex flex-col gap-2", className)}>
       {asking ? (
-        <div className="flex flex-col gap-2 rounded-xl border border-accent/50 bg-accent/10 p-3">
+        <div className="flex flex-col gap-2 rounded-xl border border-action-border bg-action p-3">
           <p className="text-sm">{confirm}</p>
           <div className="flex gap-2">
             <Button type="button" onClick={run} disabled={pending} className="flex-1">{pending ? pendingLabel ?? "רגע…" : confirmLabel ?? "אישור"}</Button>
@@ -39,7 +39,7 @@ export function ActionButton({ action, label, pendingLabel, confirm, confirmLabe
           {pending ? pendingLabel ?? "רגע…" : label}
         </Button>
       )}
-      {error ? <p role="alert" className="text-sm font-medium text-red-600 dark:text-red-400">{error}</p> : null}
+      {error ? <p role="alert" className="text-sm font-medium text-danger">{error}</p> : null}
     </div>
   );
 }

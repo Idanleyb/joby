@@ -32,7 +32,7 @@ export function CategoriesForm({ cats, initial }: { cats: Cat[]; initial: { subs
             <details key={c.id} open={count > 0} className="rounded-xl border border-border">
               <summary className="flex cursor-pointer items-center justify-between px-4 py-3 font-semibold">
                 {c.name_he}
-                {count ? <span className="rounded-full bg-accent/20 px-2 text-xs text-accent-strong">{count}</span> : null}
+                {count ? <span className="rounded-full bg-action px-2 text-xs text-foreground">{count}</span> : null}
               </summary>
               <div className="flex flex-wrap gap-2 px-4 pb-4">
                 {c.subs.map((s) => {
@@ -42,7 +42,7 @@ export function CategoriesForm({ cats, initial }: { cats: Cat[]; initial: { subs
                       key={s.id}
                       className={cx(
                         "cursor-pointer rounded-full border px-3 py-1.5 text-sm",
-                        on ? "border-accent bg-accent/15 font-semibold" : "border-border",
+                        on ? "border-foreground bg-action font-semibold" : "border-border",
                       )}
                     >
                       <input type="checkbox" name="sub" value={s.id} checked={on} onChange={() => toggle(s.id)} className="sr-only" />
@@ -81,8 +81,8 @@ function SuggestCategory() {
   const [text, setText] = useState("");
   const [sent, setSent] = useState(false);
   const [pending, start] = useTransition();
-  if (sent) return <p className="text-sm text-emerald-700 dark:text-emerald-400">תודה! נבדוק ונוסיף. בינתיים אפשר לבחור &quot;אחר&quot;.</p>;
-  if (!open) return <button type="button" className="self-start text-sm font-semibold text-accent-strong" onClick={() => setOpen(true)}>חסר המקצוע שלך? ספרו לנו</button>;
+  if (sent) return <p className="text-sm text-foreground">תודה! נבדוק ונוסיף. בינתיים אפשר לבחור &quot;אחר&quot;.</p>;
+  if (!open) return <button type="button" className="self-start text-sm font-semibold text-foreground" onClick={() => setOpen(true)}>חסר המקצוע שלך? ספרו לנו</button>;
   return (
     <div className="flex gap-2">
       <Input aria-label="המקצוע החסר" value={text} onChange={(e) => setText(e.target.value)} placeholder="למשל: הדברה" />

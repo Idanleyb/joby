@@ -32,7 +32,7 @@ export function CvStep({ userId, hasCv, hasProfileData }: { userId: string; hasC
         disabled={pending}
       />
       {result && !result.ok ? (
-        <p role="status" className="rounded-xl bg-amber-50 px-4 py-3 text-sm dark:bg-amber-950/30">
+        <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">
           {result.reason === "ai_failed" ? "לא הצלחנו לקרוא את הקובץ אוטומטית." : "מילוי אוטומטי אינו זמין כרגע."} הקובץ נשמר
           בפרופיל — נמשיך במילוי ידני.
           <span dir="ltr" className="mt-1 block text-left text-xs text-muted">{result.code}</span>
@@ -58,7 +58,7 @@ function CvReview({ reading, subNames, showReplace }: { reading: CvReading; subN
   const [exp, setExp] = useState(reading.experience);
   const [edu, setEdu] = useState(reading.education);
   const [pending, start] = useTransition();
-  const tag = <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[11px] font-semibold text-accent-strong">הצעת AI</span>;
+  const tag = <span className="rounded-full border border-action-border bg-action px-2 py-0.5 text-[11px] font-semibold text-foreground">הצעת AI</span>;
 
   return (
     <form action={(fd) => start(() => saveCvReview(fd))} className="flex flex-col gap-5">
@@ -86,7 +86,7 @@ function CvReview({ reading, subNames, showReplace }: { reading: CvReading; subN
             <legend className="mb-1 flex items-center gap-2 text-sm font-semibold">תחומים מוצעים {tag}</legend>
             {reading.suggested_subcategories.map((s) => (
               <label key={s} className="flex items-center gap-2 text-sm">
-                <input type="checkbox" name="sub" value={s} defaultChecked className="size-5 accent-[var(--accent-strong)]" />
+                <input type="checkbox" name="sub" value={s} defaultChecked className="size-5 accent-[var(--brand)]" />
                 {subNames[s] ?? s}
               </label>
             ))}
@@ -124,12 +124,12 @@ function CvReview({ reading, subNames, showReplace }: { reading: CvReading; subN
 
       <Card className="flex flex-col gap-3 text-sm">
         <label className="flex items-center gap-2">
-          <input type="checkbox" name="cvVisible" defaultChecked className="size-5 accent-[var(--accent-strong)]" />
+          <input type="checkbox" name="cvVisible" defaultChecked className="size-5 accent-[var(--brand)]" />
           מפרסמים יוכלו להוריד את קורות החיים שלי
         </label>
         {showReplace ? (
           <label className="flex items-center gap-2">
-            <input type="checkbox" name="replace" className="size-5 accent-[var(--accent-strong)]" />
+            <input type="checkbox" name="replace" className="size-5 accent-[var(--brand)]" />
             להחליף את הפרטים שכבר מילאתי בפרופיל
           </label>
         ) : null}

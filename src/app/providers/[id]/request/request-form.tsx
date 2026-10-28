@@ -7,7 +7,7 @@ import { IL_CITIES } from "@/lib/cities";
 import { Button, Card, Field, FormError, Input, cx } from "@/components/ui";
 
 type Sub = { id: number; name_he: string; budget_mandatory: boolean };
-const radioCls = "flex cursor-pointer items-center justify-center rounded-xl border border-border px-3 py-3 text-sm font-semibold has-[:checked]:border-accent has-[:checked]:bg-accent/15";
+const radioCls = "flex cursor-pointer items-center justify-center rounded-xl border border-border px-3 py-3 text-sm font-semibold has-[:checked]:border-foreground has-[:checked]:bg-action";
 
 export function RequestForm({ providerId, providerName, subs, jobs, defaultCity }: {
   providerId: string; providerName: string; subs: Sub[]; jobs: { id: string; title: string }[]; defaultCity: string;

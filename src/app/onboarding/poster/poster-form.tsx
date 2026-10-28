@@ -29,7 +29,7 @@ export function PosterForm() {
             key={t.value}
             className={cx(
               "flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-surface p-3.5",
-              "has-[:checked]:border-accent has-[:checked]:ring-2 has-[:checked]:ring-accent/30",
+              "has-[:checked]:border-foreground has-[:checked]:bg-action",
             )}
           >
             <input
@@ -38,7 +38,7 @@ export function PosterForm() {
               value={t.value}
               defaultChecked={v?.posterType === t.value}
               onChange={() => setType(t.value)}
-              className="mt-1 size-5 accent-[var(--accent-strong)]"
+              className="mt-1 size-5 accent-[var(--brand)]"
             />
             <span className="flex flex-col">
               <span className="font-semibold">{t.label}</span>
@@ -46,7 +46,7 @@ export function PosterForm() {
             </span>
           </label>
         ))}
-        {fe.posterType ? <p role="alert" className="text-sm font-medium text-red-600 dark:text-red-400">{fe.posterType}</p> : null}
+        {fe.posterType ? <p role="alert" className="text-sm font-medium text-danger">{fe.posterType}</p> : null}
       </fieldset>
 
       {isOrg ? (

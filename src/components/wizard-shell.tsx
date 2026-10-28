@@ -18,7 +18,7 @@ export function WizardShell({ current, reached, title, subtitle, children }: {
           {WIZARD_STEPS.map((s, i) => {
             const done = s.n < reached || i < idx;
             const link = s.n <= reached;
-            const bar = <span className={cx("block h-1.5 rounded-full", i === idx ? "bg-accent" : done ? "bg-brand" : "bg-border")} />;
+            const bar = <span className={cx("block h-1.5 rounded-full", i === idx ? "bg-brand" : done ? "bg-muted" : "bg-border")} />;
             return (
               <li key={s.slug} className="flex-1" title={s.title}>
                 {link && i !== idx ? <Link href={stepPath(s.slug)} aria-label={s.title}>{bar}</Link> : bar}

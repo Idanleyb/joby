@@ -39,8 +39,8 @@ export function ProviderCard({ p }: { p: ProviderCardData }) {
       )}
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-start justify-between gap-2">
-          <span className="font-bold"><bdi>{p.display_name}</bdi> <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">✓ {p.provider_type === "spouse" ? "בן/בת זוג" : "מילואימניק"}</span></span>
-          <span className={cx("shrink-0 text-xs font-semibold", p.busy ? "text-muted" : "text-emerald-700 dark:text-emerald-400")}>{p.busy ? "עסוק/ה" : "● זמין/ה"}</span>
+          <span className="font-bold"><bdi>{p.display_name}</bdi> <span className="text-xs font-semibold text-foreground">✓ {p.provider_type === "spouse" ? "בן/בת זוג" : "מילואימניק"}</span></span>
+          <span className={cx("shrink-0 text-xs font-semibold", p.busy ? "text-muted" : "text-foreground")}>{p.busy ? "עסוק/ה" : "● זמין/ה"}</span>
         </div>
         {p.headline ? <p className="truncate text-sm">{p.headline}</p> : null}
         <p className="text-xs text-muted">
