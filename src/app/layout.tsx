@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
-// Heebo is self-hosted from npm (no build-time call to Google Fonts).
+// Fonts are self-hosted from npm (no build-time call to Google Fonts): Heebo for text, Rubik for headings.
 import "@fontsource-variable/heebo";
+import "@fontsource-variable/rubik";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { AppNav } from "@/components/app-nav";

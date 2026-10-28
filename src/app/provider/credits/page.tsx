@@ -26,7 +26,7 @@ export default async function CreditsPage() {
     <PageShell title="הקרדיטים שלי">
       <Card className="flex items-baseline justify-between">
         <span className="text-muted">יתרה</span>
-        <span className="text-4xl font-extrabold">{wallet?.balance ?? 0}</span>
+        <span className="text-3xl font-bold">{wallet?.balance ?? 0}</span>
       </Card>
       <p className="text-sm text-muted">הגשת מועמדות עולה 10 קרדיטים, ואישור פנייה ישירה 2. קרדיטים חוזרים אם העבודה נסגרת בלי גיוס, או אם המפרסם לא פתח את הפנייה תוך 30 ימים.</p>
       <ul className="flex flex-col divide-y divide-border rounded-2xl border border-border bg-surface">
@@ -37,7 +37,7 @@ export default async function CreditsPage() {
               <span className="font-semibold">{TX[t.tx_type] ?? t.tx_type}</span>
               <span className="text-xs text-muted">{new Date(t.created_at).toLocaleDateString("he-IL")}{t.reason ? ` · ${REASON[t.reason] ?? t.reason}` : ""}</span>
             </div>
-            <span className={cx("font-bold", t.amount > 0 ? "text-emerald-700 dark:text-emerald-400" : "")} dir="ltr">{t.amount > 0 ? `+${t.amount}` : t.amount}</span>
+            <span className={cx("font-bold", t.amount > 0 ? "text-foreground" : "")} dir="ltr">{t.amount > 0 ? `+${t.amount}` : t.amount}</span>
           </li>
         ))}
       </ul>

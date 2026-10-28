@@ -29,7 +29,7 @@ export function RequestActions({ requestId, cost, balance }: { requestId: string
   return (
     <div className="flex flex-col gap-2">
       {mode === "approve" ? (
-        <div className="flex flex-col gap-2 rounded-xl border border-accent/50 bg-accent/10 p-3">
+        <div className="flex flex-col gap-2 rounded-xl border border-action-border bg-action p-3">
           <p className="text-sm">האישור עולה <b>{cost} קרדיטים</b> (יתרה אחרי: <b>{balance - cost}</b>). ייחשפו הטלפון והמייל של שניכם, ובעוד 3 ימים נבקש משוב.</p>
           <div className="flex gap-2">
             <Button type="button" className="flex-1" disabled={pending} onClick={() => run(true)}>{pending ? "רגע…" : "אישור"}</Button>
@@ -55,7 +55,7 @@ export function RequestActions({ requestId, cost, balance }: { requestId: string
           <Button type="button" variant="secondary" onClick={() => setMode("decline")}>לא מתאים לי</Button>
         </div>
       )}
-      {error ? <p role="alert" className="text-sm font-medium text-red-600 dark:text-red-400">{error}</p> : null}
+      {error ? <p role="alert" className="text-sm font-medium text-danger">{error}</p> : null}
     </div>
   );
 }

@@ -10,7 +10,7 @@ import { Button, Card, Field, FormError, Input, cx } from "@/components/ui";
 
 type Cat = { id: number; name_he: string; budget_mandatory: boolean; subs: { id: number; name_he: string }[] };
 const ATTACH_TYPES = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
-const radioCls = "flex cursor-pointer items-center justify-center rounded-xl border border-border px-3 py-3 text-sm font-semibold has-[:checked]:border-accent has-[:checked]:bg-accent/15";
+const radioCls = "flex cursor-pointer items-center justify-center rounded-xl border border-border px-3 py-3 text-sm font-semibold has-[:checked]:border-foreground has-[:checked]:bg-action";
 
 export function JobForm({ cats, userId, poster }: { cats: Cat[]; userId: string; poster: { display_name: string; poster_type: string; jobs_posted: number; jobs_closed: number; hires: number; rating_avg: number | null; rating_count: number } }) {
   const [state, action, pending] = useActionState<PostState, FormData>(publishJob, {});

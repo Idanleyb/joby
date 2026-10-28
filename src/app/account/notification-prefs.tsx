@@ -14,7 +14,7 @@ export function NotificationPrefs({ initial, provider }: { initial: Prefs; provi
     start(() => saveNotificationPrefs(next));
   };
   const row = "flex items-center justify-between gap-3 text-sm";
-  const box = "size-5 accent-[var(--accent-strong)]";
+  const box = "size-5 accent-[var(--brand)]";
   return (
     <div className="flex flex-col gap-3" aria-busy={pending}>
       {provider ? (

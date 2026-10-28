@@ -16,7 +16,7 @@ export function RoleSwitch({ mode }: { mode: Mode }) {
     </button>
   );
   return (
-    <div role="group" aria-label="מצב" className="flex rounded-xl bg-background p-1 text-sm font-semibold">
+    <div role="group" aria-label="מצב" className="flex rounded-xl bg-background p-1 text-sm font-semibold text-foreground">
       {btn("work", "עובד/ת")}
       {btn("hire", "מגייס/ת")}
     </div>

@@ -14,7 +14,7 @@ export function AreaForm({ initial }: { initial: NonNullable<AreaState["values"]
     <form onSubmit={submitWith(action)} className="flex flex-col gap-5" noValidate>
       <Card className="flex flex-col gap-4">
         <label className="flex items-start gap-3">
-          <input type="checkbox" name="onsite" checked={onsite} onChange={(e) => setOnsite(e.target.checked)} className="mt-1 size-5 accent-[var(--accent-strong)]" />
+          <input type="checkbox" name="onsite" checked={onsite} onChange={(e) => setOnsite(e.target.checked)} className="mt-1 size-5 accent-[var(--brand)]" />
           <span><span className="font-semibold">עבודה בשטח</span><br /><span className="text-sm text-muted">מגיע/ה ללקוח — בית, משרד, אתר</span></span>
         </label>
         {onsite ? (
@@ -34,7 +34,7 @@ export function AreaForm({ initial }: { initial: NonNullable<AreaState["values"]
           </div>
         ) : null}
         <label className="flex items-start gap-3">
-          <input type="checkbox" name="remote" defaultChecked={v.remote} className="mt-1 size-5 accent-[var(--accent-strong)]" />
+          <input type="checkbox" name="remote" defaultChecked={v.remote} className="mt-1 size-5 accent-[var(--brand)]" />
           <span><span className="font-semibold">עבודה מרחוק</span><br /><span className="text-sm text-muted">אפשר לעבוד איתי מכל מקום</span></span>
         </label>
       </Card>

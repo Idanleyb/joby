@@ -39,7 +39,7 @@ export default async function PhotoPage() {
             <span className="font-bold">{strength}%</span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-background" role="progressbar" aria-valuenow={strength} aria-valuemin={0} aria-valuemax={100} aria-label="חוזק הפרופיל">
-            <div className="h-full rounded-full bg-accent" style={{ width: `${strength}%` }} />
+            <div className="h-full rounded-full bg-brand" style={{ width: `${strength}%` }} />
           </div>
         </div>
         <PhotoUpload userId={me.userId} hasPhoto={Boolean(p.photo_path)} />
@@ -49,7 +49,7 @@ export default async function PhotoPage() {
       <Card><ProviderProfile p={p} /></Card>
 
       {missing.length ? (
-        <p role="status" className="rounded-xl bg-amber-50 px-4 py-3 text-sm dark:bg-amber-950/30">
+        <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">
           כדי לסיים חסר:{" "}
           {missing.map((m, i) => (
             <span key={m.href}>{i ? ", " : ""}<Link href={m.href} className="font-semibold underline">{m.label}</Link></span>

@@ -52,10 +52,10 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
     <div className="flex flex-col gap-5">
       <Link href="/admin/verifications" className="text-sm text-muted underline">← לתור</Link>
       <div className="flex flex-wrap items-baseline gap-3">
-        <h1 className="text-2xl font-extrabold">{person?.full_name ?? "—"}</h1>
+        <h1 className="text-[26px] font-bold">{person?.full_name ?? "—"}</h1>
         <span dir="ltr" className="text-sm text-muted">{formatIlPhone(person?.phone)}</span>
         <span className="text-sm">{r.kind === "spouse" ? "בן/בת זוג" : "טופס 3010"} · ממתין {hoursSince(r.submitted_at)} ש׳</span>
-        {r.duplicate_suspected ? <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">אותה ת״ז נמצאה בחשבון אחר</span> : null}
+        {r.duplicate_suspected ? <span className="rounded-full bg-danger-bg px-2 py-0.5 text-xs font-semibold text-danger">אותה ת״ז נמצאה בחשבון אחר</span> : null}
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
@@ -66,7 +66,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
               {d.url ? (d.pdf ? <iframe src={d.url} title="מסמך" className="h-[520px] w-full rounded-lg border border-border" /> : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={d.url} alt="מסמך" className="w-full rounded-lg border border-border" />
-              )) : <p className="text-sm text-red-600">הקובץ לא נמצא.</p>}
+              )) : <p className="text-sm text-danger">הקובץ לא נמצא.</p>}
             </Card>
           )) : <Card><p className="text-sm text-muted">המסמכים כבר נמחקו.</p></Card>}
         </div>
@@ -84,7 +84,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
             ) : (
               <>
                 <p>סה״כ נספרו: <span className="text-lg font-bold">{r.days_total ?? "—"}</span> ימים</p>
-                {(ex.warnings ?? []).map((w) => <p key={w} className="text-amber-700">⚠ {WARN[w] ?? w}</p>)}
+                {(ex.warnings ?? []).map((w) => <p key={w} className="text-danger">⚠ {WARN[w] ?? w}</p>)}
                 <ul className="flex flex-col gap-2">
                   {(ex.files ?? []).map((f, i) => (
                     <li key={i} className="rounded-xl border border-border p-2">

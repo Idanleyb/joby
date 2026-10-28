@@ -28,10 +28,10 @@ export default async function MyProfilePage() {
     return (
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-8">
         <div className="flex items-center justify-between gap-2">
-          <h1 className="text-2xl font-extrabold">הפרופיל שלי כמפרסם/ת</h1>
+          <h1 className="text-[26px] font-bold">הפרופיל שלי כמפרסם/ת</h1>
           <Link href="/profile/edit" className={chip}>עריכה</Link>
         </div>
-        {!p.about ? <p className="rounded-xl bg-accent/10 p-3 text-sm">טיפ: הוסיפו כמה מילים עליכם — נותני שירות מגישים יותר למפרסמים שהם מכירים. <Link href="/profile/edit" className="underline">להוספה</Link></p> : null}
+        {!p.about ? <p className="rounded-xl bg-info p-3 text-sm">טיפ: הוסיפו כמה מילים עליכם — נותני שירות מגישים יותר למפרסמים שהם מכירים. <Link href="/profile/edit" className="underline">להוספה</Link></p> : null}
         <Card><PosterProfile p={p} /></Card>
       </main>
     );
@@ -43,17 +43,17 @@ export default async function MyProfilePage() {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-8">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-extrabold">הפרופיל שלי</h1>
+        <h1 className="text-[26px] font-bold">הפרופיל שלי</h1>
         <Link href={`/providers/${me.userId}`} className="text-sm underline underline-offset-4">איך אחרים רואים אותי</Link>
       </div>
 
       <Card className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h2 className="font-bold">חוזק הפרופיל</h2>
-          <span className="text-xl font-extrabold">{value}%</span>
+          <span className="text-xl font-bold">{value}%</span>
         </div>
         <div className="h-2.5 overflow-hidden rounded-full bg-background" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100} aria-label="חוזק הפרופיל">
-          <div className="h-full rounded-full bg-accent" style={{ width: `${value}%` }} />
+          <div className="h-full rounded-full bg-brand" style={{ width: `${value}%` }} />
         </div>
         {tips.length ? (
           <ul className="flex flex-col gap-1 text-sm">

@@ -164,7 +164,7 @@ export function PhoneOtpForm({ mode, next = "/onboarding" }: { mode: "signin" | 
         </button>
         <button
           type="button"
-          className="font-semibold text-accent-strong disabled:font-normal disabled:text-muted"
+          className="font-semibold text-foreground disabled:font-normal disabled:text-muted"
           disabled={secondsLeft > 0 || busy}
           onClick={() => phone && sendCode(phone)}
         >

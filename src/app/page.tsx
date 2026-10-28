@@ -34,8 +34,8 @@ export default async function Home() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-10 px-4 py-12 sm:px-6">
       <header className="flex flex-col gap-4">
-        <span className="text-sm font-semibold tracking-wide text-accent-strong">בטא סגורה · ינואר 2027</span>
-        <h1 className="text-4xl font-extrabold leading-tight sm:text-5xl">המרקטפלייס של המילואים</h1>
+        <span className="text-sm font-semibold tracking-wide text-foreground">בטא סגורה · ינואר 2027</span>
+        <h1 className="text-3xl font-bold leading-tight sm:text-4xl">המרקטפלייס של המילואים</h1>
         <p className="text-lg text-muted">
           מילואימניקים מאומתים ובני ובנות הזוג שלהם מציעים שירותים — מאינסטלציה ועד פיתוח תוכנה. כל אחד יכול
           לפרסם עבודה.

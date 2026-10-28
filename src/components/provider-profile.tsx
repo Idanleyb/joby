@@ -12,14 +12,14 @@ const since = (iso: string) => `${MONTHS[new Date(iso).getMonth()]} ${new Date(i
 function Stat({ value, label }: { value: React.ReactNode; label: string }) {
   return (
     <div className="flex flex-col items-center rounded-xl bg-background px-2 py-3 text-center">
-      <span className="text-lg font-extrabold">{value}</span>
+      <span className="text-lg font-bold">{value}</span>
       <span className="text-xs text-muted">{label}</span>
     </div>
   );
 }
 
 export function Stars({ n }: { n: number }) {
-  return <span aria-label={`${n} מתוך 5`} className="text-accent-strong">{"★".repeat(Math.round(n))}<span className="text-border">{"★".repeat(5 - Math.round(n))}</span></span>;
+  return <span aria-label={`${n} מתוך 5`} className="text-foreground">{"★".repeat(Math.round(n))}<span className="text-border">{"★".repeat(5 - Math.round(n))}</span></span>;
 }
 
 function Badge({ children, tone = "brand" }: { children: React.ReactNode; tone?: "brand" | "accent" | "muted" }) {
@@ -28,7 +28,7 @@ function Badge({ children, tone = "brand" }: { children: React.ReactNode; tone?:
       className={cx(
         "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold",
         tone === "brand" && "bg-brand text-brand-contrast",
-        tone === "accent" && "bg-accent/20 text-accent-strong",
+        tone === "accent" && "bg-action text-foreground",
         tone === "muted" && "bg-background text-muted",
       )}
     >
@@ -54,7 +54,7 @@ export function ProviderProfile({ p, cvHref, actions }: { p: NonNullable<Provide
           </div>
         )}
         <div className="flex flex-col gap-1.5">
-          <h2 className="text-2xl font-extrabold"><bdi>{p.display_name}</bdi></h2>
+          <h2 className="text-[22px] font-bold"><bdi>{p.display_name}</bdi></h2>
           {p.headline ? <p className="font-medium">{p.headline}</p> : null}
           <div className="flex flex-wrap gap-1.5">
             {verified ? <Badge>{p.provider_type === "spouse" ? "בן/בת זוג של מילואימניק" : "מילואימניק מאומת"}</Badge> : <Badge tone="muted">ממתין לאימות</Badge>}
@@ -145,7 +145,7 @@ export function ProviderProfile({ p, cvHref, actions }: { p: NonNullable<Provide
       {p.portfolio_links?.length ? (
         <section className="flex flex-col gap-1 text-sm">
           <h3 className="font-bold">עבודות</h3>
-          {p.portfolio_links.map((l) => <a key={l} href={l} target="_blank" rel="noopener noreferrer nofollow" dir="ltr" className="truncate text-left text-accent-strong underline">{l.replace(/^https?:\/\//, "")}</a>)}
+          {p.portfolio_links.map((l) => <a key={l} href={l} target="_blank" rel="noopener noreferrer nofollow" dir="ltr" className="truncate text-left text-foreground underline">{l.replace(/^https?:\/\//, "")}</a>)}
         </section>
       ) : null}
       <section className="flex flex-col gap-3">
@@ -161,7 +161,7 @@ export function ProviderProfile({ p, cvHref, actions }: { p: NonNullable<Provide
                 {r.engagement_title ? <span className="text-sm font-semibold">{r.engagement_title}</span> : null}
                 {r.overall ? <Stars n={r.overall} /> : null}
                 {r.comment ? <p className="text-sm">{r.comment}</p> : null}
-                {r.would_again ? <span className="text-xs text-emerald-700 dark:text-emerald-400">✓ יעסיק/ה שוב</span> : null}
+                {r.would_again ? <span className="text-xs text-foreground">✓ יעסיק/ה שוב</span> : null}
               </li>
             ))}
           </ul>

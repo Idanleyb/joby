@@ -15,7 +15,7 @@ function Stars({ name, label, required }: { name: string; label: string; require
         {[5, 4, 3, 2, 1].map((n) => (
           <label key={n} className="cursor-pointer">
             <input type="radio" name={name} value={n} className="peer sr-only" checked={value === n} onChange={() => setValue(n)} aria-label={`${label}: ${n} מתוך 5`} />
-            <span className={cx("text-3xl leading-none", n <= value ? "text-accent" : "text-border")}>★</span>
+            <span className={cx("text-3xl leading-none", n <= value ? "text-foreground" : "text-border")}>★</span>
           </label>
         ))}
       </div>
@@ -23,7 +23,7 @@ function Stars({ name, label, required }: { name: string; label: string; require
   );
 }
 
-const radio = "flex cursor-pointer items-center justify-center rounded-xl border border-border px-3 py-3 text-sm font-semibold has-[:checked]:border-accent has-[:checked]:bg-accent/15";
+const radio = "flex cursor-pointer items-center justify-center rounded-xl border border-border px-3 py-3 text-sm font-semibold has-[:checked]:border-foreground has-[:checked]:bg-action";
 const NO_REASONS = [["no_response", "הצד השני לא הגיב"], ["price", "מחיר"], ["availability", "זמינות"], ["not_a_fit", "לא התאים"], ["other", "אחר"]];
 
 export function FeedbackForm({ engagementId, iAmPoster, otherName, allowNotYet }: { engagementId: string; iAmPoster: boolean; otherName: string; allowNotYet: boolean }) {

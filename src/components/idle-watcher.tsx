@@ -51,7 +51,7 @@ export function IdleWatcher() {
 
   if (!warn) return null;
   return (
-    <div role="alertdialog" aria-label="ניתוק בגלל חוסר פעילות" className="fixed inset-x-4 bottom-24 z-40 mx-auto flex max-w-md flex-col gap-3 rounded-2xl border border-accent bg-surface p-4 shadow-lg md:bottom-6">
+    <div role="alertdialog" aria-label="ניתוק בגלל חוסר פעילות" className="fixed inset-x-4 bottom-24 z-40 mx-auto flex max-w-md flex-col gap-3 rounded-2xl border border-foreground bg-surface p-4 shadow-lg md:bottom-6">
       <p className="text-sm">לא הייתה פעילות כבר זמן רב. מטעמי אבטחה ננתק אותך בעוד כשתי דקות.</p>
       <button type="button" onClick={() => { write(Date.now()); setWarn(false); }}
         className="min-h-11 rounded-xl bg-brand px-4 font-semibold text-brand-contrast">אני עדיין כאן</button>

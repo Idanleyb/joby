@@ -5,7 +5,7 @@ import { submitWith } from "@/components/use-form-submit";
 import { saveAvailability } from "./actions";
 import { Button, FormError, Input, cx } from "@/components/ui";
 
-const radio = "flex cursor-pointer items-center justify-center rounded-xl border border-border px-3 py-2.5 text-sm font-semibold has-[:checked]:border-accent has-[:checked]:bg-accent/15";
+const radio = "flex cursor-pointer items-center justify-center rounded-xl border border-border px-3 py-2.5 text-sm font-semibold has-[:checked]:border-foreground has-[:checked]:bg-action";
 
 export function AvailabilityForm({ availability, busyUntil }: { availability: string; busyUntil: string | null }) {
   const [state, action, pending] = useActionState(saveAvailability, {});

@@ -9,7 +9,7 @@ const since = (iso: string) => `${MONTHS[new Date(iso).getMonth()]} ${new Date(i
 function Stat({ value, label }: { value: React.ReactNode; label: string }) {
   return (
     <div className="flex flex-col items-center rounded-xl bg-background px-2 py-3 text-center">
-      <span className="text-lg font-extrabold">{value}</span>
+      <span className="text-lg font-bold">{value}</span>
       <span className="text-xs text-muted">{label}</span>
     </div>
   );
@@ -30,13 +30,13 @@ export function PosterProfile({ p, actions }: { p: PosterView; actions?: React.R
           </div>
         )}
         <div className="flex flex-col gap-1.5">
-          <h2 className="text-2xl font-extrabold"><bdi>{p.display_name}</bdi></h2>
+          <h2 className="text-[22px] font-bold"><bdi>{p.display_name}</bdi></h2>
           <p className="text-sm text-muted">{TYPE[p.poster_type]} · 📍 {p.city} · ב-Joby מאז {since(p.created_at)}</p>
           <div className="flex flex-wrap gap-1.5 text-xs font-semibold">
             <span className="rounded-full bg-brand px-2.5 py-1 text-brand-contrast">✓ טלפון מאומת</span>
-            {p.rating_count >= 3 && p.rating_avg ? <span className="rounded-full bg-accent/20 px-2.5 py-1 text-accent-strong">★ {p.rating_avg} ({p.rating_count})</span> : null}
+            {p.rating_count >= 3 && p.rating_avg ? <span className="rounded-full bg-action px-2.5 py-1 text-foreground">★ {p.rating_avg} ({p.rating_count})</span> : null}
           </div>
-          {p.website ? <a href={p.website} target="_blank" rel="noopener noreferrer nofollow" dir="ltr" className="text-sm text-accent-strong underline">{p.website.replace(/^https?:\/\//, "")}</a> : null}
+          {p.website ? <a href={p.website} target="_blank" rel="noopener noreferrer nofollow" dir="ltr" className="text-sm text-foreground underline">{p.website.replace(/^https?:\/\//, "")}</a> : null}
         </div>
       </header>
 

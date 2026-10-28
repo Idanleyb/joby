@@ -18,7 +18,7 @@ function isActive(path: string, href: string) {
 
 function Badge({ n }: { n?: number }) {
   if (!n) return null;
-  return <span className="absolute -top-1 -end-2 min-w-5 rounded-full bg-red-600 px-1 text-center text-[11px] font-bold leading-5 text-white">{n > 99 ? "99+" : n}</span>;
+  return <span className="absolute -top-1 -end-2 min-w-5 rounded-full bg-danger px-1 text-center text-[11px] font-bold leading-5 text-white">{n > 99 ? "99+" : n}</span>;
 }
 
 /** Sidebar (computer) and bottom bar (phone). */
@@ -40,7 +40,7 @@ export function NavLinks({ items }: { items: NavItem[] }) {
           const on = isActive(path, it.href);
           return (
             <Link key={it.href} href={it.href} aria-current={on ? "page" : undefined}
-              className={cx("flex items-center gap-3 rounded-xl px-3 py-2.5 font-semibold", on ? "bg-accent/15 text-foreground" : "text-muted hover:bg-background")}>
+              className={cx("flex items-center gap-3 rounded-xl px-3 py-2.5 font-semibold", on ? "bg-brand text-brand-contrast" : "text-muted hover:bg-background")}>
               <span className="relative"><Icon /><Badge n={it.badge} /></span>
               {it.label}
             </Link>
@@ -54,7 +54,7 @@ export function NavLinks({ items }: { items: NavItem[] }) {
           const on = isActive(path, it.href);
           return (
             <Link key={it.href} href={it.href} aria-current={on ? "page" : undefined}
-              className={cx("flex flex-col items-center gap-0.5 py-2 text-[11px] font-semibold", on ? "text-accent-strong" : "text-muted")}>
+              className={cx("flex flex-col items-center gap-0.5 py-2 text-[11px] font-semibold", on ? "font-bold text-foreground" : "text-muted")}>
               <span className="relative"><Icon /><Badge n={it.badge} /></span>
               {it.label}
             </Link>

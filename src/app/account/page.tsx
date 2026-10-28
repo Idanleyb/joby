@@ -59,15 +59,15 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   return (
     <PageShell title="החשבון שלי">
       {me.suspended ? (
-        <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">החשבון מושעה. לבירור פנו לתמיכה.</p>
+        <p role="alert" className="rounded-xl bg-danger-bg px-4 py-3 text-sm text-danger">החשבון מושעה. לבירור פנו לתמיכה.</p>
       ) : null}
-      {justFinished ? <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm dark:bg-emerald-950/30">הפרופיל נשמר ✓</p> : null}
+      {justFinished ? <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">הפרופיל נשמר ✓</p> : null}
 
       {approved && provider ? (
         <div className="flex items-center gap-4 rounded-2xl bg-brand p-5 text-brand-contrast">
-          <span aria-hidden="true" className="flex size-14 shrink-0 items-center justify-center rounded-full bg-accent text-2xl">🎖</span>
+          <span aria-hidden="true" className="flex size-14 shrink-0 items-center justify-center rounded-full bg-brand text-2xl">🎖</span>
           <div className="flex flex-col">
-            <span className="text-lg font-extrabold">{provider.provider_type === "spouse" ? "בן/בת זוג של מילואימניק מאומת" : "מילואימניק/ית מאומת/ת"}</span>
+            <span className="text-lg font-bold">{provider.provider_type === "spouse" ? "בן/בת זוג של מילואימניק מאומת" : "מילואימניק/ית מאומת/ת"}</span>
             {provider.provider_type === "reservist" && provider.days_band ? (
               <span className="text-sm opacity-90">{BAND[provider.days_band]} ימי מילואים מאז 7 באוקטובר 2023</span>
             ) : null}
@@ -102,7 +102,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               <Link href="/profile" className={`${linkCls} border border-border`}>לפרופיל שלי</Link>
             )}
             {["more_info", "rejected"].includes(provider.verification_status) ? (
-              <Link href="/provider/onboarding/proof" className="text-sm font-semibold text-accent-strong underline">לפרטים ולהעלאה מחדש</Link>
+              <Link href="/provider/onboarding/proof" className="text-sm font-semibold text-foreground underline">לפרטים ולהעלאה מחדש</Link>
             ) : null}
           </>
         ) : (

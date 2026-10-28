@@ -16,7 +16,7 @@ export async function FeedbackBanner() {
   const warning = items.filter((i) => i.state === "warning").sort((a, b) => (a.deadline ?? "").localeCompare(b.deadline ?? ""))[0];
   if (!blocked && !warning) return null;
   return (
-    <div role="alert" className={blocked ? "bg-red-700 text-white" : "bg-amber-100 text-amber-950 dark:bg-amber-900/60 dark:text-amber-50"}>
+    <div role="alert" className={blocked ? "bg-danger text-white" : "border-b border-action-border bg-action text-foreground"}>
       <p className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 px-4 py-2.5 text-sm">
         <span>
           {blocked

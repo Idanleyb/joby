@@ -90,7 +90,7 @@ export function ReservistProofForm({ userId }: { userId: string }) {
   const okCount = analysis.files.filter((f) => f.ok).length;
   return (
     <Card className="flex flex-col gap-5">
-      <div className={below ? "rounded-xl bg-amber-50 p-4 dark:bg-amber-950/30" : "rounded-xl bg-background p-4"}>
+      <div className={below ? "rounded-xl bg-info p-4" : "rounded-xl bg-background p-4"}>
         <p className="text-lg font-bold">
           ספרנו {analysis.days} ימים {okCount === 1 ? "בטופס אחד" : `ב-${okCount} טפסים`}
         </p>
@@ -108,7 +108,7 @@ export function ReservistProofForm({ userId }: { userId: string }) {
               <span dir="ltr" className="truncate text-left">{f.name}</span>
               {f.fullName ? <span className="text-muted">{f.fullName}</span> : null}
             </span>
-            <span className={f.ok ? "font-semibold text-emerald-700 dark:text-emerald-400" : "font-semibold text-red-600"}>
+            <span className={f.ok ? "font-semibold text-foreground" : "font-semibold text-danger"}>
               {f.ok ? KIND_LABEL[f.kind] : f.kind === "other" ? KIND_LABEL.other : "לא קריא"}
             </span>
           </li>

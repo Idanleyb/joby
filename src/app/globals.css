@@ -1,30 +1,33 @@
 @import "tailwindcss";
 
-/* Joby design tokens. Brand name and palette are provisional (navy / amber). */
+/*
+ * Joby design tokens — v3 "Black & White" (see the v3 design file).
+ * Black carries structure and the main action, white carries content.
+ * Amber 50 marks things you can act on; Blue 50 marks things you should know.
+ * Light theme only: there is no dark mode.
+ */
 :root {
-  --background: #f7f8fb;
-  --surface: #ffffff;
-  --foreground: #1f2a44;
-  --muted: #5a6275;
-  --border: #d5dae3;
-  --brand: #1f2a44;
-  --brand-contrast: #ffffff;
-  --accent: #e8a33d;
-  --accent-strong: #b7791f;
-}
+  color-scheme: light;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f1524;
-    --surface: #182136;
-    --foreground: #eef1f7;
-    --muted: #a6aec2;
-    --border: #2a3550;
-    --brand: #e8a33d;
-    --brand-contrast: #1f2a44;
-    --accent: #e8a33d;
-    --accent-strong: #f0b95f;
-  }
+  --background: #f5f6f5;     /* Gray 50 — page canvas */
+  --surface: #ffffff;        /* cards, inputs */
+  --foreground: #000000;     /* headings and body text */
+  --muted: #5e6460;          /* secondary text (6:1 on white) */
+  --border: #e2e5e3;         /* cards, dividers */
+  --input-border: #c7ccc9;   /* field outlines */
+  --chip: #ebedec;           /* neutral chips, disabled */
+
+  --brand: #000000;          /* primary buttons, header, active states */
+  --brand-contrast: #ffffff;
+  --brand-hover: #2a2a2a;
+
+  --action: #fdf3e1;         /* Amber 50 — credits, save, selected chips, action banners */
+  --action-border: #ebcb8f;
+  --info: #eaf2fb;           /* Blue 50 — tips, info and success notes */
+  --gain: #e8f3ed;           /* Forest 50 — credits received (gift, refunds) */
+
+  --danger: #c2362b;         /* errors, rejected, blocked */
+  --danger-bg: #fcebea;
 }
 
 @theme inline {
@@ -33,14 +36,29 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-input-border: var(--input-border);
+  --color-chip: var(--chip);
   --color-brand: var(--brand);
   --color-brand-contrast: var(--brand-contrast);
-  --color-accent: var(--accent);
-  --color-accent-strong: var(--accent-strong);
+  --color-brand-hover: var(--brand-hover);
+  --color-action: var(--action);
+  --color-action-border: var(--action-border);
+  --color-info: var(--info);
+  --color-gain: var(--gain);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
   --font-sans: "Heebo Variable", system-ui, sans-serif;
+  --font-display: "Rubik Variable", "Heebo Variable", system-ui, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Headings use Rubik; body text stays Heebo. */
+@layer base {
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+  }
 }

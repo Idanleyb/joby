@@ -35,7 +35,7 @@ export default async function ProvidersSearchPage({ searchParams }: { searchPara
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-8">
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-extrabold sm:text-3xl">נותני שירות</h1>
+        <h1 className="text-[26px] font-bold sm:text-3xl">נותני שירות</h1>
         <p className="text-sm text-muted">מילואימניקים מאומתים ובני/בנות זוגם.</p>
       </header>
       <Suspense>
@@ -48,7 +48,7 @@ export default async function ProvidersSearchPage({ searchParams }: { searchPara
       </Suspense>
       {sort === "distance" && !origin ? <p className="text-sm text-muted">לבחירת מיון לפי מרחק, בחרו עיר באזור.</p> : null}
       {sort === "rating" ? <p className="text-xs text-muted">דירוג מוצג אחרי 3 חוות דעת לפחות; נותני שירות חדשים מופיעים אחריהם.</p> : null}
-      {error ? <p role="alert" className="text-sm text-red-600">החיפוש נכשל. נסו שוב.</p> : null}
+      {error ? <p role="alert" className="text-sm text-danger">החיפוש נכשל. נסו שוב.</p> : null}
       <p className="text-sm font-semibold">{cards.length} תוצאות</p>
       {!cards.length ? <p className="rounded-2xl bg-background p-6 text-center text-muted">לא נמצאו נותני שירות. נסו להרחיב את האזור או לבחור קטגוריה אחרת.</p> : null}
       <ul className="flex flex-col gap-3">{cards.map((c) => <li key={c.user_id}><ProviderCard p={c} /></li>)}</ul>
