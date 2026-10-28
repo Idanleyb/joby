@@ -23,6 +23,7 @@ export async function SiteHeader() {
           <RoleSwitch mode={mode} />
         ) : (
           <nav className="flex items-center gap-1 text-sm font-semibold">
+            <Link href="/how-it-works" className="hidden rounded-lg px-3 py-2 hover:bg-background sm:inline">איך זה עובד</Link>
             <Link href="/jobs" className="rounded-lg px-3 py-2 hover:bg-background">עבודות</Link>
             <Link href="/providers" className="rounded-lg px-3 py-2 hover:bg-background">נותני שירות</Link>
             <Link href={me ? "/onboarding" : "/login"} className="rounded-lg px-3 py-2 hover:bg-background">{me ? "המשך הרשמה" : "כניסה"}</Link>

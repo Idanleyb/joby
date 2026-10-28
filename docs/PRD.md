@@ -1,4 +1,4 @@
-**PRODUCT REQUIREMENTS DOCUMENT · v1.4**
+**PRODUCT REQUIREMENTS DOCUMENT · v1.5**
 
 **Joby — MVP**
 
@@ -7,14 +7,14 @@ The Miluim Marketplace
 *Closed beta and public launch scope for a verified, reservist-only
 supply marketplace where anyone can hire.*
 
-|              |                                                                                         |
-|--------------|-----------------------------------------------------------------------------------------|
-| **Product**  | Joby (working name) — the Miluim Marketplace                                            |
-| **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027)              |
-| **Owner**    | Idan Leibovitch, Founder & Product                                                      |
-| **Date**     | October 25, 2026                                                                        |
-| **Status**   | v1.4 — menus, profiles, notifications and provider search (October 28, 2026) · in build |
-| **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                              |
+|              |                                                                                           |
+|--------------|-------------------------------------------------------------------------------------------|
+| **Product**  | Joby (working name) — the Miluim Marketplace                                              |
+| **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027)                |
+| **Owner**    | Idan Leibovitch, Founder & Product                                                        |
+| **Date**     | October 25, 2026                                                                          |
+| **Status**   | v1.5 — direct requests, feedback screens, introduction page (October 28, 2026) · in build |
+| **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                                |
 
 <table>
 <colgroup>
@@ -245,7 +245,17 @@ Approved by the founder on October 25, 2026.
 | 15     | Channels            | WhatsApp and email for notifications and support                                                                                                                                                                                                         |
 | 16     | Platform            | Responsive web app, Hebrew, right-to-left, mobile-first                                                                                                                                                                                                  |
 
-## 4.1 Changes in v1.4 (October 28, 2026)
+## 4.1 Changes in v1.5 (October 28, 2026)
+
+| **Change**            | **Detail**                                                                                                                                                                                                                      |
+|-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Introduction page** | New public page "How Joby works": what the marketplace is, steps for reservists, for spouses and for posters, the credit table and refund rules, and how feedback works. Numbers are read from the live settings (section 5.21) |
+| **Credit note**       | Every place a provider can apply shows "Applying: 10 credits" with the short refund rule and a link to the credit rules: job cards, the job page and the apply form                                                             |
+| **Direct requests**   | Built: "Send a direct request" on provider profiles, a Requests tab in Proposals (approve for 2 credits / decline with an optional reason), and the poster's "Sent requests" page (section 5.11)                                |
+| **Feedback screens**  | Built: feedback list and form for both sides, home reminders, and a site-wide banner from the last reminder (countdown) and while blocked (section 5.14)                                                                        |
+| **Reviews**           | Reviews show the job title, like Upwork's work history                                                                                                                                                                          |
+
+## 4.2 Changes in v1.4 (October 28, 2026)
 
 | **Change**           | **Detail**                                                                                                                                                                                                               |
 |----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -258,13 +268,13 @@ Approved by the founder on October 25, 2026.
 | **Distance**         | Israeli localities with coordinates (1,263 CBS localities). Matching, job alerts, the area filter and provider search use straight-line distance between town centres                                                    |
 | **Provider search**  | New: filters by category, area and availability; sort by rating, distance, price or A–Z (section 5.20)                                                                                                                   |
 
-## 4.2 Changes in v1.3 (October 27, 2026)
+## 4.3 Changes in v1.3 (October 27, 2026)
 
 | **Change**                  | **Detail**                                                                                                                                                      |
 |-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Categories per provider** | Unlimited (was up to 3). Providers choose every subcategory they work in; job alerts match on all of them. Skills stay at up to 15 and service cards at up to 3 |
 
-## 4.3 Changes in v1.2 (October 27, 2026)
+## 4.4 Changes in v1.2 (October 27, 2026)
 
 | **Change**       | **Detail**                                                                                                                                                                                           |
 |------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -272,7 +282,7 @@ Approved by the founder on October 25, 2026.
 | **Refunds**      | No refund for unopened applications when the job ends with a hire. Without a hire (closed, expired after up to 60 days, or removed), all applications are refunded except withdrawn ones             |
 | **Duplicate ID** | Accounts are unique by user and phone (enforced by the database). The same ID number on a second account goes to admin to approve or reject; a dedicated resolution process is planned for Phase 1–2 |
 
-## 4.4 Changes in v1.1
+## 4.5 Changes in v1.1
 
 | **Change**               | **Detail**                                                                                                        |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------|
@@ -670,6 +680,14 @@ availability date, optional attached service card. Confirmation sheet:
 - One open request per poster–provider pair; maximum 20 requests per
   poster per day.
 
+- Screens (v1.5): the request form offers only the provider's own
+  subcategories and can link one of the poster's open jobs; the provider
+  sees requests in Proposals → Requests with the brief, the poster's
+  trust signals and days left; decline reasons (optional): no
+  availability, outside my area, not my field, budget, other — shown to
+  the poster; the poster follows requests on "Sent requests", with
+  contact details once approved.
+
 ## 5.12 Engagements and hiring (ENG)
 
 An **engagement** is the record that two sides agreed to work together.
@@ -744,6 +762,13 @@ reputations now and powers matching later.
 | Private note to Joby (optional)        |                                        |
 
 **RULES**
+
+- Screens (v1.5): a "Feedback" list (also on the home page) with every
+  engagement still awaiting the user's feedback — before the request it
+  can already be given ("early"); the form asks "Did you work together?"
+  (Yes / Not yet / No; "Not yet" disappears after the last reminder); a
+  site-wide banner shows the deadline from the last reminder and the
+  block while it applies.
 
 - Provider score = average overall rating of revealed reviews, shown
   with one decimal and the review count after 3 reviews. Poster rating
@@ -853,6 +878,23 @@ or rejects them. Meanwhile the provider can register under Others →
   subcategories, town and distance, rating, jobs done, starting price.
 
 - Blocked users do not see each other.
+
+## 5.21 Introduction page — How Joby works (INT)
+
+- Public page at /how-it-works, linked from the landing page, the
+  visitor header, the signed-in sidebar, the account page and the first
+  onboarding screen.
+
+- Sections: what Joby is · reservists: sign up → Form 3010 (30+ days
+  since 7 Oct 2023) → profile → apply or accept requests · spouses:
+  invitation from the verified reservist → proof of partnership →
+  profile · credits: welcome 100, apply 10, approve a request 2, decline
+  free, posting and requests free for posters; refunds and their
+  exceptions · posters: sign up with phone → post a job free or send a
+  direct request → choose → feedback · feedback and trust.
+
+- All numbers come from the live settings, so the page never disagrees
+  with the rules.
 
 # 6 Category Taxonomy
 

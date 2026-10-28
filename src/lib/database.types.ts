@@ -1679,6 +1679,7 @@ export type Database = {
     Views: {
       public_reviews: {
         Row: {
+          engagement_title: string | null;
           author_name: string | null;
           brief_clarity: number | null;
           comment: string | null;

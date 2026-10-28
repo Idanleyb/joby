@@ -25,16 +25,16 @@ export function notificationText(event: string, p: P): { text: string; href?: st
     case "verification_more_info": return { icon: "?", text: "הבודק צריך מידע נוסף לאימות", href: "/provider/onboarding/proof" };
     case "spouse_approved": return { icon: "✓", text: "בן/בת הזוג שלך אומת/ה", href: "/account" };
     case "spouse_eligibility_decided": return { icon: "•", text: "עודכן מצב הזכאות של בן/בת הזוג", href: "/account" };
-    case "direct_request_received": return { icon: "📨", text: "קיבלת פנייה ישירה ממפרסם", href: "/proposals" };
-    case "request_approved": return { icon: "✓", text: "נותן השירות אישר את הפנייה שלך", href: "/home" };
-    case "request_declined": return { icon: "•", text: "נותן השירות לא יכול לקבל את הפנייה", href: "/home" };
-    case "request_expired": return { icon: "⏳", text: "פנייה ישירה פגה בלי מענה", href: "/home" };
-    case "feedback_request": return { icon: "★", text: "איך היה? נשמח למשוב קצר על העבודה", href: "/home" };
-    case "feedback_reminder": return { icon: "★", text: "תזכורת: משוב על עבודה שהסתיימה", href: "/home" };
-    case "feedback_block_warning": return { icon: "⚠", text: "בלי משוב, החשבון ייחסם לפעולות חדשות בקרוב", href: "/home" };
-    case "account_blocked_feedback": return { icon: "⛔", text: "החשבון חסום לפעולות חדשות עד שתשאירו משוב", href: "/home" };
+    case "direct_request_received": return { icon: "📨", text: "קיבלת פנייה ישירה ממפרסם", href: "/proposals?tab=requests" };
+    case "request_approved": return { icon: "✓", text: "נותן השירות אישר את הפנייה שלך — פרטי הקשר זמינים", href: "/poster/requests" };
+    case "request_declined": return { icon: "•", text: "נותן השירות לא יכול לקבל את הפנייה", href: "/poster/requests" };
+    case "request_expired": return { icon: "⏳", text: "פנייה ישירה פגה בלי מענה", href: "/poster/requests" };
+    case "feedback_request": return { icon: "★", text: "איך היה? נשמח למשוב קצר על העבודה", href: `/feedback/${s(p.engagement_id)}` };
+    case "feedback_reminder": return { icon: "★", text: "תזכורת: משוב על עבודה שהסתיימה", href: "/feedback" };
+    case "feedback_block_warning": return { icon: "⚠", text: "בלי משוב, החשבון ייחסם לפעולות חדשות בקרוב", href: "/feedback" };
+    case "account_blocked_feedback": return { icon: "⛔", text: "החשבון חסום לפעולות חדשות עד שתשאירו משוב", href: "/feedback" };
     case "account_unblocked": return { icon: "✓", text: "תודה על המשוב! החשבון פעיל שוב", href: "/home" };
-    case "feedback_revealed": return { icon: "★", text: "חוות דעת חדשה עליך פורסמה", href: "/profile" };
+    case "feedback_revealed": return { icon: "★", text: "חוות הדעת על העבודה פורסמו", href: "/profile" };
     default: return { icon: "•", text: "עדכון מ-Joby" };
   }
 }

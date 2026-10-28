@@ -43,7 +43,17 @@ export function PosterTrust({ p, name }: { p?: PosterSignals | null; name?: stri
   );
 }
 
-export function JobCard({ job, action }: { job: JobCardData; action?: ReactNode }) {
+/** The cost of applying, with the short refund rule (PRD 5.10, 5.13). */
+export function ApplyCostNote({ cost, className }: { cost: number; className?: string }) {
+  return (
+    <p className={cx("text-xs text-muted", className)}>
+      💳 הגשת מועמדות: <b className="text-foreground">{cost} קרדיטים</b> · חוזרים אם העבודה נסגרת בלי גיוס או שהפנייה לא נפתחה 30 ימים ·{" "}
+      <Link href="/how-it-works#credits" className="underline">חוקי הקרדיטים</Link>
+    </p>
+  );
+}
+
+export function JobCard({ job, action, applyCost }: { job: JobCardData; action?: ReactNode; applyCost?: number }) {
   return (
     <article className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
       <div className="flex items-start justify-between gap-3">
@@ -56,6 +66,7 @@ export function JobCard({ job, action }: { job: JobCardData; action?: ReactNode 
         <PosterTrust p={job.poster} name={job.onBehalfName} />
         <span className="text-xs text-muted">{applicantRange(job.application_count)}</span>
       </div>
+      {applyCost ? <ApplyCostNote cost={applyCost} className="border-t border-border pt-2" /> : null}
       {action}
     </article>
   );

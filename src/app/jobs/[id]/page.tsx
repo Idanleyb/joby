@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { APP_STATUS_LABEL, JOB_STATUS_LABEL } from "@/lib/jobs";
-import { JobDetails } from "@/components/job-view";
+import { ApplyCostNote, JobDetails } from "@/components/job-view";
 import { Card } from "@/components/ui";
 import { ApplyForm } from "./apply-form";
 import { SaveButton } from "../save-button";
@@ -73,6 +73,7 @@ export default async function JobPage({ params, searchParams }: { params: Promis
         ) : uid ? null : job.attachment_paths.length ? <p className="mt-3 text-sm text-muted">יש קבצים מצורפים — גלויים למשתמשים מחוברים.</p> : null}
       </Card>
       {cta}
+      {job.poster_id !== uid && open ? <ApplyCostNote cost={applyCost} className="text-center" /> : null}
     </main>
   );
 }

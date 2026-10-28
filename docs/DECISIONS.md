@@ -4,6 +4,14 @@ Decisions made while building, beyond what the PRD states. Add new entries at th
 
 | Date | Decision | Why |
 |---|---|---|
+| 2026-10-28 | **10-credit note** (founder request "a note for every job application of 10 credits") read as: a visible cost note with the short refund rule wherever a provider can apply — job cards, the job page and the apply form. | Most likely meaning; easy to change if a different note was meant. |
+| 2026-10-28 | **Introduction page is public** at /how-it-works and reads every number (credits, days) from the live settings. | Shareable for recruiting reservists; never out of date. |
+| 2026-10-28 | **Direct request form offers only the provider's own subcategories**; the poster can link one of their open jobs. | A request outside the provider's fields would be declined anyway. |
+| 2026-10-28 | **Decline reasons for direct requests** (optional): no availability, outside my area, not my field, budget, other — shown to the poster. | PRD says "optional reason"; a short list keeps it quick and polite. |
+| 2026-10-28 | **Without enough credits to approve**, the provider sees "contact support for more credits" (beta) and can still decline. | PRD 5.11. |
+| 2026-10-28 | **Feedback list includes engagements before the +3-day request** ("early"). | Decision of 2026-10-27: early feedback allowed. |
+| 2026-10-28 | **Feedback banner** across the site from the last reminder (deadline = request + 30 days) and while blocked. | PRD 5.14 "in-app banner shows the countdown". |
+| 2026-10-28 | **Reviews show the job title** (view `public_reviews` gains `engagement_title`). | Like Upwork's work history; more useful to the reader. |
 | 2026-10-28 | **Founder (PRD v1.4): reserve badge shows the days band only** (30+ / 60+ / 120+), never the exact count. | Privacy; the band is already stored and Form 3010 is deleted after approval. |
 | 2026-10-28 | **Founder (PRD v1.4): address is the city only.** | Enough for distance; no street addresses stored. |
 | 2026-10-28 | **Founder (PRD v1.4): phone menu is a bottom bar**; computer menu is a sidebar. | Always visible on phones. |

@@ -46,6 +46,7 @@ export function NavLinks({ items }: { items: NavItem[] }) {
             </Link>
           );
         })}
+        <Link href="/how-it-works" className="mt-auto rounded-xl px-3 py-2.5 text-sm text-muted hover:bg-background">איך Joby עובד?</Link>
       </nav>
       <nav aria-label="תפריט ראשי" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] md:hidden">
         {items.filter((it) => it.mobile).map((it) => {

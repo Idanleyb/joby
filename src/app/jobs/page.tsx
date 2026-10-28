@@ -18,11 +18,13 @@ export default async function JobsFeedPage({ searchParams }: { searchParams: Pro
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const [{ data: provider }, { data: saves }, cats] = await Promise.all([
+  const [{ data: provider }, { data: saves }, cats, { data: costRow }] = await Promise.all([
     user ? supabase.from("provider_profiles").select("user_id").eq("user_id", user.id).maybeSingle() : Promise.resolve({ data: null }),
     user ? supabase.from("job_saves").select("job_id").eq("user_id", user.id) : Promise.resolve({ data: [] as { job_id: string }[] }),
     loadCategoryTree(),
+    supabase.from("app_settings").select("value").eq("key", "apply_cost").maybeSingle(),
   ]);
+  const applyCost = Number(costRow?.value ?? 10);
   const savedIds = new Set((saves ?? []).map((s) => s.job_id));
   const canMatch = Boolean(provider);
   const tab = sp.tab === "saved" && user ? "saved" : sp.tab === "new" || !canMatch ? "new" : "match";
@@ -93,6 +95,7 @@ export default async function JobsFeedPage({ searchParams }: { searchParams: Pro
           <li key={j.id}>
             <JobCard
               job={{ ...j, subName: j.sub.name_he, onBehalfName: j.on_behalf_name }}
+              applyCost={applyCost}
               action={user ? <SaveButton jobId={j.id} saved={savedIds.has(j.id)} /> : undefined}
             />
           </li>

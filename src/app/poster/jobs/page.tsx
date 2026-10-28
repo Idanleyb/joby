@@ -23,7 +23,7 @@ export default async function PosterJobsPage() {
     .order("published_at", { ascending: false });
 
   return (
-    <PageShell title="העבודות שלי" subtitle={<Link href="/jobs/new" className="font-semibold text-foreground underline underline-offset-4">+ פרסום עבודה חדשה</Link>}>
+    <PageShell title="העבודות שלי" subtitle={<><Link href="/jobs/new" className="font-semibold text-foreground underline underline-offset-4">+ פרסום עבודה חדשה</Link> · <Link href="/poster/requests" className="underline underline-offset-4">פניות ישירות שנשלחו</Link></>}>
       {!jobs?.length ? <p className="text-muted">עוד לא פורסמו עבודות.</p> : null}
       <ul className="flex flex-col gap-3">
         {jobs?.map((j) => {

@@ -39,6 +39,7 @@ pg_cron (every 10 min) ──▶ private.run_timers()
 | `1000_unlimited_subcategories` | `max_subcategories` = 0 means unlimited | 5.2 (v1.3) |
 | `1100_job_saves` | saved jobs (owner-only) | 5.9 |
 | `1200_profiles_search` | `il_cities` + `distance_km`, distance matching (`my_matching_jobs`, `jobs_near`), job alerts, "application viewed" notice, `search_providers`, availability + gallery, poster "about", `portfolio` bucket | 5.5, 5.7, 5.9, 5.19, 5.20 |
+| `20261028000100_reviews_title` | `public_reviews` adds `engagement_title` | 5.14 |
 
 ## Key RPC functions
 
@@ -95,6 +96,10 @@ Uploads go to `<bucket>/<user_id>/<file>`. Verification documents are private to
 | `/invite/[token]` | Spouse invite landing (PRD 5.6) |
 | `/account` | Roles, wizard progress, credits, spouse invite |
 | `/home` | Dashboard for the current role (PRD 5.19) |
+| `/how-it-works` | Public introduction: roles, steps, credit rules, feedback (PRD 5.21) |
+| `/providers/[id]/request`, `/poster/requests` | Send a direct request; poster's sent requests (PRD 5.11) |
+| `/proposals?tab=requests` | Provider's direct-request inbox: approve (2 credits) / decline |
+| `/feedback`, `/feedback/[engagementId]` | Feedback due and the two-way form; site-wide banner in the layout (PRD 5.14) |
 | `/notifications` | In-app notifications, mark read (PRD 5.19) |
 | `/profile`, `/profile/edit` | Own profile: provider (strength, availability, gallery, edit links) or poster (view + edit) |
 | `/posters/[id]` | Public poster profile (PRD 5.7) |
@@ -119,4 +124,4 @@ Uploads go to `<bucket>/<user_id>/<file>`. Verification documents are private to
 
 ## What is not built yet
 
-Direct requests (Flow B) and feedback screens; the notification worker (WhatsApp/email); reports UI; cleanup of abandoned uploads; payments (P1).
+The notification worker (WhatsApp/email); reports UI; cleanup of abandoned uploads; payments (P1).

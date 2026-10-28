@@ -544,6 +544,8 @@ select test.check((select about from public.poster_profiles where user_id = test
 select test.expect_error($$update public.poster_profiles set hires = 99 where user_id = auth.uid()$$, 'permission denied');
 reset role;
 
+select test.check(not exists (select 1 from public.public_reviews where engagement_title is null), 'reviews carry the engagement title');
+
 \echo ' 14. ledger integrity'
 select test.check(not exists (
   select 1 from public.provider_wallets w

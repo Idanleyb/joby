@@ -7,6 +7,7 @@ import { getMode } from "@/lib/mode";
 import { loadProviderView } from "@/lib/provider-view";
 import { strengthWithTips } from "@/lib/strength";
 import { daysLeft } from "@/lib/jobs";
+import { loadFeedbackDue, type FeedbackItem } from "@/lib/feedback";
 import { JobCard } from "@/components/job-view";
 import { ProviderCard, loadProviderCards } from "@/components/provider-card";
 import { Card, cx } from "@/components/ui";
@@ -14,6 +15,21 @@ import { Card, cx } from "@/components/ui";
 export const metadata: Metadata = { title: "בית · Joby" };
 
 const btn = "inline-flex min-h-12 items-center justify-center rounded-xl px-5 font-semibold";
+
+function FeedbackDue({ items }: { items: FeedbackItem[] }) {
+  if (!items.length) return null;
+  return (
+    <Card className="flex flex-col gap-2 border-accent">
+      <h2 className="font-bold">משוב על עבודות ({items.length})</h2>
+      <ul className="flex flex-col gap-1 text-sm">
+        {items.slice(0, 3).map((i) => (
+          <li key={i.engagementId}><Link href={`/feedback/${i.engagementId}`} className="underline underline-offset-4">{i.title}</Link> <span className="text-muted">· <bdi>{i.otherName}</bdi></span></li>
+        ))}
+      </ul>
+      {items.length > 3 ? <Link href="/feedback" className="text-sm underline">לכל המשובים</Link> : null}
+    </Card>
+  );
+}
 
 function Tile({ href, value, label, warn }: { href: string; value: React.ReactNode; label: string; warn?: boolean }) {
   return (
@@ -32,16 +48,21 @@ export default async function HomePage() {
   const mode = await getMode(me);
   const supabase = await createClient();
   const first = me.fullName?.split(" ")[0] ?? "";
-  const { count: unread } = await supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", me.userId).is("read_at", null);
+  const [{ count: unread }, feedbackDue] = await Promise.all([
+    supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", me.userId).eq("in_app", true).is("read_at", null),
+    loadFeedbackDue(me.userId),
+  ]);
 
   if (mode === "work") {
     const p = await loadProviderView(me.userId);
     if (!p) redirect("/account");
     const approved = p.verification_status === "approved";
-    const [{ data: wallet }, { data: matchIds }, { data: apps }] = await Promise.all([
+    const [{ data: wallet }, { data: matchIds }, { data: apps }, { count: pendingRequests }, { data: costRow }] = await Promise.all([
       supabase.from("provider_wallets").select("balance").eq("provider_id", me.userId).maybeSingle(),
       supabase.rpc("my_matching_jobs"),
       supabase.from("applications").select("status").eq("provider_id", me.userId),
+      supabase.from("direct_requests").select("id", { count: "exact", head: true }).eq("provider_id", me.userId).eq("status", "pending").gt("expires_at", new Date().toISOString()),
+      supabase.from("app_settings").select("value").eq("key", "apply_cost").maybeSingle(),
     ]);
     const ids = (matchIds ?? []) as string[];
     const { data: latest } = ids.length
@@ -62,6 +83,13 @@ export default async function HomePage() {
             {p.verification_status !== "pending" ? <Link href="/provider/onboarding/proof" className={`${btn} bg-brand text-brand-contrast`}>להשלמת האימות</Link> : null}
           </Card>
         ) : null}
+        <FeedbackDue items={feedbackDue.filter((i) => !i.iAmPoster)} />
+        {pendingRequests ? (
+          <Link href="/proposals?tab=requests" className="flex items-center justify-between gap-3 rounded-2xl border border-accent bg-accent/10 p-4 font-semibold">
+            <span>📨 {pendingRequests === 1 ? "פנייה ישירה אחת ממתינה לתשובה" : `${pendingRequests} פניות ישירות ממתינות לתשובה`}</span>
+            <span aria-hidden="true">←</span>
+          </Link>
+        ) : null}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Tile href="/jobs" value={ids.length} label="עבודות מתאימות" />
           <Tile href="/proposals" value={active} label={hot ? `הצעות פעילות · ${hot} חמות` : "הצעות פעילות"} warn={hot > 0} />
@@ -77,7 +105,7 @@ export default async function HomePage() {
         ) : null}
         <section className="flex flex-col gap-3">
           <div className="flex items-center justify-between"><h2 className="text-lg font-bold">עבודות חדשות בשבילך</h2><Link href="/jobs" className="text-sm underline">לכולן</Link></div>
-          {latest?.length ? latest.map((j) => <JobCard key={j.id} job={{ ...j, subName: j.sub?.name_he ?? "" }} />)
+          {latest?.length ? latest.map((j) => <JobCard key={j.id} job={{ ...j, subName: j.sub?.name_he ?? "" }} applyCost={Number(costRow?.value ?? 10)} />)
             : <p className="rounded-2xl bg-background p-5 text-sm text-muted">אין כרגע עבודות פתוחות בתחומים ובאזור שלך. נשלח התראה כשתתפרסם אחת.</p>}
         </section>
       </main>
@@ -97,7 +125,9 @@ export default async function HomePage() {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 py-8">
       <h1 className="text-2xl font-extrabold sm:text-3xl">שלום{first ? `, ${first}` : ""}</h1>
+      <FeedbackDue items={feedbackDue.filter((i) => i.iAmPoster)} />
       <Link href="/jobs/new" className={`${btn} bg-brand text-brand-contrast`}>+ פרסום עבודה חדשה</Link>
+      <p className="-mt-2 text-center text-sm text-muted">או <Link href="/providers" className="underline">פנייה ישירה לנותן שירות</Link> · <Link href="/poster/requests" className="underline">הפניות ששלחתי</Link></p>
       <div className="grid grid-cols-3 gap-3">
         <Tile href="/poster/jobs" value={open.length} label="עבודות פתוחות" />
         <Tile href="/poster/jobs" value={newApps} label="מועמדים חדשים" warn={newApps > 0} />

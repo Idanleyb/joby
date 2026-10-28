@@ -158,8 +158,10 @@ export function ProviderProfile({ p, cvHref, actions }: { p: NonNullable<Provide
                   <span className="font-semibold"><bdi>{r.author_name}</bdi></span>
                   <span className="text-xs text-muted">{r.submitted_at ? dmy(r.submitted_at) : ""}</span>
                 </div>
+                {r.engagement_title ? <span className="text-sm font-semibold">{r.engagement_title}</span> : null}
                 {r.overall ? <Stars n={r.overall} /> : null}
                 {r.comment ? <p className="text-sm">{r.comment}</p> : null}
+                {r.would_again ? <span className="text-xs text-emerald-700 dark:text-emerald-400">✓ יעסיק/ה שוב</span> : null}
               </li>
             ))}
           </ul>

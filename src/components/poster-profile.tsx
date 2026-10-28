@@ -63,7 +63,7 @@ export function PosterProfile({ p, actions }: { p: PosterView; actions?: React.R
           <ul className="flex flex-col gap-3">
             {p.reviews.map((r) => (
               <li key={r.id} className="flex flex-col gap-1 border-b border-border pb-3 last:border-0">
-                <span className="text-sm font-semibold"><bdi>{r.author_name}</bdi></span>
+                <span className="text-sm font-semibold"><bdi>{r.author_name}</bdi>{r.engagement_title ? <span className="font-normal text-muted"> · {r.engagement_title}</span> : null}</span>
                 {r.overall ? <Stars n={r.overall} /> : null}
                 {r.comment ? <p className="text-sm">{r.comment}</p> : null}
               </li>

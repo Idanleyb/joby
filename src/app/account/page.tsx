@@ -149,6 +149,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <NotificationPrefs initial={prefs} provider={Boolean(provider)} />
       </Card>
 
+      <Link href="/how-it-works" className="text-center text-sm font-semibold underline">איך Joby עובד — כולל חוקי הקרדיטים</Link>
       {admin ? <Link href="/admin" className="text-center text-sm font-semibold underline">ניהול (Admin)</Link> : null}
 
       <form action="/auth/signout" method="post">

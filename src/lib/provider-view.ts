@@ -14,7 +14,7 @@ export async function loadProviderView(userId: string) {
     supabase.from("service_cards").select("id, title, description, price_from, unit, mode, subcategories(name_he)").eq("provider_id", userId).order("created_at"),
     supabase.from("provider_experience").select("title, organization, start_date, end_date").eq("provider_id", userId).order("sort_order"),
     supabase.from("provider_education").select("degree, institution, end_date").eq("provider_id", userId).order("sort_order"),
-    supabase.from("public_reviews").select("id, overall, comment, submitted_at, author_name").eq("subject_id", userId)
+    supabase.from("public_reviews").select("id, overall, comment, submitted_at, author_name, engagement_title, would_again").eq("subject_id", userId)
       .eq("direction", "poster_to_provider").order("submitted_at", { ascending: false }).limit(20),
   ]);
   const gallery = (p.gallery_paths ?? []).map((path) => ({ path, url: supabase.storage.from("portfolio").getPublicUrl(path).data.publicUrl }));
