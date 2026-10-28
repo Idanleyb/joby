@@ -34,7 +34,7 @@ function FeedbackDue({ items }: { items: FeedbackItem[] }) {
 function Tile({ href, value, label, warn }: { href: string; value: React.ReactNode; label: string; warn?: boolean }) {
   return (
     <Link href={href} className={cx("flex flex-col gap-0.5 rounded-2xl border bg-surface p-4 hover:bg-background", warn ? "border-foreground" : "border-border")}>
-      <span className="text-2xl font-extrabold">{value}</span>
+      <span className="text-xl font-bold">{value}</span>
       <span className="text-sm text-muted">{label}</span>
     </Link>
   );
@@ -76,7 +76,7 @@ export default async function HomePage() {
 
     return (
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 py-8">
-        <h1 className="text-2xl font-extrabold sm:text-3xl">שלום{first ? `, ${first}` : ""}</h1>
+        <h1 className="text-[26px] font-bold sm:text-3xl">שלום{first ? `, ${first}` : ""}</h1>
         {!approved ? (
           <Card className="flex flex-col gap-2 border-foreground">
             <p className="font-semibold">{p.verification_status === "pending" ? "האימות בבדיקה — בדרך כלל עד 24 שעות." : "כדי להגיש מועמדות צריך להשלים את אימות השירות."}</p>
@@ -98,7 +98,7 @@ export default async function HomePage() {
         </div>
         {value < 100 ? (
           <Card className="flex flex-col gap-2">
-            <div className="flex items-center justify-between"><h2 className="font-bold">חוזק הפרופיל</h2><span className="font-extrabold">{value}%</span></div>
+            <div className="flex items-center justify-between"><h2 className="font-bold">חוזק הפרופיל</h2><span className="font-bold">{value}%</span></div>
             <div className="h-2 overflow-hidden rounded-full bg-background"><div className="h-full rounded-full bg-brand" style={{ width: `${value}%` }} /></div>
             {tips[0] ? <Link href={tips[0].href} className="text-sm underline underline-offset-4">הוספת {tips[0].label} (+{tips[0].gain}%)</Link> : null}
           </Card>
@@ -124,7 +124,7 @@ export default async function HomePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 py-8">
-      <h1 className="text-2xl font-extrabold sm:text-3xl">שלום{first ? `, ${first}` : ""}</h1>
+      <h1 className="text-[26px] font-bold sm:text-3xl">שלום{first ? `, ${first}` : ""}</h1>
       <FeedbackDue items={feedbackDue.filter((i) => i.iAmPoster)} />
       <Link href="/jobs/new" className={`${btn} bg-brand text-brand-contrast`}>+ פרסום עבודה חדשה</Link>
       <p className="-mt-2 text-center text-sm text-muted">או <Link href="/providers" className="underline">פנייה ישירה לנותן שירות</Link> · <Link href="/poster/requests" className="underline">הפניות ששלחתי</Link></p>

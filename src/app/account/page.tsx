@@ -67,7 +67,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <div className="flex items-center gap-4 rounded-2xl bg-brand p-5 text-brand-contrast">
           <span aria-hidden="true" className="flex size-14 shrink-0 items-center justify-center rounded-full bg-brand text-2xl">🎖</span>
           <div className="flex flex-col">
-            <span className="text-lg font-extrabold">{provider.provider_type === "spouse" ? "בן/בת זוג של מילואימניק מאומת" : "מילואימניק/ית מאומת/ת"}</span>
+            <span className="text-lg font-bold">{provider.provider_type === "spouse" ? "בן/בת זוג של מילואימניק מאומת" : "מילואימניק/ית מאומת/ת"}</span>
             {provider.provider_type === "reservist" && provider.days_band ? (
               <span className="text-sm opacity-90">{BAND[provider.days_band]} ימי מילואים מאז 7 באוקטובר 2023</span>
             ) : null}

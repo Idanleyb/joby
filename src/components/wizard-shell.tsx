@@ -28,7 +28,7 @@ export function WizardShell({ current, reached, title, subtitle, children }: {
         </ol>
       </nav>
       <header className="flex flex-col gap-2">
-        <h1 className="text-2xl font-extrabold sm:text-3xl">{title}</h1>
+        <h1 className="text-[26px] font-bold sm:text-3xl">{title}</h1>
         {subtitle ? <p className="text-muted">{subtitle}</p> : null}
       </header>
       {children}

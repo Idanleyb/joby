@@ -45,7 +45,7 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
     <section id={id} className="flex scroll-mt-20 flex-col gap-4 rounded-2xl border border-border bg-surface p-5 sm:p-6">
       <header className="flex flex-col gap-1">
         <span className="text-xs font-bold tracking-wide text-foreground">{eyebrow}</span>
-        <h2 className="text-xl font-extrabold sm:text-2xl">{title}</h2>
+        <h2 className="text-xl font-bold">{title}</h2>
       </header>
       {children}
     </section>
@@ -60,7 +60,7 @@ export default async function HowItWorksPage() {
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-8 sm:py-12">
       <header className="flex flex-col gap-3">
         <span className="text-sm font-semibold text-foreground">איך זה עובד</span>
-        <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl">המרקטפלייס של המילואים</h1>
+        <h1 className="text-[26px] font-bold leading-tight sm:text-3xl">המרקטפלייס של המילואים</h1>
         <p className="text-lg leading-relaxed text-muted">מילואימניקים מאומתים ובני ובנות הזוג שלהם מציעים שירותים — מגינון ושיפוצים ועד פיתוח תוכנה וייעוץ. כל אחד יכול לפרסם עבודה או לפנות ישירות לנותן שירות.</p>
         <nav aria-label="בעמוד הזה" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
           {toc.map(([id, label]) => <a key={id} href={`#${id}`} className="shrink-0 rounded-full border border-border bg-surface px-3 py-1.5 text-sm font-semibold">{label}</a>)}
@@ -108,17 +108,17 @@ export default async function HowItWorksPage() {
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="flex flex-col gap-1 rounded-xl bg-gain p-4">
             <span className="text-xs font-semibold text-muted">מקבלים בהצטרפות</span>
-            <span className="font-display text-3xl font-bold" dir="ltr">+{s.welcome_credits}</span>
+            <span className="font-display text-2xl font-bold" dir="ltr">+{s.welcome_credits}</span>
             <span className="text-sm">מתנה עם אישור האימות</span>
           </div>
           <div className="flex flex-col gap-1 rounded-xl border border-action-border bg-action p-4">
             <span className="text-xs font-semibold text-muted">הגשת מועמדות</span>
-            <span className="font-display text-3xl font-bold" dir="ltr">−{s.apply_cost}</span>
+            <span className="font-display text-2xl font-bold" dir="ltr">−{s.apply_cost}</span>
             <span className="text-sm">= {Math.floor(s.welcome_credits / s.apply_cost)} הגשות מהמתנה</span>
           </div>
           <div className="flex flex-col gap-1 rounded-xl border border-action-border bg-action p-4">
             <span className="text-xs font-semibold text-muted">אישור פנייה ישירה</span>
-            <span className="font-display text-3xl font-bold" dir="ltr">−{s.request_cost}</span>
+            <span className="font-display text-2xl font-bold" dir="ltr">−{s.request_cost}</span>
             <span className="text-sm">= {Math.floor(s.welcome_credits / s.request_cost)} אישורים מהמתנה</span>
           </div>
         </div>

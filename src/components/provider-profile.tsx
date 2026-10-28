@@ -12,7 +12,7 @@ const since = (iso: string) => `${MONTHS[new Date(iso).getMonth()]} ${new Date(i
 function Stat({ value, label }: { value: React.ReactNode; label: string }) {
   return (
     <div className="flex flex-col items-center rounded-xl bg-background px-2 py-3 text-center">
-      <span className="text-lg font-extrabold">{value}</span>
+      <span className="text-lg font-bold">{value}</span>
       <span className="text-xs text-muted">{label}</span>
     </div>
   );
@@ -54,7 +54,7 @@ export function ProviderProfile({ p, cvHref, actions }: { p: NonNullable<Provide
           </div>
         )}
         <div className="flex flex-col gap-1.5">
-          <h2 className="text-2xl font-extrabold"><bdi>{p.display_name}</bdi></h2>
+          <h2 className="text-[22px] font-bold"><bdi>{p.display_name}</bdi></h2>
           {p.headline ? <p className="font-medium">{p.headline}</p> : null}
           <div className="flex flex-wrap gap-1.5">
             {verified ? <Badge>{p.provider_type === "spouse" ? "בן/בת זוג של מילואימניק" : "מילואימניק מאומת"}</Badge> : <Badge tone="muted">ממתין לאימות</Badge>}

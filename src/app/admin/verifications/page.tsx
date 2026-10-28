@@ -22,7 +22,7 @@ export default async function VerificationQueue({ searchParams }: { searchParams
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
-        <h1 className="text-2xl font-extrabold">אימותים</h1>
+        <h1 className="text-[26px] font-bold">אימותים</h1>
         <Link href="/admin/verifications" className={cx("text-sm", view === "open" ? "font-bold underline" : "text-muted")}>פתוחים</Link>
         <Link href="/admin/verifications?view=done" className={cx("text-sm", view === "done" ? "font-bold underline" : "text-muted")}>הוחלטו</Link>
       </div>

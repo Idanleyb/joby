@@ -15,7 +15,7 @@ export default async function AdminHeldJobs() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-extrabold">עבודות בבדיקה ({jobs?.length ?? 0})</h1>
+      <h1 className="text-[26px] font-bold">עבודות בבדיקה ({jobs?.length ?? 0})</h1>
       {!jobs?.length ? <p className="text-muted">התור ריק.</p> : null}
       {jobs?.map((j) => (
         <Card key={j.id} className="flex flex-col gap-3">

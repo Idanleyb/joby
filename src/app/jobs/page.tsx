@@ -62,7 +62,7 @@ export default async function JobsFeedPage({ searchParams }: { searchParams: Pro
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-8">
       <header className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-extrabold sm:text-3xl">הזדמנויות</h1>
+        <h1 className="text-[26px] font-bold sm:text-3xl">הזדמנויות</h1>
         <Link href="/jobs/new" className="rounded-xl border border-border bg-surface px-4 py-2 text-sm font-semibold">פרסום עבודה</Link>
       </header>
 

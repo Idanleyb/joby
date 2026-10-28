@@ -52,7 +52,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
     <div className="flex flex-col gap-5">
       <Link href="/admin/verifications" className="text-sm text-muted underline">← לתור</Link>
       <div className="flex flex-wrap items-baseline gap-3">
-        <h1 className="text-2xl font-extrabold">{person?.full_name ?? "—"}</h1>
+        <h1 className="text-[26px] font-bold">{person?.full_name ?? "—"}</h1>
         <span dir="ltr" className="text-sm text-muted">{formatIlPhone(person?.phone)}</span>
         <span className="text-sm">{r.kind === "spouse" ? "בן/בת זוג" : "טופס 3010"} · ממתין {hoursSince(r.submitted_at)} ש׳</span>
         {r.duplicate_suspected ? <span className="rounded-full bg-danger-bg px-2 py-0.5 text-xs font-semibold text-danger">אותה ת״ז נמצאה בחשבון אחר</span> : null}

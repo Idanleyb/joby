@@ -77,7 +77,7 @@ export function JobDetails({ job }: { job: JobCardData }) {
     <article className="flex flex-col gap-4">
       <header className="flex flex-col gap-2">
         <p className="text-sm text-muted">{job.subName}</p>
-        <h1 className="text-2xl font-extrabold sm:text-3xl">{job.title}</h1>
+        <h1 className="text-[26px] font-bold sm:text-3xl">{job.title}</h1>
         <PosterTrust p={job.poster} name={job.onBehalfName} />
       </header>
       <dl className="grid grid-cols-2 gap-3 rounded-2xl bg-background p-4 text-sm">

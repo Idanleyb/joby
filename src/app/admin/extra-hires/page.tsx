@@ -14,7 +14,7 @@ export default async function AdminExtraHires() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-extrabold">בקשות לגיוס נוסף ({reqs?.length ?? 0})</h1>
+      <h1 className="text-[26px] font-bold">בקשות לגיוס נוסף ({reqs?.length ?? 0})</h1>
       <p className="text-sm text-muted">מפרסם שכבר בחר נותן שירות מבקש לגייס עוד אחד. אישור יוצר התקשרות נוספת; שני הצדדים מקבלים הודעה בכל מקרה.</p>
       {!reqs?.length ? <p className="text-muted">אין בקשות פתוחות.</p> : null}
       {reqs?.map((r) => (

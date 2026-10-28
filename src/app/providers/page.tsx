@@ -35,7 +35,7 @@ export default async function ProvidersSearchPage({ searchParams }: { searchPara
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-8">
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-extrabold sm:text-3xl">נותני שירות</h1>
+        <h1 className="text-[26px] font-bold sm:text-3xl">נותני שירות</h1>
         <p className="text-sm text-muted">מילואימניקים מאומתים ובני/בנות זוגם.</p>
       </header>
       <Suspense>
