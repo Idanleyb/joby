@@ -4,6 +4,7 @@ Decisions made while building, beyond what the PRD states. Add new entries at th
 
 | Date | Decision | Why |
 |---|---|---|
+| 2026-10-28 | **Founder: automatic sign-out after 60 minutes without activity.** Activity = clicks, typing, scrolling, touches, and any request to the app. The last-activity time is a cookie shared by all tabs and the server: the server (proxy) signs out a request that comes after more than an hour and sends the user to sign in again, then back to the page they were on; an open tab warns 2 minutes before and signs out on time. Configurable with `NEXT_PUBLIC_IDLE_MINUTES`. | Security for shared phones and computers. Works on any Supabase plan. |
 | 2026-10-28 | **10-credit note** (founder request "a note for every job application of 10 credits") read as: a visible cost note with the short refund rule wherever a provider can apply — job cards, the job page and the apply form. | Most likely meaning; easy to change if a different note was meant. |
 | 2026-10-28 | **Introduction page is public** at /how-it-works and reads every number (credits, days) from the live settings. | Shareable for recruiting reservists; never out of date. |
 | 2026-10-28 | **Direct request form offers only the provider's own subcategories**; the poster can link one of their open jobs. | A request outside the provider's fields would be declined anyway. |

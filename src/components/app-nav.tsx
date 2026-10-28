@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getMe, nextStep } from "@/lib/onboarding";
 import { getMode } from "@/lib/mode";
 import { NavLinks, type NavItem } from "@/components/nav-links";
+import { IdleWatcher } from "@/components/idle-watcher";
 
 /** Signed-in navigation for the current mode. Nothing for visitors or during onboarding. */
 export async function AppNav() {
@@ -33,5 +34,10 @@ export async function AppNav() {
         { href: "/profile", label: "פרופיל", icon: "user", mobile: true },
         { href: "/account", label: "חשבון", icon: "settings", mobile: true },
       ];
-  return <NavLinks items={items} />;
+  return (
+    <>
+      <NavLinks items={items} />
+      <IdleWatcher />
+    </>
+  );
 }

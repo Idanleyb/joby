@@ -118,6 +118,10 @@ Uploads go to `<bucket>/<user_id>/<file>`. Verification documents are private to
 
 `AppNav` (sidebar on computers, bottom bar on phones) and the header's `RoleSwitch` are in the root layout. The menu depends on the mode cookie `joby_mode` ("work" / "hire", `src/lib/mode.ts`). Layouts are not re-rendered on client navigation, so sign-in does a full page load, onboarding actions call `revalidatePath("/", "layout")`, and the bell count is refetched on each page change.
 
+## Session timeout
+
+60 minutes without activity signs the user out (`src/lib/idle.ts`). The cookie `joby_last_active` holds the time of the last activity: `src/lib/supabase/proxy.ts` updates it on every request (not on prefetches) and signs out when it is older than the limit, redirecting page requests to `/login?reason=idle&next=…`; `IdleWatcher` (in the signed-in menu) updates it on user input, warns 2 minutes before, and signs out an idle open tab. Optional second layer on the Supabase Pro plan: Authentication → Sessions → inactivity timeout.
+
 ## AI document reading (src/lib/ai)
 
 `client.ts` sends a PDF / image (or DOCX converted to text) with a forced tool call; `form3010.ts` and `cv.ts` define the schemas and clean the output. `reserve-days.ts` merges periods and counts days from 7 Oct 2023. Files go browser → Supabase Storage directly; the server downloads them with the service key only to read them.
