@@ -74,8 +74,8 @@ export default async function HowItWorksPage() {
             ["🎖", "נותנים שירות", `מילואימניקים עם ${s.eligibility_min_days}+ ימי מילואים מאז 7 באוקטובר 2023, ובני/בנות הזוג שלהם`],
             ["🧭", "מגייסים", "כל אחד: אדם פרטי, עסק, מגייס/ת או גוף ציבורי"],
             ["🤝", "כל תחום", "מגינון, ניקיון ושיפוצים ועד תכנות, שיווק, משפטים ופיננסים"],
-          ].map(([icon, t, b]) => (
-            <div key={t} className="flex flex-col gap-1 rounded-xl bg-background p-4">
+          ].map(([icon, t, b], i) => (
+            <div key={t} className={i === 1 ? "flex flex-col gap-1 rounded-xl bg-info p-4" : "flex flex-col gap-1 rounded-xl border border-action-border bg-action p-4"}>
               <span aria-hidden="true" className="text-2xl">{icon}</span>
               <span className="font-bold">{t}</span>
               <span className="text-sm text-muted">{b}</span>
@@ -105,27 +105,68 @@ export default async function HowItWorksPage() {
 
       <Section id="credits" eyebrow="קרדיטים" title="איך עובדים הקרדיטים">
         <p className="text-sm text-muted">רק נותני שירות משתמשים בקרדיטים. פרסום עבודות ופניות ישירות — חינם למגייסים.</p>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div className="flex flex-col gap-1 rounded-xl bg-info p-4">
+            <span className="text-xs font-semibold text-muted">מקבלים בהצטרפות</span>
+            <span className="font-display text-3xl font-bold" dir="ltr">+{s.welcome_credits}</span>
+            <span className="text-sm">מתנה עם אישור האימות</span>
+          </div>
+          <div className="flex flex-col gap-1 rounded-xl border border-action-border bg-action p-4">
+            <span className="text-xs font-semibold text-muted">הגשת מועמדות</span>
+            <span className="font-display text-3xl font-bold" dir="ltr">−{s.apply_cost}</span>
+            <span className="text-sm">= {Math.floor(s.welcome_credits / s.apply_cost)} הגשות מהמתנה</span>
+          </div>
+          <div className="flex flex-col gap-1 rounded-xl border border-action-border bg-action p-4">
+            <span className="text-xs font-semibold text-muted">אישור פנייה ישירה</span>
+            <span className="font-display text-3xl font-bold" dir="ltr">−{s.request_cost}</span>
+            <span className="text-sm">= {Math.floor(s.welcome_credits / s.request_cost)} אישורים מהמתנה</span>
+          </div>
+        </div>
+
         <div className="overflow-hidden rounded-xl border border-border">
           <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-chip text-xs text-muted"><th className="p-3 text-start font-semibold">פעולה</th><th className="p-3 text-start font-semibold">סוג</th><th className="p-3 text-end font-semibold">קרדיטים</th></tr>
+            </thead>
             <tbody className="divide-y divide-border">
-              {[
-                ["מתנת הצטרפות, עם אישור האימות", `+${s.welcome_credits}`],
-                ["הגשת מועמדות לעבודה", `−${s.apply_cost}`],
-                ["אישור פנייה ישירה ממפרסם", `−${s.request_cost}`],
-                ["דחיית פנייה ישירה", "0"],
-                ["פרסום עבודה או שליחת פנייה (מגייסים)", "חינם"],
-              ].map(([l, v]) => (
-                <tr key={l}><td className="p-3">{l}</td><td className="p-3 text-end font-bold" dir="ltr">{v}</td></tr>
+              {([
+                ["מתנת הצטרפות, עם אישור האימות", `+${s.welcome_credits}`, "gain"],
+                ["הגשת מועמדות לעבודה", `−${s.apply_cost}`, "cost"],
+                ["אישור פנייה ישירה ממפרסם", `−${s.request_cost}`, "cost"],
+                ["דחיית פנייה ישירה", "0", "free"],
+                ["פרסום עבודה או שליחת פנייה (מגייסים)", "חינם", "free"],
+              ] as const).map(([l, v, kind]) => (
+                <tr key={l} className={kind === "gain" ? "bg-info" : kind === "cost" ? "bg-action" : "bg-surface"}>
+                  <td className="p-3">{l}</td>
+                  <td className="p-3">
+                    <span className={kind === "free"
+                      ? "rounded-full bg-chip px-2.5 py-0.5 text-xs font-semibold"
+                      : "rounded-full bg-surface px-2.5 py-0.5 text-xs font-semibold"}>
+                      {kind === "gain" ? "מקבלים" : kind === "cost" ? "משלמים" : "בלי עלות"}
+                    </span>
+                  </td>
+                  <td className="p-3 text-end font-display text-base font-bold" dir="ltr">{v}</td>
+                </tr>
               ))}
             </tbody>
           </table>
         </div>
+
         <h3 className="font-bold">מתי הקרדיטים חוזרים</h3>
-        <ul className="flex list-disc flex-col gap-1.5 ps-5 text-sm leading-relaxed">
-          <li>העבודה נסגרה <b>בלי גיוס</b> — המפרסם סגר אותה, היא פגה (אחרי {s.job_open_days} ימים, או {s.job_open_days + s.job_extension_days} עם הארכה) או שהוסרה: כל המועמדים מקבלים את הקרדיטים בחזרה.</li>
-          <li>המפרסם <b>לא פתח</b> את המועמדות שלך {s.credit_back_unopened_days} ימים, והעבודה עדיין פתוחה: הקרדיטים חוזרים אוטומטית.</li>
-          <li>אין החזר כשמבטלים מועמדות בעצמכם, ואין החזר אחרי שהמפרסם בחר נותן שירות לעבודה.</li>
-        </ul>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="flex flex-col gap-1.5 rounded-xl bg-info p-4 text-sm leading-relaxed">
+            <span className="self-start rounded-full bg-surface px-2.5 py-0.5 text-xs font-bold">↩ חוזרים לכולם</span>
+            <span>העבודה נסגרה <b>בלי גיוס</b> — המפרסם סגר אותה, היא פגה (אחרי {s.job_open_days} ימים, או {s.job_open_days + s.job_extension_days} עם הארכה) או שהוסרה.</span>
+          </div>
+          <div className="flex flex-col gap-1.5 rounded-xl bg-info p-4 text-sm leading-relaxed">
+            <span className="self-start rounded-full bg-surface px-2.5 py-0.5 text-xs font-bold">↩ חוזרים אוטומטית</span>
+            <span>המפרסם <b>לא פתח</b> את המועמדות שלך {s.credit_back_unopened_days} ימים, והעבודה עדיין פתוחה.</span>
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5 rounded-xl border border-action-border bg-action p-4 text-sm leading-relaxed">
+          <span className="self-start rounded-full bg-surface px-2.5 py-0.5 text-xs font-bold">שימו לב · אין החזר</span>
+          <span>כשמבטלים מועמדות בעצמכם, או אחרי שהמפרסם בחר נותן שירות לעבודה.</span>
+        </div>
         <p className="text-xs text-muted">קרדיטים לא פגים, אין להם ערך כספי ואי אפשר להעביר אותם. בתקופת הבטא, לקרדיטים נוספים פונים לתמיכה; אחרי ההשקה יהיה אפשר לרכוש.</p>
       </Section>
 
