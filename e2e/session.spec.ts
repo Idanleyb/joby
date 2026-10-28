@@ -13,7 +13,8 @@ test("server: a request after more than an hour of inactivity signs the user out
   await page.getByRole("button", { name: "סיום" }).click();
   await expectPath(page, "/home");
 
-  // Replace the host-only cookie the app set (same name, same host, same path).
+  // Leave the app first, so no open tab records activity, then make the last activity 61 minutes old.
+  await page.goto("about:blank");
   await context.addCookies([{ name: "joby_last_active", value: String(Date.now() - 61 * 60_000), url: baseURL! }]);
   expect((await context.cookies()).filter((c) => c.name === "joby_last_active")).toHaveLength(1);
   await page.goto("/poster/jobs");

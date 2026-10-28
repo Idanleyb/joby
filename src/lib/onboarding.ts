@@ -13,6 +13,7 @@ export type Me = {
   isProvider: boolean;
   suspended: boolean;
   hasPosterProfile: boolean;
+  isDemo: boolean;
 };
 
 /** The signed-in user and their onboarding state, or null when signed out. */
@@ -26,7 +27,7 @@ export async function getMe(): Promise<Me | null> {
   const [{ data: profile }, { data: poster }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("full_name, phone, phone_verified, terms_accepted_at, is_poster, is_provider, status")
+      .select("full_name, phone, phone_verified, terms_accepted_at, is_poster, is_provider, status, is_demo")
       .eq("id", user.id)
       .maybeSingle(),
     supabase.from("poster_profiles").select("user_id").eq("user_id", user.id).maybeSingle(),
@@ -42,6 +43,7 @@ export async function getMe(): Promise<Me | null> {
     isProvider: profile?.is_provider ?? false,
     suspended: profile?.status === "suspended",
     hasPosterProfile: Boolean(poster),
+    isDemo: profile?.is_demo ?? false,
   };
 }
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getMe, nextStep } from "@/lib/onboarding";
 import { getMode } from "@/lib/mode";
 import { RoleSwitch } from "@/components/role-switch";
+import { DemoBadge } from "@/components/ui";
 
 export async function SiteHeader() {
   let me = null;
@@ -16,10 +17,13 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-20 bg-brand text-brand-contrast">
       <div className="mx-auto flex h-14 items-center justify-between gap-3 px-4">
-        <Link href={ready ? "/home" : "/"} className="flex items-center gap-2 font-display text-xl font-bold">
-          <span aria-hidden="true" className="flex size-8 items-center justify-center rounded-lg bg-surface text-lg text-foreground">J</span>
-          Joby
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href={ready ? "/home" : "/"} className="flex items-center gap-2 font-display text-xl font-bold">
+            <span aria-hidden="true" className="flex size-8 items-center justify-center rounded-lg bg-surface text-lg text-foreground">J</span>
+            Joby
+          </Link>
+          {me?.isDemo ? <span className="flex items-center gap-1 text-xs"><DemoBadge />חשבון דמו</span> : null}
+        </div>
         {mode ? (
           <RoleSwitch mode={mode} />
         ) : (

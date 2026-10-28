@@ -67,7 +67,7 @@ export default async function HomePage() {
     const ids = (matchIds ?? []) as string[];
     const { data: latest } = ids.length
       ? await supabase.from("jobs")
-          .select("id, title, mode, city, budget_type, budget_min, budget_max, timeline, published_at, application_count, sub:subcategories(name_he), poster:poster_profiles(display_name, poster_type, jobs_posted, jobs_closed, hires, rating_avg, rating_count)")
+          .select("id, is_demo, title, mode, city, budget_type, budget_min, budget_max, timeline, published_at, application_count, sub:subcategories(name_he), poster:poster_profiles(display_name, poster_type, jobs_posted, jobs_closed, hires, rating_avg, rating_count)")
           .in("id", ids.slice(0, 50)).order("published_at", { ascending: false }).limit(3)
       : { data: [] };
     const active = (apps ?? []).filter((a) => ["sent", "viewed", "shortlisted", "contacted"].includes(a.status)).length;

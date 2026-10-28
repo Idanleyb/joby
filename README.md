@@ -114,6 +114,16 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
    ```
 6. **Vercel**: import the GitHub repo, framework Next.js, and set the variables from `.env.example` (Production and Preview separately). `SUPABASE_SECRET_KEY` and `ID_HASH_SALT` are server-only — never prefix them with `NEXT_PUBLIC_`.
 
+## Demo data
+
+Sample data for demonstrations: 100 providers (80 reservists, 20 spouses), 28 posters, 52 jobs, 377 applications, 155 direct requests, 130 engagements with feedback, and a full credit ledger — all tagged **דמו**.
+
+1. Apply the database update that adds demo support (migration `20261028000200_demo_data`).
+2. Supabase → Authentication → Providers → Phone → **Test phone numbers**: add `972500000101`, `972500000102`, `972500000103`, `972500000104`, each with code `123456` (no SMS is sent).
+3. Supabase → SQL Editor → paste `supabase/demo/load_demo.sql` → Run.
+
+Sign in with 050-000-0101 (Yossi, reservist electrician), 050-000-0102 (Noa, spouse illustrator), 050-000-0103 (Avi Mor, private poster) or 050-000-0104 (Lumen Analytics, HR). Remove everything with the button on `/admin` or `select private.purge_demo();`. Demo and real users can never transact with each other.
+
 ## Data credits
 
 Israeli localities and coordinates (`il_cities`, `src/lib/il-localities.json`) come from the npm package `israel-geolocation` 1.0.1 (MIT), built from Israeli government (CBS) data.

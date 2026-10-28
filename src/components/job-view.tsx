@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { applicantRange, budgetText, placeText, timeAgo, TIMELINE_LABEL } from "@/lib/jobs";
-import { cx } from "@/components/ui";
+import { DemoBadge, cx } from "@/components/ui";
 
 export type JobCardData = {
   id: string;
@@ -20,6 +20,7 @@ export type JobCardData = {
   subName: string;
   poster?: PosterSignals | null;
   onBehalfName?: string | null;
+  is_demo?: boolean;
 };
 export type PosterSignals = {
   display_name: string; poster_type: string; jobs_posted: number; jobs_closed: number; hires: number;
@@ -58,7 +59,7 @@ export function JobCard({ job, action, applyCost }: { job: JobCardData; action?:
     <article className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
       <div className="flex items-start justify-between gap-3">
         <Link href={`/jobs/${job.id}`} className="text-lg font-bold leading-snug hover:underline">{job.title}</Link>
-        <span className="shrink-0 text-xs text-muted">{timeAgo(job.published_at)}</span>
+        <span className="flex shrink-0 items-center gap-1.5 text-xs text-muted">{job.is_demo ? <DemoBadge /> : null}{timeAgo(job.published_at)}</span>
       </div>
       <p className="text-sm text-muted">{job.subName} · 📍 {placeText(job)}</p>
       <p className={cx("text-sm font-bold", job.budget_type === "open_to_quotes" && "font-semibold text-muted")}>{budgetText(job)}</p>
@@ -76,7 +77,7 @@ export function JobDetails({ job }: { job: JobCardData }) {
   return (
     <article className="flex flex-col gap-4">
       <header className="flex flex-col gap-2">
-        <p className="text-sm text-muted">{job.subName}</p>
+        <p className="flex items-center gap-2 text-sm text-muted">{job.subName}{job.is_demo ? <DemoBadge /> : null}</p>
         <h1 className="text-[26px] font-bold sm:text-3xl">{job.title}</h1>
         <PosterTrust p={job.poster} name={job.onBehalfName} />
       </header>

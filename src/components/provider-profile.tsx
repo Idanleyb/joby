@@ -1,5 +1,5 @@
 import type { ProviderView } from "@/lib/provider-view";
-import { cx } from "@/components/ui";
+import { DemoBadge, cx } from "@/components/ui";
 
 const UNIT: Record<string, string> = { job: "לעבודה", hour: "לשעה", day: "ליום", project: "לפרויקט" };
 const MODE: Record<string, string> = { onsite: "בשטח", remote: "מרחוק", both: "בשטח ומרחוק" };
@@ -54,7 +54,7 @@ export function ProviderProfile({ p, cvHref, actions }: { p: NonNullable<Provide
           </div>
         )}
         <div className="flex flex-col gap-1.5">
-          <h2 className="text-[22px] font-bold"><bdi>{p.display_name}</bdi></h2>
+          <h2 className="flex items-center gap-2 text-[22px] font-bold"><bdi>{p.display_name}</bdi>{p.is_demo ? <DemoBadge /> : null}</h2>
           {p.headline ? <p className="font-medium">{p.headline}</p> : null}
           <div className="flex flex-wrap gap-1.5">
             {verified ? <Badge>{p.provider_type === "spouse" ? "בן/בת זוג של מילואימניק" : "מילואימניק מאומת"}</Badge> : <Badge tone="muted">ממתין לאימות</Badge>}

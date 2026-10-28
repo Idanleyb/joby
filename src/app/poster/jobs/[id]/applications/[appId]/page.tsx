@@ -3,16 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requirePoster } from "@/lib/poster";
-import { formatIlPhone } from "@/lib/phone";
 import { APP_STATUS_LABEL } from "@/lib/jobs";
 import { ActionButton } from "@/components/action-button";
 import { Card, PageShell } from "@/components/ui";
 import { contactApp, declineApp, hireApp, requestExtraHire, shortlistApp } from "../../../actions";
 import { MarkViewed } from "./mark-viewed";
+import { ContactCard } from "@/components/contact-card";
 
 export const metadata: Metadata = { title: "מועמד/ת · Joby" };
 
-const linkBtn = "inline-flex min-h-12 items-center justify-center rounded-xl border border-border bg-surface px-4 font-semibold hover:bg-background";
 const UNIT: Record<string, string> = { job: "לעבודה", hour: "לשעה", day: "ליום", project: "לפרויקט" };
 
 export default async function ApplicationPage({ params }: { params: Promise<{ id: string; appId: string }> }) {
@@ -32,7 +31,6 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
   const { data: contact } = revealed ? await supabase.rpc("get_contact", { p_other: a.provider_id }).maybeSingle() : { data: null };
   const inPlay = ["sent", "viewed", "shortlisted", "contacted"].includes(a.status);
   const p = a.provider;
-  const waNumber = contact?.phone?.replace(/^\+/, "");
 
   return (
     <PageShell title={<bdi>{p?.display_name ?? ""}</bdi>} subtitle={<>על העבודה: <Link href={`/poster/jobs/${job.id}`} className="underline underline-offset-4">{job.title}</Link></>}>
@@ -72,11 +70,7 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
       {contact ? (
         <Card className="flex flex-col gap-3">
           <h2 className="font-bold">פרטי קשר</h2>
-          <p className="text-sm"><bdi>{contact.full_name}</bdi> · <span dir="ltr">{formatIlPhone(contact.phone)}</span>{contact.email ? <> · <span dir="ltr">{contact.email}</span></> : null}</p>
-          <div className="grid grid-cols-2 gap-2">
-            <a href={`tel:${contact.phone}`} className={linkBtn}>📞 התקשרות</a>
-            <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noopener noreferrer" className={linkBtn}>WhatsApp</a>
-          </div>
+          <ContactCard c={contact} />
         </Card>
       ) : null}
 

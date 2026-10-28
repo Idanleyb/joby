@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { APP_STATUS_LABEL, JOB_STATUS_LABEL } from "@/lib/jobs";
 import { ApplyCostNote, JobDetails } from "@/components/job-view";
-import { Card } from "@/components/ui";
+import { Banner, Card } from "@/components/ui";
 import { ApplyForm } from "./apply-form";
 import { SaveButton } from "../save-button";
 
@@ -21,13 +21,13 @@ export default async function JobPage({ params, searchParams }: { params: Promis
   const { data: { user } } = await supabase.auth.getUser();
   const { data: job } = await supabase
     .from("jobs")
-    .select("id, poster_id, title, description, skills, mode, city, budget_type, budget_min, budget_max, timeline, start_date, published_at, expires_at, application_count, status, attachment_paths, on_behalf_name, sub:subcategories(name_he), poster:poster_profiles(display_name, poster_type, jobs_posted, jobs_closed, hires, rating_avg, rating_count)")
+    .select("id, is_demo, poster_id, title, description, skills, mode, city, budget_type, budget_min, budget_max, timeline, start_date, published_at, expires_at, application_count, status, attachment_paths, on_behalf_name, sub:subcategories(name_he), poster:poster_profiles(display_name, poster_type, jobs_posted, jobs_closed, hires, rating_avg, rating_count)")
     .eq("id", id).maybeSingle();
   if (!job) notFound();
 
   const uid = user?.id;
   const [{ data: provider }, { data: myApp }, { data: wallet }, { data: cards }, { data: cost }, { data: saved }] = await Promise.all([
-    uid ? supabase.from("provider_profiles").select("verification_status").eq("user_id", uid).maybeSingle() : Promise.resolve({ data: null }),
+    uid ? supabase.from("provider_profiles").select("verification_status, is_demo").eq("user_id", uid).maybeSingle() : Promise.resolve({ data: null }),
     uid ? supabase.from("applications").select("status, sent_at").eq("job_id", id).eq("provider_id", uid).maybeSingle() : Promise.resolve({ data: null }),
     uid ? supabase.from("provider_wallets").select("balance").eq("provider_id", uid).maybeSingle() : Promise.resolve({ data: null }),
     uid ? supabase.from("service_cards").select("id, title").eq("provider_id", uid) : Promise.resolve({ data: [] as { id: string; title: string }[] }),
@@ -48,6 +48,7 @@ export default async function JobPage({ params, searchParams }: { params: Promis
   else if (myApp) cta = (
     <p className={note}>{applied ? "המועמדות נשלחה ✓ נעדכן אותך כשהמפרסם יגיב. " : ""}סטטוס המועמדות שלך: <b>{APP_STATUS_LABEL[myApp.status]}</b> · <Link href="/proposals" className="underline">ההצעות שלי</Link></p>
   );
+  else if (provider && provider.is_demo !== job.is_demo) cta = <p className={note}>{job.is_demo ? "זו עבודת דמו להמחשה. אפשר להגיש אליה רק מחשבון דמו." : "חשבון דמו לא יכול להגיש לעבודות אמיתיות."}</p>;
   else if (!open) cta = <p className={note}>העבודה כבר לא פתוחה להגשות ({JOB_STATUS_LABEL[job.status] ?? "נסגרה"}).</p>;
   else if (!provider) cta = <p className={note}>רק מילואימניקים מאומתים ובני/בנות זוגם יכולים להגיש מועמדות. <Link href="/account" className="underline">הצטרפות כנותן/ת שירות</Link></p>;
   else if (provider.verification_status !== "approved") cta = <p className={note}>אפשר להגיש מועמדות אחרי שהאימות יאושר. <Link href="/account" className="underline">מצב האימות</Link></p>;
@@ -60,6 +61,7 @@ export default async function JobPage({ params, searchParams }: { params: Promis
         <Link href="/jobs" className="text-sm text-muted hover:underline">→ לכל העבודות</Link>
         {uid && job.poster_id !== uid ? <SaveButton jobId={id} saved={Boolean(saved)} /> : null}
       </div>
+      {job.is_demo ? <Banner className="border border-dashed border-foreground/40">עבודת דמו — נתונים לדוגמה כדי להמחיש איך המרקטפלייס עובד.</Banner> : null}
       <Card>
         <JobDetails job={{ ...job, subName: job.sub?.name_he ?? "", onBehalfName: job.on_behalf_name }} />
         {job.poster_id && job.poster ? <Link href={`/posters/${job.poster_id}`} className="mt-3 inline-block text-sm underline underline-offset-4">לפרופיל המפרסם</Link> : null}
@@ -73,7 +75,7 @@ export default async function JobPage({ params, searchParams }: { params: Promis
         ) : uid ? null : job.attachment_paths.length ? <p className="mt-3 text-sm text-muted">יש קבצים מצורפים — גלויים למשתמשים מחוברים.</p> : null}
       </Card>
       {cta}
-      {job.poster_id !== uid && open ? <ApplyCostNote cost={applyCost} className="text-center" /> : null}
+      {job.poster_id !== uid && open && !(provider && provider.is_demo !== job.is_demo) ? <ApplyCostNote cost={applyCost} className="text-center" /> : null}
     </main>
   );
 }

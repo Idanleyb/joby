@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireProvider } from "@/lib/provider";
-import { formatIlPhone } from "@/lib/phone";
 import { APP_STATUS_LABEL, budgetText, timeAgo } from "@/lib/jobs";
 import { PageShell, cx } from "@/components/ui";
 import { Withdraw } from "./withdraw";
+import { ContactCard } from "@/components/contact-card";
 import { RequestActions } from "./request-actions";
 import { PosterTrust } from "@/components/job-view";
 import { REQUEST_STATUS, RequestBriefView } from "@/components/request-view";
@@ -48,7 +48,7 @@ export default async function ProposalsPage({ searchParams }: { searchParams: Pr
     .order("sent_at", { ascending: false });
   const counts = Object.fromEntries((Object.keys(TABS) as (keyof typeof TABS)[]).map((t) => [t, (all ?? []).filter((a) => (TABS[t].statuses as readonly string[]).includes(a.status)).length]));
   const apps = tab === "requests" ? [] : (all ?? []).filter((a) => (TABS[tab].statuses as readonly string[]).includes(a.status));
-  const requestContacts = new Map<string, { full_name: string; phone: string; email: string | null }>();
+  const requestContacts = new Map<string, { full_name: string | null; phone: string | null; email: string | null }>();
   if (tab === "requests") {
     await Promise.all((requests ?? []).filter((r) => r.status === "approved").map(async (r) => {
       const { data } = await supabase.rpc("get_contact", { p_other: r.poster_id }).maybeSingle();
@@ -56,7 +56,7 @@ export default async function ProposalsPage({ searchParams }: { searchParams: Pr
     }));
   }
 
-  const contacts = new Map<string, { full_name: string; phone: string; email: string | null }>();
+  const contacts = new Map<string, { full_name: string | null; phone: string | null; email: string | null }>();
   await Promise.all(
     apps.filter((a) => (a.status === "contacted" || a.status === "hired") && a.job?.poster_id).map(async (a) => {
       const { data } = await supabase.rpc("get_contact", { p_other: a.job!.poster_id! }).maybeSingle();
@@ -98,12 +98,7 @@ export default async function ProposalsPage({ searchParams }: { searchParams: Pr
                   </div>
                   <RequestBriefView r={r} />
                   {live ? <RequestActions requestId={r.id} cost={requestCost} balance={wallet?.balance ?? 0} /> : null}
-                  {c ? (
-                    <p className="rounded-xl bg-background p-3 text-sm">
-                      <bdi>{c.full_name}</bdi> · <a href={`tel:${c.phone}`} dir="ltr" className="underline">{formatIlPhone(c.phone)}</a> ·{" "}
-                      <a href={`https://wa.me/${c.phone.replace(/^\+/, "")}`} target="_blank" rel="noopener noreferrer" className="underline">WhatsApp</a>
-                    </p>
-                  ) : null}
+                  {c ? <ContactCard c={c} /> : null}
                 </li>
               );
             })}
@@ -125,12 +120,7 @@ export default async function ProposalsPage({ searchParams }: { searchParams: Pr
                 {a.job ? budgetText(a.job) : ""}{a.proposed_price ? ` · ההצעה שלי ₪${a.proposed_price.toLocaleString("he-IL")}` : ""} · נשלחה {timeAgo(a.sent_at)}
                 {a.viewed_at ? " · נצפתה ✓" : ""}
               </p>
-              {c ? (
-                <p className="rounded-xl bg-background p-3 text-sm">
-                  <bdi>{c.full_name}</bdi> · <a href={`tel:${c.phone}`} dir="ltr" className="underline">{formatIlPhone(c.phone)}</a> ·{" "}
-                  <a href={`https://wa.me/${c.phone.replace(/^\+/, "")}`} target="_blank" rel="noopener noreferrer" className="underline">WhatsApp</a>
-                </p>
-              ) : null}
+              {c ? <ContactCard c={c} /> : null}
               {tab === "active" ? <Withdraw appId={a.id} /> : null}
             </li>
           );

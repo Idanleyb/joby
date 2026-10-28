@@ -816,6 +816,7 @@ export type Database = {
       };
       jobs: {
         Row: {
+          is_demo: boolean;
           application_count: number;
           attachment_paths: string[];
           budget_max: number | null;
@@ -845,6 +846,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          is_demo?: boolean;
           application_count?: number;
           attachment_paths?: string[];
           budget_max?: number | null;
@@ -873,6 +875,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          is_demo?: boolean;
           application_count?: number;
           attachment_paths?: string[];
           budget_max?: number | null;
@@ -980,6 +983,7 @@ export type Database = {
       };
       poster_profiles: {
         Row: {
+          is_demo: boolean;
           about: string | null;
           city: string;
           company_name: string | null;
@@ -998,6 +1002,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          is_demo?: boolean;
           about?: string | null;
           city: string;
           company_name?: string | null;
@@ -1015,6 +1020,7 @@ export type Database = {
           website?: string | null;
         };
         Update: {
+          is_demo?: boolean;
           about?: string | null;
           city?: string;
           company_name?: string | null;
@@ -1043,6 +1049,7 @@ export type Database = {
       };
       profiles: {
         Row: {
+          is_demo: boolean;
           created_at: string;
           email: string | null;
           full_name: string | null;
@@ -1059,6 +1066,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          is_demo?: boolean;
           created_at?: string;
           email?: string | null;
           full_name?: string | null;
@@ -1074,6 +1082,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          is_demo?: boolean;
           created_at?: string;
           email?: string | null;
           full_name?: string | null;
@@ -1170,6 +1179,7 @@ export type Database = {
       };
       provider_profiles: {
         Row: {
+          is_demo: boolean;
           availability: string;
           busy_until: string | null;
           gallery_paths: string[];
@@ -1204,6 +1214,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          is_demo?: boolean;
           availability?: string;
           busy_until?: string | null;
           gallery_paths?: string[];
@@ -1237,6 +1248,7 @@ export type Database = {
           years_experience?: number | null;
         };
         Update: {
+          is_demo?: boolean;
           availability?: string;
           busy_until?: string | null;
           gallery_paths?: string[];
@@ -1721,6 +1733,7 @@ export type Database = {
         Args: { p_feedback: string; p_reason: string };
         Returns: undefined;
       };
+      admin_purge_demo: { Args: Record<PropertyKey, never>; Returns: number };
       admin_post_job: {
         Args: {
           p_budget_max: number;

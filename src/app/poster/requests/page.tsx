@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requirePoster } from "@/lib/poster";
-import { formatIlPhone } from "@/lib/phone";
 import { daysLeft, timeAgo } from "@/lib/jobs";
 import { REQUEST_STATUS, RequestBriefView } from "@/components/request-view";
+import { ContactCard } from "@/components/contact-card";
 import { PageShell, cx } from "@/components/ui";
 
 export const metadata: Metadata = { title: "פניות שנשלחו · Joby" };
@@ -23,7 +23,7 @@ export default async function SentRequestsPage({ searchParams }: { searchParams:
     .select("id, provider_id, title, description, mode, city, budget_type, budget_min, budget_max, timeline, status, decline_reason, sent_at, expires_at, provider:provider_profiles(display_name, headline)")
     .eq("poster_id", me.userId).order("sent_at", { ascending: false }).limit(100);
 
-  const contacts = new Map<string, { full_name: string; phone: string; email: string | null }>();
+  const contacts = new Map<string, { full_name: string | null; phone: string | null; email: string | null }>();
   await Promise.all((requests ?? []).filter((r) => r.status === "approved").map(async (r) => {
     const { data } = await supabase.rpc("get_contact", { p_other: r.provider_id }).maybeSingle();
     if (data) contacts.set(r.id, data);
@@ -50,15 +50,7 @@ export default async function SentRequestsPage({ searchParams }: { searchParams:
               </div>
               <RequestBriefView r={r} />
               {status === "declined" && r.decline_reason ? <p className="text-sm text-muted">סיבה: {r.decline_reason}</p> : null}
-              {c ? (
-                <div className="flex flex-col gap-2 rounded-xl bg-background p-3 text-sm">
-                  <span><bdi>{c.full_name}</bdi> · <span dir="ltr">{formatIlPhone(c.phone)}</span>{c.email ? <> · <span dir="ltr">{c.email}</span></> : null}</span>
-                  <div className="flex gap-3">
-                    <a href={`tel:${c.phone}`} className="font-semibold underline">📞 התקשרות</a>
-                    <a href={`https://wa.me/${c.phone.replace(/^\+/, "")}`} target="_blank" rel="noopener noreferrer" className="font-semibold underline">WhatsApp</a>
-                  </div>
-                </div>
-              ) : null}
+              {c ? <ContactCard c={c} /> : null}
             </li>
           );
         })}

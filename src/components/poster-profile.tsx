@@ -1,6 +1,7 @@
 import type { PosterView } from "@/lib/poster-view";
 import { JobCard } from "@/components/job-view";
 import { Stars } from "@/components/provider-profile";
+import { DemoBadge } from "@/components/ui";
 
 const TYPE: Record<string, string> = { private: "אדם פרטי", business: "עסק", hr: "מגייס/ת", public_body: "גוף ציבורי או עמותה" };
 const MONTHS = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
@@ -30,7 +31,7 @@ export function PosterProfile({ p, actions }: { p: PosterView; actions?: React.R
           </div>
         )}
         <div className="flex flex-col gap-1.5">
-          <h2 className="text-[22px] font-bold"><bdi>{p.display_name}</bdi></h2>
+          <h2 className="flex items-center gap-2 text-[22px] font-bold"><bdi>{p.display_name}</bdi>{p.is_demo ? <DemoBadge /> : null}</h2>
           <p className="text-sm text-muted">{TYPE[p.poster_type]} · 📍 {p.city} · ב-Joby מאז {since(p.created_at)}</p>
           <div className="flex flex-wrap gap-1.5 text-xs font-semibold">
             <span className="rounded-full bg-brand px-2.5 py-1 text-brand-contrast">✓ טלפון מאומת</span>

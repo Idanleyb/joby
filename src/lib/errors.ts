@@ -21,6 +21,7 @@ export const APP_ERRORS: Record<string, string> = {
   company_required: "יש לציין שם חברה.",
   daily_request_limit: "הגעת למספר הפניות היומי המרבי.",
   feedback_already_submitted: "כבר השארת משוב.",
+  demo_mismatch: "זה תוכן דמו להמחשה. רק חשבונות דמו יכולים לפעול עליו.",
   feedback_blocked: "החשבון חסום עד שתשאירו משוב על עבודה קודמת.",
   insufficient_credits: "אין מספיק קרדיטים.",
   invalid_budget: "טווח התקציב אינו תקין.",

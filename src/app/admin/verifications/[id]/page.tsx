@@ -26,7 +26,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
   const { data: r } = await supabase.from("verification_requests").select("*").eq("id", id).maybeSingle();
   if (!r) notFound();
   const [{ data: person }, { data: link }] = await Promise.all([
-    supabase.from("profiles").select("full_name, phone").eq("id", r.user_id).single(),
+    supabase.from("profiles").select("full_name, phone, is_demo").eq("id", r.user_id).single(),
     r.kind === "spouse"
       ? supabase.from("spouse_links").select("reservist_id, invite_name, status").eq("spouse_user_id", r.user_id).in("status", ["accepted", "approved"]).maybeSingle()
       : Promise.resolve({ data: null }),
@@ -68,7 +68,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
                 <img src={d.url} alt="מסמך" className="w-full rounded-lg border border-border" />
               )) : <p className="text-sm text-danger">הקובץ לא נמצא.</p>}
             </Card>
-          )) : <Card><p className="text-sm text-muted">המסמכים כבר נמחקו.</p></Card>}
+          )) : <Card><p className="text-sm text-muted">{person?.is_demo ? "חשבון דמו — אין מסמכים אמיתיים. אפשר לאשר או לדחות כדי להמחיש את התהליך." : "המסמכים כבר נמחקו."}</p></Card>}
         </div>
 
         <div className="flex flex-col gap-4">

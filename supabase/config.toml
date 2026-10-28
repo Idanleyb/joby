@@ -281,6 +281,11 @@ max_frequency = "30s"
 972500000010 = "123456"
 972500000011 = "123456"
 972500000012 = "123456"
+# Demo sign-in accounts (supabase/demo): Yossi, Noa, Avi, Lumen
+972500000101 = "123456"
+972500000102 = "123456"
+972500000103 = "123456"
+972500000104 = "123456"
 
 # Configure logged in session timeouts.
 # [auth.sessions]

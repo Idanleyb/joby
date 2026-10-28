@@ -9,7 +9,7 @@ export async function loadPosterView(userId: string) {
   const { data: p } = await supabase.from("poster_profiles").select("*").eq("user_id", userId).maybeSingle();
   if (!p) return null;
   const [jobs, reviews] = await Promise.all([
-    supabase.from("jobs").select("id, title, mode, city, budget_type, budget_min, budget_max, timeline, published_at, application_count, sub:subcategories(name_he)")
+    supabase.from("jobs").select("id, is_demo, title, mode, city, budget_type, budget_min, budget_max, timeline, published_at, application_count, sub:subcategories(name_he)")
       .eq("poster_id", userId).eq("status", "open").order("published_at", { ascending: false }).limit(10),
     supabase.from("public_reviews").select("id, overall, comment, submitted_at, author_name, engagement_title, would_again").eq("subject_id", userId)
       .eq("direction", "provider_to_poster").order("submitted_at", { ascending: false }).limit(20),

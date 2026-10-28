@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { cx } from "@/components/ui";
+import { DemoBadge, cx } from "@/components/ui";
 
 export type ProviderCardData = Awaited<ReturnType<typeof loadProviderCards>>[number];
 
@@ -11,7 +11,7 @@ export async function loadProviderCards(rows: { user_id: string; distance_km: nu
   const ids = rows.map((r) => r.user_id);
   const [{ data: profiles }, { data: subs }] = await Promise.all([
     supabase.from("provider_profiles")
-      .select("user_id, display_name, headline, photo_path, city, works_remote, provider_type, rating_avg, rating_count, jobs_done, availability, busy_until")
+      .select("user_id, is_demo, display_name, headline, photo_path, city, works_remote, provider_type, rating_avg, rating_count, jobs_done, availability, busy_until")
       .in("user_id", ids),
     supabase.from("provider_subcategories").select("provider_id, subcategories(name_he)").in("provider_id", ids),
   ]);
@@ -39,7 +39,7 @@ export function ProviderCard({ p }: { p: ProviderCardData }) {
       )}
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-start justify-between gap-2">
-          <span className="font-bold"><bdi>{p.display_name}</bdi> <span className="text-xs font-semibold text-foreground">✓ {p.provider_type === "spouse" ? "בן/בת זוג" : "מילואימניק"}</span></span>
+          <span className="font-bold"><bdi>{p.display_name}</bdi> {p.is_demo ? <DemoBadge className="me-1" /> : null}<span className="text-xs font-semibold text-foreground">✓ {p.provider_type === "spouse" ? "בן/בת זוג" : "מילואימניק"}</span></span>
           <span className={cx("shrink-0 text-xs font-semibold", p.busy ? "text-muted" : "text-foreground")}>{p.busy ? "עסוק/ה" : "● זמין/ה"}</span>
         </div>
         {p.headline ? <p className="truncate text-sm">{p.headline}</p> : null}

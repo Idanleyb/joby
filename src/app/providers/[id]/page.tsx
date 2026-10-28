@@ -31,10 +31,12 @@ export default async function ProviderPage({ params }: Props) {
     if (!viewer) cta = <Link href={`/login?next=/providers/${id}/request`} className={btn}>שליחת פנייה ישירה</Link>;
     else {
       const [{ data: poster }, { data: pending }] = await Promise.all([
-        supabase.from("poster_profiles").select("user_id").eq("user_id", viewer).maybeSingle(),
+        supabase.from("poster_profiles").select("user_id, is_demo").eq("user_id", viewer).maybeSingle(),
         supabase.from("direct_requests").select("id").eq("poster_id", viewer).eq("provider_id", id).eq("status", "pending").maybeSingle(),
       ]);
-      cta = pending ? (
+      cta = poster && poster.is_demo !== p.is_demo ? (
+        <p className="rounded-xl bg-background p-3 text-center text-sm">{p.is_demo ? "זה פרופיל דמו להמחשה — אי אפשר לשלוח אליו פנייה מחשבון אמיתי." : "חשבון דמו לא יכול לפנות לנותני שירות אמיתיים."}</p>
+      ) : pending ? (
         <p className="rounded-xl bg-background p-3 text-center text-sm">שלחת פנייה והיא ממתינה לתשובה · <Link href="/poster/requests" className="underline">לפניות שלי</Link></p>
       ) : poster ? (
         <Link href={`/providers/${id}/request`} className={btn}>שליחת פנייה ישירה</Link>

@@ -65,6 +65,15 @@ export function Input(props: ComponentPropsWithRef<"input">) {
   );
 }
 
+/** Marks sample content loaded for demonstrations (PRD: demo data, 2026-10-28). */
+export function DemoBadge({ className }: { className?: string }) {
+  return (
+    <span title="נתוני דמו להמחשה" className={cx("inline-flex shrink-0 items-center rounded-md border border-dashed border-foreground/60 bg-info px-1.5 py-0.5 text-[11px] font-bold text-foreground", className)}>
+      דמו
+    </span>
+  );
+}
+
 export function FormError({ message }: { message?: string | null }) {
   if (!message) return null;
   return (

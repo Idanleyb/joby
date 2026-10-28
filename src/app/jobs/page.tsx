@@ -31,7 +31,7 @@ export default async function JobsFeedPage({ searchParams }: { searchParams: Pro
 
   let q = supabase
     .from("jobs")
-    .select("id, title, mode, city, budget_type, budget_min, budget_max, timeline, published_at, application_count, subcategory_id, on_behalf_name, sub:subcategories!inner(name_he, category_id), poster:poster_profiles(display_name, poster_type, jobs_posted, jobs_closed, hires, rating_avg, rating_count)")
+    .select("id, is_demo, title, mode, city, budget_type, budget_min, budget_max, timeline, published_at, application_count, subcategory_id, on_behalf_name, sub:subcategories!inner(name_he, category_id), poster:poster_profiles(display_name, poster_type, jobs_posted, jobs_closed, hires, rating_avg, rating_count)")
     .eq("status", "open")
     .gt("expires_at", new Date().toISOString())
     .limit(300);
