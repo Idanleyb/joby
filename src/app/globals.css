@@ -24,6 +24,7 @@
   --action: #fdf3e1;         /* Amber 50 — credits, save, selected chips, action banners */
   --action-border: #ebcb8f;
   --info: #eaf2fb;           /* Blue 50 — tips, info and success notes */
+  --gain: #e8f3ed;           /* Forest 50 — credits received (gift, refunds) */
 
   --danger: #c2362b;         /* errors, rejected, blocked */
   --danger-bg: #fcebea;
@@ -43,6 +44,7 @@
   --color-action: var(--action);
   --color-action-border: var(--action-border);
   --color-info: var(--info);
+  --color-gain: var(--gain);
   --color-danger: var(--danger);
   --color-danger-bg: var(--danger-bg);
   --font-sans: "Heebo Variable", system-ui, sans-serif;

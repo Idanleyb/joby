@@ -91,7 +91,7 @@ export default async function HowItWorksPage() {
           ["בונים פרופיל", "אפשר להעלות קורות חיים והפרופיל מתמלא לבד. בוחרים תחומים (ללא הגבלה), אזור עבודה או עבודה מרחוק, כותבים קצת על עצמכם ומוסיפים שירותים עם מחירים ותמונות מעבודות."],
           ["מקבלים עבודה", <>מגישים מועמדות לעבודות שמתאימות לכם ({s.apply_cost} קרדיטים), או מקבלים פניות ישירות ממפרסמים ומאשרים ({s.request_cost} קרדיטים). כשיש התאמה, נחשפים פרטי הקשר של שני הצדדים.</>],
         ]} />
-        <p className="rounded-xl bg-info p-3 text-sm">עם אישור האימות מקבלים <b>{s.welcome_credits} קרדיטים מתנה</b> — מספיק ל-{Math.floor(s.welcome_credits / s.apply_cost)} הגשות.</p>
+        <p className="rounded-xl bg-gain p-3 text-sm">עם אישור האימות מקבלים <b>{s.welcome_credits} קרדיטים מתנה</b> — מספיק ל-{Math.floor(s.welcome_credits / s.apply_cost)} הגשות.</p>
       </Section>
 
       <Section id="spouses" eyebrow="בני ובנות זוג" title="בן או בת זוג של מילואימניק">
@@ -106,7 +106,7 @@ export default async function HowItWorksPage() {
       <Section id="credits" eyebrow="קרדיטים" title="איך עובדים הקרדיטים">
         <p className="text-sm text-muted">רק נותני שירות משתמשים בקרדיטים. פרסום עבודות ופניות ישירות — חינם למגייסים.</p>
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="flex flex-col gap-1 rounded-xl bg-info p-4">
+          <div className="flex flex-col gap-1 rounded-xl bg-gain p-4">
             <span className="text-xs font-semibold text-muted">מקבלים בהצטרפות</span>
             <span className="font-display text-3xl font-bold" dir="ltr">+{s.welcome_credits}</span>
             <span className="text-sm">מתנה עם אישור האימות</span>
@@ -136,12 +136,10 @@ export default async function HowItWorksPage() {
                 ["דחיית פנייה ישירה", "0", "free"],
                 ["פרסום עבודה או שליחת פנייה (מגייסים)", "חינם", "free"],
               ] as const).map(([l, v, kind]) => (
-                <tr key={l} className={kind === "gain" ? "bg-info" : kind === "cost" ? "bg-action" : "bg-surface"}>
+                <tr key={l} className={kind === "gain" ? "bg-gain" : kind === "cost" ? "bg-action" : "bg-info"}>
                   <td className="p-3">{l}</td>
                   <td className="p-3">
-                    <span className={kind === "free"
-                      ? "rounded-full bg-chip px-2.5 py-0.5 text-xs font-semibold"
-                      : "rounded-full bg-surface px-2.5 py-0.5 text-xs font-semibold"}>
+                    <span className="rounded-full bg-surface px-2.5 py-0.5 text-xs font-semibold">
                       {kind === "gain" ? "מקבלים" : kind === "cost" ? "משלמים" : "בלי עלות"}
                     </span>
                   </td>
@@ -154,16 +152,16 @@ export default async function HowItWorksPage() {
 
         <h3 className="font-bold">מתי הקרדיטים חוזרים</h3>
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="flex flex-col gap-1.5 rounded-xl bg-info p-4 text-sm leading-relaxed">
+          <div className="flex flex-col gap-1.5 rounded-xl bg-gain p-4 text-sm leading-relaxed">
             <span className="self-start rounded-full bg-surface px-2.5 py-0.5 text-xs font-bold">↩ חוזרים לכולם</span>
             <span>העבודה נסגרה <b>בלי גיוס</b> — המפרסם סגר אותה, היא פגה (אחרי {s.job_open_days} ימים, או {s.job_open_days + s.job_extension_days} עם הארכה) או שהוסרה.</span>
           </div>
-          <div className="flex flex-col gap-1.5 rounded-xl bg-info p-4 text-sm leading-relaxed">
+          <div className="flex flex-col gap-1.5 rounded-xl bg-gain p-4 text-sm leading-relaxed">
             <span className="self-start rounded-full bg-surface px-2.5 py-0.5 text-xs font-bold">↩ חוזרים אוטומטית</span>
             <span>המפרסם <b>לא פתח</b> את המועמדות שלך {s.credit_back_unopened_days} ימים, והעבודה עדיין פתוחה.</span>
           </div>
         </div>
-        <div className="flex flex-col gap-1.5 rounded-xl border border-action-border bg-action p-4 text-sm leading-relaxed">
+        <div className="flex flex-col gap-1.5 rounded-xl bg-info p-4 text-sm leading-relaxed">
           <span className="self-start rounded-full bg-surface px-2.5 py-0.5 text-xs font-bold">שימו לב · אין החזר</span>
           <span>כשמבטלים מועמדות בעצמכם, או אחרי שהמפרסם בחר נותן שירות לעבודה.</span>
         </div>
