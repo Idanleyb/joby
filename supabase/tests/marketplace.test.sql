@@ -565,6 +565,55 @@ select test.login('dana'); set role authenticated;
 select test.expect_error($$select public.set_contact_phone('050-111-2244')$$, 'phone_not_verified');
 reset role;
 
+\echo ' 13e. admin invitations by email'
+select test.login('tal'); set role authenticated;
+select test.expect_error($$select * from public.admin_create_invite('x@example.com', 'X Person')$$, 'not_authorized');
+select test.check(not exists (select 1 from public.admin_invites), 'non-admins see no invites');
+reset role;
+select test.login('admin'); set role authenticated;
+select test.expect_error($$select * from public.admin_create_invite('not-an-email', 'Tal')$$, 'invalid_email');
+select test.check((select existing_user from public.admin_create_invite('Google.User@example.com', 'Tal Google', 'reviewer')), 'existing account recognised');
+select * from public.admin_create_invite('google.user@example.com', 'Tal Google', 'admin');  -- renews: the first one is revoked
+select test.check((select count(*) from public.admin_invites where status = 'pending') = 1, 'one pending invite per email');
+select test.check((select role from public.admin_invites where status = 'pending') = 'admin', 'renewed invite keeps the new role');
+select * from public.admin_create_invite('fresh.admin@example.com', 'Fresh Admin');
+reset role;
+select test.check(exists (select 1 from public.notifications where user_id = test.uid('tal') and event = 'admin_invite'), 'existing user notified in-app');
+-- The invitation page works without signing in.
+select token as tal_token from public.admin_invites where email = 'google.user@example.com' and status = 'pending' \gset
+set role anon;
+select test.check((select full_name = 'Tal Google' and status = 'pending' and not expired and email_hint like 'go•••@example.com'
+                     from public.get_admin_invite(:'tal_token')),
+                  'anon reads the invitation summary');
+select test.expect_error($$select public.accept_admin_invite('abc')$$, 'permission denied');
+reset role;
+select test.login('tal'); set role authenticated;
+select test.expect_error($$select public.accept_admin_invite('nope')$$, 'invite_invalid');
+select test.check(public.accept_admin_invite(:'tal_token') = 'admin',
+                  'invitee accepts');
+reset role;
+select test.check(exists (select 1 from public.admins where user_id = test.uid('tal') and role = 'admin'), 'invitee is now an admin');
+select test.check(exists (select 1 from public.notifications where user_id = test.uid('admin') and event = 'admin_invite_accepted'), 'inviter told');
+select test.login('tal'); set role authenticated;
+select test.expect_error(format($$select public.accept_admin_invite(%L)$$, :'tal_token'), 'invite_used');
+select test.expect_error($$select * from public.admin_create_invite('google.user@example.com', 'Tal')$$, 'already_admin');
+select test.check((select count(*) from public.admin_list_admins()) = 2, 'admins listed');
+-- Expired invitations cannot be used.
+reset role;
+update public.admin_invites set expires_at = now() - interval '1 minute' where email = 'fresh.admin@example.com';
+select token as fresh_token from public.admin_invites where email = 'fresh.admin@example.com' \gset
+select test.login('dana'); set role authenticated;
+select test.expect_error(format($$select public.accept_admin_invite(%L)$$, :'fresh_token'), 'invite_expired');
+reset role;
+select test.login('tal'); set role authenticated;
+select public.admin_revoke_invite((select id from public.admin_invites where email = 'fresh.admin@example.com'));
+select test.expect_error(format($$select public.admin_remove_admin(%L)$$, test.uid('tal')), 'cannot_remove_self');
+select public.admin_remove_admin(test.uid('admin'));
+reset role;
+select test.check(not exists (select 1 from public.admins where user_id = test.uid('admin')), 'admin removed by another admin');
+insert into public.admins (user_id, role) values (test.uid('admin'), 'admin');
+delete from public.admins where user_id = test.uid('tal');
+
 \echo ' 14. ledger integrity'
 select test.check(not exists (
   select 1 from public.provider_wallets w

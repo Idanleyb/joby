@@ -17,7 +17,7 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
   return (
     <PageShell title="ברוכים הבאים ל-Joby" subtitle={<>עוד רגע מתחילים. כמה פרטים קצרים · <Link href="/how-it-works" target="_blank" className="underline underline-offset-4">איך Joby עובד?</Link></>}>
       <Card>
-        <WelcomeForm defaultName={me?.fullName ?? ""} next={next} invited={Boolean(next?.startsWith("/invite/"))} />
+        <WelcomeForm defaultName={me?.fullName ?? ""} next={next} invited={next?.startsWith("/invite/admin/") ? "admin" : next?.startsWith("/invite/") ? "spouse" : undefined} />
       </Card>
     </PageShell>
   );

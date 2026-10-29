@@ -35,6 +35,8 @@ export function notificationText(event: string, p: P): { text: string; href?: st
     case "account_blocked_feedback": return { icon: "⛔", text: "החשבון חסום לפעולות חדשות עד שתשאירו משוב", href: "/feedback" };
     case "account_unblocked": return { icon: "✓", text: "תודה על המשוב! החשבון פעיל שוב", href: "/home" };
     case "feedback_revealed": return { icon: "★", text: "חוות הדעת על העבודה פורסמו", href: "/profile" };
+    case "admin_invite": return { icon: "🛡", text: "קיבלת הזמנה להיות אדמין ב-Joby — לאישור", href: `/invite/admin/${s(p.token)}` };
+    case "admin_invite_accepted": return { icon: "✓", text: `${s(p.name) || "המוזמן/ת"} אישר/ה את ההזמנה והוא/היא עכשיו אדמין`, href: "/admin/admins" };
     default: return { icon: "•", text: "עדכון מ-Joby" };
   }
 }

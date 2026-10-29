@@ -13,7 +13,7 @@ supply marketplace where anyone can hire.*
 | **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027)                  |
 | **Owner**    | Idan Leibovitch, Founder & Product                                                          |
 | **Date**     | October 25, 2026                                                                            |
-| **Status**   | v1.6 — Google sign-in without SMS; demo data; session timeout (October 29, 2026) · in build |
+| **Status**   | v1.6 — Google sign-in without SMS; demo data; session timeout; admin invitations (October 29, 2026) · in build |
 | **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                                  |
 
 <table>
@@ -252,6 +252,7 @@ Approved by the founder on October 25, 2026.
 | **Google sign-in**  | No SMS code for Google users. They type their mobile number once (required, not verified by code); it is used for contact sharing and WhatsApp. A number that already belongs to another account is refused. Trust badge renamed "Account verified" (phone code or Google) |
 | **Session timeout** | Automatic sign-out after 60 minutes without activity, with a warning 2 minutes before; signing in again returns to the same page                                                                                                                                           |
 | **Demo data**       | POC dataset loaded as tagged "Demo" content with four demo sign-in accounts; demo and real users never transact; removable from the admin dashboard                                                                                                                        |
+| **Admin invitations** | Admins invite new admins or reviewers by email from the admin console. Default Hebrew email: "Hi [name], you've been invited to be an admin on JOBY. To accept, open this link." The invitee signs in as usual and accepts; links expire after 7 days and can be revoked. Admins can remove other admins, never themselves |
 
 ## 4.2 Changes in v1.5 (October 28, 2026)
 
@@ -834,6 +835,7 @@ or rejects them. Meanwhile the provider can register under Others →
 | **Dashboard** | KPIs in section 12                                                                                                     |
 | **Audit log** | Every admin action with who, what, when, and before/after values                                                       |
 | **Access**    | Roles: Admin (all) and Reviewer (queues only). 2FA is mandatory                                                        |
+| **Admins**    | Invite an admin or reviewer by email (editable Hebrew text, 7-day link, revoke); remove other admins (v1.6)            |
 
 ## 5.19 Navigation, home and notifications (NAV)
 

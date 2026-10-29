@@ -13,6 +13,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         <Link href="/admin/verifications">אימותים</Link>
         <Link href="/admin/jobs">עבודות בבדיקה</Link>
         <Link href="/admin/extra-hires">גיוס נוסף</Link>
+        {role === "admin" ? <Link href="/admin/admins">אדמינים</Link> : null}
         <span className="ms-auto text-xs font-normal text-muted">{role === "admin" ? "Admin" : "Reviewer"}</span>
       </nav>
       {children}

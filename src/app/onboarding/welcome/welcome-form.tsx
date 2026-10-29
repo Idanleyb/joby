@@ -23,7 +23,7 @@ function RoleOption({ name, title, text, checked }: { name: string; title: strin
   );
 }
 
-export function WelcomeForm({ defaultName, next, invited }: { defaultName: string; next: string | null; invited?: boolean }) {
+export function WelcomeForm({ defaultName, next, invited }: { defaultName: string; next: string | null; invited?: "spouse" | "admin" }) {
   const [state, action, pending] = useActionState<WelcomeState, FormData>(completeSignup, {});
   const fe = state.fieldErrors ?? {};
   const v = state.values;
@@ -31,7 +31,8 @@ export function WelcomeForm({ defaultName, next, invited }: { defaultName: strin
   return (
     <form onSubmit={submitWith(action)} className="flex flex-col gap-6" noValidate>
       {next ? <input type="hidden" name="next" value={next} /> : null}
-      {invited ? <p className="rounded-xl bg-info px-4 py-3 text-sm">הוזמנת כבן/בת זוג של מילואימניק. בחר/י ״להציע שירותים״ כדי להמשיך להזמנה.</p> : null}
+      {invited === "spouse" ? <p className="rounded-xl bg-info px-4 py-3 text-sm">הוזמנת כבן/בת זוג של מילואימניק. בחר/י ״להציע שירותים״ כדי להמשיך להזמנה.</p> : null}
+      {invited === "admin" ? <p className="rounded-xl bg-info px-4 py-3 text-sm">הוזמנת לנהל את Joby. בחירת תפקיד כאן לא חובה — אפשר להמשיך ישר לאישור ההזמנה.</p> : null}
       <Field label="שם מלא" htmlFor="fullName" error={fe.fullName} hint="השם המלא נשאר פרטי. בפרופיל מוצג שם פרטי ואות ראשונה משם המשפחה.">
         <Input id="fullName" name="fullName" autoComplete="name" defaultValue={v?.fullName ?? defaultName} required />
       </Field>
@@ -40,7 +41,7 @@ export function WelcomeForm({ defaultName, next, invited }: { defaultName: strin
         <legend className="mb-1.5 text-sm font-semibold">מה תרצו לעשות ב-Joby?</legend>
         <RoleOption name="asProvider" checked={v?.asProvider} title="להציע שירותים" text="למילואימניקים עם 30 ימי מילואים ומעלה מאז 7 באוקטובר, ולבני ובנות זוג." />
         <RoleOption name="asPoster" checked={v?.asPoster} title="לפרסם עבודות ולגייס" text="פתוח לכולם — פרטיים, עסקים, מגייסים וגופים ציבוריים." />
-        <p className="text-xs text-muted">אפשר לבחור את שתי האפשרויות, ולהוסיף תפקיד גם בהמשך.</p>
+        <p className="text-xs text-muted">אפשר לבחור את שתי האפשרויות, ולהוסיף תפקיד גם בהמשך.{invited === "admin" ? " (לא חובה למוזמנים לניהול.)" : ""}</p>
         {fe.roles ? <p role="alert" className="text-sm font-medium text-danger">{fe.roles}</p> : null}
       </fieldset>
 

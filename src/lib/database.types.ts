@@ -9,6 +9,49 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_invites: {
+        Row: {
+          id: string;
+          email: string;
+          full_name: string;
+          role: Database["public"]["Enums"]["admin_role"];
+          token: string;
+          invited_by: string | null;
+          status: string;
+          created_at: string;
+          expires_at: string;
+          accepted_at: string | null;
+          accepted_by: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: string;
+          email: string;
+          full_name: string;
+          role?: Database["public"]["Enums"]["admin_role"];
+          token?: string;
+          invited_by?: string | null;
+          status?: string;
+          created_at?: string;
+          expires_at?: string;
+          accepted_at?: string | null;
+          accepted_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          full_name?: string;
+          role?: Database["public"]["Enums"]["admin_role"];
+          token?: string;
+          invited_by?: string | null;
+          status?: string;
+          created_at?: string;
+          expires_at?: string;
+          accepted_at?: string | null;
+          accepted_by?: string | null;
+        };
+        Relationships: [];
+      };
       admin_audit_log: {
         Row: {
           action: string;
@@ -1726,6 +1769,10 @@ export type Database = {
       };
     };
     Functions: {
+      accept_admin_invite: {
+        Args: { p_token: string };
+        Returns: Database["public"]["Enums"]["admin_role"];
+      };
       accept_spouse_invite: { Args: { p_token: string }; Returns: undefined };
       admin_adjust_credits: {
         Args: { p_amount: number; p_provider: string; p_reason: string };
@@ -1739,6 +1786,26 @@ export type Database = {
         Args: { p_feedback: string; p_reason: string };
         Returns: undefined;
       };
+      admin_create_invite: {
+        Args: {
+          p_email: string;
+          p_full_name: string;
+          p_role?: Database["public"]["Enums"]["admin_role"];
+        };
+        Returns: { existing_user: boolean; token: string }[];
+      };
+      admin_list_admins: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          created_at: string;
+          email: string | null;
+          full_name: string | null;
+          role: Database["public"]["Enums"]["admin_role"];
+          user_id: string;
+        }[];
+      };
+      admin_remove_admin: { Args: { p_user: string }; Returns: undefined };
+      admin_revoke_invite: { Args: { p_invite: string }; Returns: undefined };
       admin_purge_demo: { Args: Record<PropertyKey, never>; Returns: number };
       admin_post_job: {
         Args: {
@@ -1852,6 +1919,17 @@ export type Database = {
           email: string;
           full_name: string;
           phone: string;
+        }[];
+      };
+      get_admin_invite: {
+        Args: { p_token: string };
+        Returns: {
+          email_hint: string;
+          expired: boolean;
+          full_name: string;
+          inviter: string | null;
+          role: Database["public"]["Enums"]["admin_role"];
+          status: string;
         }[];
       };
       get_spouse_invite: {

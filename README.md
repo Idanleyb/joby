@@ -112,7 +112,9 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
    insert into public.admins (user_id, role)
    select id, 'admin' from public.profiles where phone = '+9725XXXXXXXX';
    ```
+   More admins: **/admin/admins → הזמנת אדמין** (name, email, role). The invitation email is sent by the app over SMTP — see step 7.
 6. **Vercel**: import the GitHub repo, framework Next.js, and set the variables from `.env.example` (Production and Preview separately). `SUPABASE_SECRET_KEY` and `ID_HASH_SALT` are server-only — never prefix them with `NEXT_PUBLIC_`.
+7. **Email (admin invitations)**: set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` in Vercel and redeploy. Simplest for the beta is a Gmail account: turn on 2-Step Verification, create an **App password** (Google Account → Security → App passwords), then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_USER=<the gmail address>`, `SMTP_PASS=<the 16-letter app password>`, `MAIL_FROM=Joby <the gmail address>`. Any other SMTP service (Resend, Brevo…) works the same way. Without these settings invitations still work: the screen shows the link to copy and send yourself.
 
 ## Demo data
 

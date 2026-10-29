@@ -66,6 +66,10 @@ export const APP_ERRORS: Record<string, string> = {
   reversal_window_passed: "חלפו 48 השעות לביטול.",
   spouse_link_exists: "כבר קיימת הזמנה או קישור לבן/בת זוג.",
   spouse_link_missing: "לא נמצא קישור לבן/בת זוג.",
+  already_admin: "למשתמש עם המייל הזה כבר יש הרשאת ניהול.",
+  cannot_remove_self: "אי אפשר להסיר את ההרשאה של עצמך.",
+  invalid_email: "כתובת המייל אינה תקינה.",
+  invite_used: "ההזמנה כבר אושרה או בוטלה.",
 };
 
 export function appErrorMessage(error: { message?: string } | null | undefined): string {

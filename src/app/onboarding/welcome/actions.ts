@@ -23,7 +23,9 @@ export async function completeSignup(_prev: WelcomeState, form: FormData): Promi
   const values = { fullName, asProvider, asPoster, terms, marketing };
   const fieldErrors: WelcomeState["fieldErrors"] = {};
   if (fullName.length < 2 || !fullName.includes(" ")) fieldErrors.fullName = "יש להזין שם פרטי ושם משפחה.";
-  if (!asProvider && !asPoster) fieldErrors.roles = "יש לבחור לפחות אפשרות אחת.";
+  // Invited admins may skip the roles (they can add one later).
+  const adminInvite = String(form.get("next") ?? "").startsWith("/invite/admin/");
+  if (!asProvider && !asPoster && !adminInvite) fieldErrors.roles = "יש לבחור לפחות אפשרות אחת.";
   if (!terms) fieldErrors.terms = "יש לאשר את תנאי השימוש ומדיניות הפרטיות.";
   if (Object.keys(fieldErrors).length) return { fieldErrors, values };
 
