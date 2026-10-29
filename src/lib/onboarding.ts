@@ -25,13 +25,17 @@ export type Me = {
 };
 
 /**
- * The signed-in auth user, checked with the auth service once per request (React cache):
- * the header, menu, banner and page all ask, but only the first call goes over the network.
+ * The signed-in user's id and email, once per request (React cache). Read from the session token,
+ * verified locally with the project's signing key (ECC) — no call to the auth server (founder,
+ * 2026-10-29: one round trip less per click). Trade-off: a session ended on another device stays
+ * valid here until its token expires (≤ 1 hour); suspension is still enforced from the database.
+ * Server actions that change data keep using auth.getUser() / the database checks.
  */
-export const getAuthUser = cache(async () => {
+export const getAuthUser = cache(async (): Promise<{ id: string; email: string | null } | null> => {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  return data.user;
+  const { data } = await supabase.auth.getClaims();
+  const sub = data?.claims?.sub;
+  return sub ? { id: sub, email: (data.claims.email as string | undefined) ?? null } : null;
 });
 
 /** The signed-in user and their onboarding state, or null when signed out. Once per request. */
