@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 
 export type FeedbackItem = {
@@ -9,7 +10,7 @@ export type FeedbackItem = {
 const DAY = 86_400_000;
 
 /** Engagements where the signed-in user still owes feedback (PRD 5.14). */
-export async function loadFeedbackDue(userId: string): Promise<FeedbackItem[]> {
+export const loadFeedbackDue = cache(async (userId: string): Promise<FeedbackItem[]> => {
   const supabase = await createClient();
   const [{ data: engagements }, { data: mine }, { data: requests }] = await Promise.all([
     supabase.from("engagements").select("id, title, created_at, poster_id, provider_id")
@@ -40,6 +41,6 @@ export async function loadFeedbackDue(userId: string): Promise<FeedbackItem[]> {
       deadline: r ? new Date(new Date(r.requested_at).getTime() + 30 * DAY).toISOString() : null,
     };
   });
-}
+});
 
 export const dmy = (iso: string) => new Date(iso).toLocaleDateString("he-IL", { day: "2-digit", month: "2-digit", year: "numeric" });

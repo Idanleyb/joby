@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 
 export type OnboardingStep = "/login" | "/onboarding/phone" | "/onboarding/email" | "/onboarding/welcome" | "/onboarding/poster" | "/account";
@@ -23,12 +24,20 @@ export type Me = {
   isDemo: boolean;
 };
 
-/** The signed-in user and their onboarding state, or null when signed out. */
-export async function getMe(): Promise<Me | null> {
+/**
+ * The signed-in auth user, checked with the auth service once per request (React cache):
+ * the header, menu, banner and page all ask, but only the first call goes over the network.
+ */
+export const getAuthUser = cache(async () => {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
+  return data.user;
+});
+
+/** The signed-in user and their onboarding state, or null when signed out. Once per request. */
+export const getMe = cache(async (): Promise<Me | null> => {
+  const supabase = await createClient();
+  const user = await getAuthUser();
   if (!user) return null;
 
   const [{ data: profile }, { data: poster }] = await Promise.all([
@@ -57,7 +66,7 @@ export async function getMe(): Promise<Me | null> {
     hasPosterProfile: Boolean(poster),
     isDemo: profile?.is_demo ?? false,
   };
-}
+});
 
 /**
  * Where the user should be right now (PRD 5.1, 5.7; founder 2026-10-29):

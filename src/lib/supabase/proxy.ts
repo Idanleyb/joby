@@ -51,7 +51,10 @@ export async function updateSession(request: NextRequest) {
         response.cookies.getAll().forEach((c) => redirect.cookies.set(c));
         return redirect;
       }
-    } else if (signedIn && !prefetch) {
+    } else if (signedIn && !prefetch && !request.headers.get("next-action") && now - (last || 0) > 60_000) {
+      // Pages only, at most once a minute: a cookie set on a server-action response makes
+      // Next.js re-render the whole page a second time (seen 2026-10-29: every page rendered twice).
+      // The browser's IdleWatcher keeps the cookie fresh between page loads.
       response.cookies.set(LAST_ACTIVE_COOKIE, String(now), { path: "/", sameSite: "lax", maxAge: 60 * 60 * 24 * 30 });
     } else if (!signedIn && request.cookies.has(LAST_ACTIVE_COOKIE)) {
       response.cookies.delete(LAST_ACTIVE_COOKIE);

@@ -3,7 +3,7 @@ import { getMe, nextStep } from "@/lib/onboarding";
 import { getMode } from "@/lib/mode";
 import { RoleSwitch } from "@/components/role-switch";
 import { DemoBadge } from "@/components/ui";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminRole } from "@/lib/admin";
 
 export async function SiteHeader() {
   let me = null;
@@ -15,14 +15,14 @@ export async function SiteHeader() {
   const ready = me && nextStep(me) === "/account";
   const mode = ready ? await getMode(me!) : null;
   const isAdmin = ready
-    ? Boolean((await (await createClient()).from("admins").select("role").eq("user_id", me!.userId).maybeSingle()).data)
+    ? Boolean(await getAdminRole(me!.userId))
     : false;
 
   return (
     <header className="sticky top-0 z-20 bg-brand text-brand-contrast">
       <div className="mx-auto flex h-14 items-center justify-between gap-3 px-4">
         <div className="flex items-center gap-2">
-          <Link href={ready ? "/home" : "/"} className="flex items-center gap-2 font-display text-xl font-bold">
+          <Link prefetch={false} href={ready ? "/home" : "/"} className="flex items-center gap-2 font-display text-xl font-bold">
             <span aria-hidden="true" className="flex size-8 items-center justify-center rounded-lg bg-surface text-lg text-foreground">J</span>
             Joby
           </Link>
@@ -30,15 +30,15 @@ export async function SiteHeader() {
         </div>
         {mode ? (
           <div className="flex items-center gap-2">
-            {isAdmin ? <Link href="/admin" className="rounded-lg px-2 py-1.5 text-sm font-semibold hover:bg-white/10 md:hidden">ניהול</Link> : null}
+            {isAdmin ? <Link prefetch={false} href="/admin" className="rounded-lg px-2 py-1.5 text-sm font-semibold hover:bg-white/10 md:hidden">ניהול</Link> : null}
             <RoleSwitch mode={mode} />
           </div>
         ) : (
           <nav className="flex items-center gap-1 text-sm font-semibold">
-            <Link href="/how-it-works" className="hidden rounded-lg px-3 py-2 hover:bg-white/10 sm:inline">איך זה עובד</Link>
-            <Link href="/jobs" className="rounded-lg px-3 py-2 hover:bg-white/10">עבודות</Link>
-            <Link href="/providers" className="rounded-lg px-3 py-2 hover:bg-white/10">נותני שירות</Link>
-            <Link href={me ? "/onboarding" : "/login"} className="rounded-lg px-3 py-2 hover:bg-white/10">{me ? "המשך הרשמה" : "כניסה"}</Link>
+            <Link prefetch={false} href="/how-it-works" className="hidden rounded-lg px-3 py-2 hover:bg-white/10 sm:inline">איך זה עובד</Link>
+            <Link prefetch={false} href="/jobs" className="rounded-lg px-3 py-2 hover:bg-white/10">עבודות</Link>
+            <Link prefetch={false} href="/providers" className="rounded-lg px-3 py-2 hover:bg-white/10">נותני שירות</Link>
+            <Link prefetch={false} href={me ? "/onboarding" : "/login"} className="rounded-lg px-3 py-2 hover:bg-white/10">{me ? "המשך הרשמה" : "כניסה"}</Link>
           </nav>
         )}
       </div>

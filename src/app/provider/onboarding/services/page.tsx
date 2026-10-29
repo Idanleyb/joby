@@ -26,7 +26,7 @@ export default async function ServicesPage() {
         />
       ) : (
         <p className="text-muted">
-          קודם צריך לבחור תחומים. <Link className="font-semibold underline" href={stepPath("categories")}>לבחירת תחומים</Link>
+          קודם צריך לבחור תחומים. <Link prefetch={false} className="font-semibold underline" href={stepPath("categories")}>לבחירת תחומים</Link>
         </p>
       )}
     </WizardShell>

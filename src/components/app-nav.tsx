@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getMe, nextStep } from "@/lib/onboarding";
 import { getMode } from "@/lib/mode";
+import { getAdminRole } from "@/lib/admin";
 import { NavLinks, type NavItem } from "@/components/nav-links";
 import { IdleWatcher } from "@/components/idle-watcher";
 
@@ -15,9 +16,9 @@ export async function AppNav() {
   if (!me || nextStep(me) !== "/account") return null;
   const mode = await getMode(me);
   const supabase = await createClient();
-  const [{ count }, { data: admin }] = await Promise.all([
+  const [{ count }, admin] = await Promise.all([
     supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", me.userId).eq("in_app", true).is("read_at", null),
-    supabase.from("admins").select("role").eq("user_id", me.userId).maybeSingle(),
+    getAdminRole(me.userId),
   ]);
 
   const items: NavItem[] = mode === "work"

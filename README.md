@@ -118,6 +118,12 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
 6. **Vercel**: import the GitHub repo, framework Next.js, and set the variables from `.env.example` (Production and Preview separately). `SUPABASE_SECRET_KEY` and `ID_HASH_SALT` are server-only — never prefix them with `NEXT_PUBLIC_`.
 7. **Email (required — sign-up email codes and admin invitations)**: every new account confirms its email with a code the app sends, so **sign-up does not work until this is set**. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` in Vercel and redeploy. Simplest for the beta is a Gmail account: turn on 2-Step Verification, create an **App password** (Google Account → Security → App passwords), then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_USER=<the gmail address>`, `SMTP_PASS=<the 16-letter app password>`, `MAIL_FROM=Joby <the gmail address>`. Any other SMTP service (Resend, Brevo…) works the same way. Gmail allows about 500 emails a day, enough for the beta; move to a sending service (Resend, Brevo…) before launch.
 
+## Speed
+
+- **Same region**: `vercel.json` runs the server functions in Frankfurt (`fra1`). If the Supabase project is in another region (Supabase → Project Settings → General → Region), change `regions` to the closest Vercel region — a mismatch adds ~100 ms to every database call.
+- **JWT signing keys**: in Supabase → Project Settings → JWT Keys, switch to the new (asymmetric) signing keys. The session check that runs on every request then verifies locally instead of calling the auth server.
+- Links don't prefetch; `src/app/loading.tsx` shows a skeleton while a page loads.
+
 ## Demo data
 
 Sample data for demonstrations: 100 providers (80 reservists, 20 spouses), 28 posters, 52 jobs, 377 applications, 155 direct requests, 130 engagements with feedback, and a full credit ledger — all tagged **דמו**.

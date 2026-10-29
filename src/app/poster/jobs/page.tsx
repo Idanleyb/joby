@@ -23,14 +23,14 @@ export default async function PosterJobsPage() {
     .order("published_at", { ascending: false });
 
   return (
-    <PageShell title="העבודות שלי" subtitle={<><Link href="/jobs/new" className="font-semibold text-foreground underline underline-offset-4">+ פרסום עבודה חדשה</Link> · <Link href="/poster/requests" className="underline underline-offset-4">פניות ישירות שנשלחו</Link></>}>
+    <PageShell title="העבודות שלי" subtitle={<><Link prefetch={false} href="/jobs/new" className="font-semibold text-foreground underline underline-offset-4">+ פרסום עבודה חדשה</Link> · <Link prefetch={false} href="/poster/requests" className="underline underline-offset-4">פניות ישירות שנשלחו</Link></>}>
       {!jobs?.length ? <p className="text-muted">עוד לא פורסמו עבודות.</p> : null}
       <ul className="flex flex-col gap-3">
         {jobs?.map((j) => {
           const unseen = j.applications.filter((a) => !a.viewed_at && a.status !== "withdrawn").length;
           return (
             <li key={j.id}>
-              <Link href={`/poster/jobs/${j.id}`} className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4 hover:bg-background">
+              <Link prefetch={false} href={`/poster/jobs/${j.id}`} className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4 hover:bg-background">
                 <div className="flex items-start justify-between gap-3">
                   <span className="font-bold leading-snug">{j.title}</span>
                   <span className={cx("shrink-0 rounded-lg px-2 py-0.5 text-xs font-semibold", STATUS_CLS[j.status] ?? "bg-background text-muted")}>{JOB_STATUS_LABEL[j.status]}</span>

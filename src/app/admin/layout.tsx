@@ -9,11 +9,11 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-6">
       <nav className="flex flex-wrap items-center gap-4 border-b border-border pb-3 text-sm font-semibold">
-        <Link href="/admin">לוח בקרה</Link>
-        <Link href="/admin/verifications">אימותים</Link>
-        <Link href="/admin/jobs">עבודות בבדיקה</Link>
-        <Link href="/admin/extra-hires">גיוס נוסף</Link>
-        {role === "admin" ? <Link href="/admin/admins">אדמינים</Link> : null}
+        <Link prefetch={false} href="/admin">לוח בקרה</Link>
+        <Link prefetch={false} href="/admin/verifications">אימותים</Link>
+        <Link prefetch={false} href="/admin/jobs">עבודות בבדיקה</Link>
+        <Link prefetch={false} href="/admin/extra-hires">גיוס נוסף</Link>
+        {role === "admin" ? <Link prefetch={false} href="/admin/admins">אדמינים</Link> : null}
         <span className="ms-auto text-xs font-normal text-muted">{role === "admin" ? "Admin" : "Reviewer"}</span>
       </nav>
       {children}

@@ -36,7 +36,7 @@ export default async function PosterJobPage({ params, searchParams }: { params: 
   const live = job.status === "open" || job.status === "held";
 
   return (
-    <PageShell title={job.title} subtitle={<>{JOB_STATUS_LABEL[job.status]} · {budgetText(job)} · <Link href={`/jobs/${job.id}`} className="underline underline-offset-4">צפייה במודעה</Link></>}>
+    <PageShell title={job.title} subtitle={<>{JOB_STATUS_LABEL[job.status]} · {budgetText(job)} · <Link prefetch={false} href={`/jobs/${job.id}`} className="underline underline-offset-4">צפייה במודעה</Link></>}>
       {posted && job.status === "open" ? <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">העבודה פורסמה ✓ נודיע לך כשיגיעו מועמדים.</p> : null}
       {job.status === "held" ? (
         <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">העבודה ממתינה לבדיקה קצרה של הצוות לפני שתוצג לנותני שירות. בדרך כלל זה לוקח עד יום עבודה.</p>
@@ -63,7 +63,7 @@ export default async function PosterJobPage({ params, searchParams }: { params: 
         <ul className="flex flex-col gap-3">
           {sorted.map((a) => (
             <li key={a.id}>
-              <Link href={`/poster/jobs/${job.id}/applications/${a.id}`} className={cx("flex flex-col gap-1.5 rounded-2xl border bg-surface p-4 hover:bg-background", a.viewed_at ? "border-border" : "border-foreground")}>
+              <Link prefetch={false} href={`/poster/jobs/${job.id}/applications/${a.id}`} className={cx("flex flex-col gap-1.5 rounded-2xl border bg-surface p-4 hover:bg-background", a.viewed_at ? "border-border" : "border-foreground")}>
                 <div className="flex items-start justify-between gap-3">
                   <span className="font-bold"><bdi>{a.provider?.display_name}</bdi>{!a.viewed_at ? <span className="ms-2 rounded bg-action px-1.5 text-xs">חדש</span> : null}</span>
                   <span className="shrink-0 text-xs text-muted">{POSTER_LABEL[a.status]}{extraOf.get(a.id) === "open" ? " · בקשה לגיוס נוסף" : ""}</span>

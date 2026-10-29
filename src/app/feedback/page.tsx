@@ -32,7 +32,7 @@ export default async function FeedbackListPage({ searchParams }: { searchParams:
       <ul className="flex flex-col gap-3">
         {items.map((i) => (
           <li key={i.engagementId}>
-            <Link href={`/feedback/${i.engagementId}`} className="flex flex-col gap-1.5 rounded-2xl border border-border bg-surface p-4 hover:bg-background">
+            <Link prefetch={false} href={`/feedback/${i.engagementId}`} className="flex flex-col gap-1.5 rounded-2xl border border-border bg-surface p-4 hover:bg-background">
               <div className="flex items-start justify-between gap-3">
                 <span className="font-bold">{i.title}</span>
                 <span className={cx("shrink-0 rounded-lg px-2 py-0.5 text-xs font-semibold", STATE[i.state][1])}>{STATE[i.state][0]}</span>

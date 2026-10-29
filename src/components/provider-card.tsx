@@ -30,7 +30,7 @@ export async function loadProviderCards(rows: { user_id: string; distance_km: nu
 
 export function ProviderCard({ p }: { p: ProviderCardData }) {
   return (
-    <Link href={`/providers/${p.user_id}`} className="flex gap-3 rounded-2xl border border-border bg-surface p-4 hover:bg-background">
+    <Link prefetch={false} href={`/providers/${p.user_id}`} className="flex gap-3 rounded-2xl border border-border bg-surface p-4 hover:bg-background">
       {p.photoUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={p.photoUrl} alt="" className="size-14 shrink-0 rounded-full border border-border object-cover" />

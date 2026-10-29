@@ -18,5 +18,5 @@ export function NotificationItem({ id, icon, text, href, when, unread }: { id: n
     </div>
   );
   const onOpen = () => unread && start(() => markRead(id));
-  return href ? <Link href={href} onClick={onOpen} className="block hover:bg-background">{body}</Link> : <div onClick={onOpen}>{body}</div>;
+  return href ? <Link prefetch={false} href={href} onClick={onOpen} className="block hover:bg-background">{body}</Link> : <div onClick={onOpen}>{body}</div>;
 }

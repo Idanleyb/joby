@@ -40,7 +40,7 @@ export default async function ProofStep() {
               ? "הפרופיל יוצג למפרסמים ברגע שתשלימו אותו."
               : "בדרך כלל תוך 24 שעות. נעדכן ב-WhatsApp ובמייל. בינתיים אפשר להמשיך לבנות את הפרופיל."}
           </p>
-          <Link href={stepPath("cv")} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand px-5 font-semibold text-brand-contrast">
+          <Link prefetch={false} href={stepPath("cv")} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand px-5 font-semibold text-brand-contrast">
             המשך לבניית הפרופיל
           </Link>
         </Card>

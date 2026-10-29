@@ -29,9 +29,9 @@ export default async function MyProfilePage() {
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-8">
         <div className="flex items-center justify-between gap-2">
           <h1 className="text-[26px] font-bold">הפרופיל שלי כמפרסם/ת</h1>
-          <Link href="/profile/edit" className={chip}>עריכה</Link>
+          <Link prefetch={false} href="/profile/edit" className={chip}>עריכה</Link>
         </div>
-        {!p.about ? <p className="rounded-xl bg-info p-3 text-sm">טיפ: הוסיפו כמה מילים עליכם — נותני שירות מגישים יותר למפרסמים שהם מכירים. <Link href="/profile/edit" className="underline">להוספה</Link></p> : null}
+        {!p.about ? <p className="rounded-xl bg-info p-3 text-sm">טיפ: הוסיפו כמה מילים עליכם — נותני שירות מגישים יותר למפרסמים שהם מכירים. <Link prefetch={false} href="/profile/edit" className="underline">להוספה</Link></p> : null}
         <Card><PosterProfile p={p} /></Card>
       </main>
     );
@@ -44,7 +44,7 @@ export default async function MyProfilePage() {
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-8">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-[26px] font-bold">הפרופיל שלי</h1>
-        <Link href={`/providers/${me.userId}`} className="text-sm underline underline-offset-4">איך אחרים רואים אותי</Link>
+        <Link prefetch={false} href={`/providers/${me.userId}`} className="text-sm underline underline-offset-4">איך אחרים רואים אותי</Link>
       </div>
 
       <Card className="flex flex-col gap-3">
@@ -58,7 +58,7 @@ export default async function MyProfilePage() {
         {tips.length ? (
           <ul className="flex flex-col gap-1 text-sm">
             {tips.slice(0, 3).map((t) => (
-              <li key={t.label}><Link href={t.href} className="underline underline-offset-4">הוספת {t.label}</Link> <span className="text-muted">+{t.gain}%</span></li>
+              <li key={t.label}><Link prefetch={false} href={t.href} className="underline underline-offset-4">הוספת {t.label}</Link> <span className="text-muted">+{t.gain}%</span></li>
             ))}
           </ul>
         ) : <p className="text-sm text-muted">הפרופיל מלא. כל הכבוד!</p>}
@@ -77,12 +77,12 @@ export default async function MyProfilePage() {
       <Card className="flex flex-col gap-3">
         <h2 className="font-bold">עריכה</h2>
         <div className="flex flex-wrap gap-2">
-          <Link href={stepPath("about")} className={chip}>כותרת ותיאור</Link>
-          <Link href={stepPath("categories")} className={chip}>תחומים ומיומנויות</Link>
-          <Link href={stepPath("area")} className={chip}>אזור עבודה</Link>
-          <Link href={stepPath("services")} className={chip}>שירותים ומחירים</Link>
-          <Link href={stepPath("cv")} className={chip}>קורות חיים</Link>
-          <Link href={stepPath("photo")} className={chip}>תמונה</Link>
+          <Link prefetch={false} href={stepPath("about")} className={chip}>כותרת ותיאור</Link>
+          <Link prefetch={false} href={stepPath("categories")} className={chip}>תחומים ומיומנויות</Link>
+          <Link prefetch={false} href={stepPath("area")} className={chip}>אזור עבודה</Link>
+          <Link prefetch={false} href={stepPath("services")} className={chip}>שירותים ומחירים</Link>
+          <Link prefetch={false} href={stepPath("cv")} className={chip}>קורות חיים</Link>
+          <Link prefetch={false} href={stepPath("photo")} className={chip}>תמונה</Link>
         </div>
       </Card>
 

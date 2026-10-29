@@ -39,21 +39,21 @@ export function NavLinks({ items }: { items: NavItem[] }) {
           const Icon = ICONS[it.icon];
           const on = isActive(path, it.href);
           return (
-            <Link key={it.href} href={it.href} aria-current={on ? "page" : undefined}
+            <Link prefetch={false} key={it.href} href={it.href} aria-current={on ? "page" : undefined}
               className={cx("flex items-center gap-3 rounded-xl px-3 py-2.5 font-semibold", on ? "bg-brand text-brand-contrast" : "text-muted hover:bg-background")}>
               <span className="relative"><Icon /><Badge n={it.badge} /></span>
               {it.label}
             </Link>
           );
         })}
-        <Link href="/how-it-works" className="mt-auto rounded-xl px-3 py-2.5 text-sm text-muted hover:bg-background">איך Joby עובד?</Link>
+        <Link prefetch={false} href="/how-it-works" className="mt-auto rounded-xl px-3 py-2.5 text-sm text-muted hover:bg-background">איך Joby עובד?</Link>
       </nav>
       <nav aria-label="תפריט ראשי" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] md:hidden">
         {items.filter((it) => it.mobile).map((it) => {
           const Icon = ICONS[it.icon];
           const on = isActive(path, it.href);
           return (
-            <Link key={it.href} href={it.href} aria-current={on ? "page" : undefined}
+            <Link prefetch={false} key={it.href} href={it.href} aria-current={on ? "page" : undefined}
               className={cx("flex flex-col items-center gap-0.5 py-2 text-[11px] font-semibold", on ? "font-bold text-foreground" : "text-muted")}>
               <span className="relative"><Icon /><Badge n={it.badge} /></span>
               {it.label}

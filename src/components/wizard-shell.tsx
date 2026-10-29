@@ -12,7 +12,7 @@ export function WizardShell({ current, reached, title, subtitle, children }: {
       <nav aria-label="שלבי הפרופיל" className="flex flex-col gap-2">
         <div className="flex items-center justify-between text-xs text-muted">
           <span>שלב {idx + 1} מתוך {WIZARD_STEPS.length}</span>
-          <Link href="/account" className="underline-offset-4 hover:underline">אמשיך אחר כך</Link>
+          <Link prefetch={false} href="/account" className="underline-offset-4 hover:underline">אמשיך אחר כך</Link>
         </div>
         <ol className="flex gap-1.5">
           {WIZARD_STEPS.map((s, i) => {
@@ -21,7 +21,7 @@ export function WizardShell({ current, reached, title, subtitle, children }: {
             const bar = <span className={cx("block h-1.5 rounded-full", i === idx ? "bg-brand" : done ? "bg-muted" : "bg-border")} />;
             return (
               <li key={s.slug} className="flex-1" title={s.title}>
-                {link && i !== idx ? <Link href={stepPath(s.slug)} aria-label={s.title}>{bar}</Link> : bar}
+                {link && i !== idx ? <Link prefetch={false} href={stepPath(s.slug)} aria-label={s.title}>{bar}</Link> : bar}
               </li>
             );
           })}

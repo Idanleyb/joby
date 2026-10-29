@@ -65,15 +65,15 @@ export default async function ProposalsPage({ searchParams }: { searchParams: Pr
   );
 
   return (
-    <PageShell title="ההצעות שלי" subtitle={<Link href="/jobs" className="underline underline-offset-4">למציאת עבודות</Link>}>
+    <PageShell title="ההצעות שלי" subtitle={<Link prefetch={false} href="/jobs" className="underline underline-offset-4">למציאת עבודות</Link>}>
       <nav className="flex gap-1 rounded-xl bg-background p-1 text-sm font-semibold" aria-label="סינון">
         {(Object.keys(TABS) as (keyof typeof TABS)[]).map((t) => (
-          <Link key={t} href={t === "active" ? "/proposals" : `/proposals?tab=${t}`} aria-current={tab === t ? "page" : undefined}
+          <Link prefetch={false} key={t} href={t === "active" ? "/proposals" : `/proposals?tab=${t}`} aria-current={tab === t ? "page" : undefined}
             className={cx("flex-1 rounded-lg px-3 py-2 text-center", tab === t && "bg-surface shadow-sm")}>
             {TABS[t].label} ({counts[t]})
           </Link>
         ))}
-        <Link href="/proposals?tab=requests" aria-current={tab === "requests" ? "page" : undefined}
+        <Link prefetch={false} href="/proposals?tab=requests" aria-current={tab === "requests" ? "page" : undefined}
           className={cx("relative flex-1 rounded-lg px-3 py-2 text-center", tab === "requests" && "bg-surface shadow-sm")}>
           פניות{pendingRequests ? <span className="ms-1 rounded-full bg-danger px-1.5 text-[11px] text-white">{pendingRequests}</span> : null}
         </Link>
@@ -93,7 +93,7 @@ export default async function ProposalsPage({ searchParams }: { searchParams: Pr
                     <span className="shrink-0 text-xs font-semibold text-muted">{live ? `עוד ${daysLeft(r.expires_at)} ימים` : REQUEST_STATUS[r.status === "pending" ? "expired" : r.status]}</span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 text-xs">
-                    <Link href={`/posters/${r.poster_id}`} className="underline">לפרופיל המפרסם</Link>
+                    <Link prefetch={false} href={`/posters/${r.poster_id}`} className="underline">לפרופיל המפרסם</Link>
                     <PosterTrust p={r.poster} />
                   </div>
                   <RequestBriefView r={r} />
@@ -112,11 +112,11 @@ export default async function ProposalsPage({ searchParams }: { searchParams: Pr
           return (
             <li key={a.id} className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
               <div className="flex items-start justify-between gap-3">
-                <Link href={`/jobs/${a.job?.id}`} className="font-bold leading-snug hover:underline">{a.job?.title}</Link>
+                <Link prefetch={false} href={`/jobs/${a.job?.id}`} className="font-bold leading-snug hover:underline">{a.job?.title}</Link>
                 <span className={cx("shrink-0 rounded-lg px-2 py-0.5 text-xs font-semibold", STATUS_CLS[a.status] ?? "bg-background text-muted")}>{APP_STATUS_LABEL[a.status]}</span>
               </div>
               <p className="text-sm text-muted">
-                {a.job?.poster ? <>אצל <Link href={`/posters/${a.job.poster_id}`} className="underline"><bdi>{a.job.poster.display_name}</bdi></Link> · </> : null}
+                {a.job?.poster ? <>אצל <Link prefetch={false} href={`/posters/${a.job.poster_id}`} className="underline"><bdi>{a.job.poster.display_name}</bdi></Link> · </> : null}
                 {a.job ? budgetText(a.job) : ""}{a.proposed_price ? ` · ההצעה שלי ₪${a.proposed_price.toLocaleString("he-IL")}` : ""} · נשלחה {timeAgo(a.sent_at)}
                 {a.viewed_at ? " · נצפתה ✓" : ""}
               </p>

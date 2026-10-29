@@ -22,7 +22,7 @@ export default async function AdminExtraHires() {
           <p className="font-bold">{r.job?.title}</p>
           <p className="text-sm text-muted">
             מפרסם: <bdi>{r.job?.poster?.display_name}</bdi> · מבקש לגייס גם את{" "}
-            <Link href={`/providers/${r.application?.provider_id}`} className="underline"><bdi>{r.application?.provider?.display_name}</bdi></Link> · {timeAgo(r.created_at)}
+            <Link prefetch={false} href={`/providers/${r.application?.provider_id}`} className="underline"><bdi>{r.application?.provider?.display_name}</bdi></Link> · {timeAgo(r.created_at)}
           </p>
           <div className="grid gap-2 sm:grid-cols-2">
             <ActionButton variant="primary" action={decideExtraHire.bind(null, r.id, true)} label="אישור" />

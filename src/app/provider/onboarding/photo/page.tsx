@@ -52,7 +52,7 @@ export default async function PhotoPage() {
         <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">
           כדי לסיים חסר:{" "}
           {missing.map((m, i) => (
-            <span key={m.href}>{i ? ", " : ""}<Link href={m.href} className="font-semibold underline">{m.label}</Link></span>
+            <span key={m.href}>{i ? ", " : ""}<Link prefetch={false} href={m.href} className="font-semibold underline">{m.label}</Link></span>
           ))}
         </p>
       ) : null}

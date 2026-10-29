@@ -199,10 +199,10 @@ export default async function HowItWorksPage() {
       </Section>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <Link href="/login" className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand px-5 font-semibold text-brand-contrast">הצטרפות</Link>
-        <Link href="/jobs" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border bg-surface px-5 font-semibold">לעבודות הפתוחות</Link>
+        <Link prefetch={false} href="/login" className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand px-5 font-semibold text-brand-contrast">הצטרפות</Link>
+        <Link prefetch={false} href="/jobs" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border bg-surface px-5 font-semibold">לעבודות הפתוחות</Link>
       </div>
-      <p className="text-center text-sm text-muted">שאלות? <Link href="/terms" className="underline">תנאי שימוש</Link> · <Link href="/privacy" className="underline">פרטיות</Link></p>
+      <p className="text-center text-sm text-muted">שאלות? <Link prefetch={false} href="/terms" className="underline">תנאי שימוש</Link> · <Link prefetch={false} href="/privacy" className="underline">פרטיות</Link></p>
     </main>
   );
 }

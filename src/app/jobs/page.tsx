@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { getAuthUser } from "@/lib/onboarding";
 import { createClient } from "@/lib/supabase/server";
 import { loadCategoryTree } from "@/lib/categories";
 import { JobCard } from "@/components/job-view";
@@ -16,7 +17,7 @@ const NONE = ["00000000-0000-0000-0000-000000000000"];
 export default async function JobsFeedPage({ searchParams }: { searchParams: Promise<SP> }) {
   const sp = await searchParams;
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getAuthUser();
 
   const [{ data: provider }, { data: saves }, cats, { data: costRow }] = await Promise.all([
     user ? supabase.from("provider_profiles").select("user_id").eq("user_id", user.id).maybeSingle() : Promise.resolve({ data: null }),
@@ -63,13 +64,13 @@ export default async function JobsFeedPage({ searchParams }: { searchParams: Pro
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-8">
       <header className="flex items-center justify-between gap-3">
         <h1 className="text-[26px] font-bold sm:text-3xl">הזדמנויות</h1>
-        <Link href="/jobs/new" className="rounded-xl border border-border bg-surface px-4 py-2 text-sm font-semibold">פרסום עבודה</Link>
+        <Link prefetch={false} href="/jobs/new" className="rounded-xl border border-border bg-surface px-4 py-2 text-sm font-semibold">פרסום עבודה</Link>
       </header>
 
       <nav className="flex gap-1 rounded-xl bg-background p-1 text-sm font-semibold" aria-label="תצוגה">
-        {canMatch ? <Link href={href({ tab: undefined })} className={cx("flex-1 rounded-lg px-3 py-2 text-center", tab === "match" && "bg-surface shadow-sm")}>מתאימות לי</Link> : null}
-        <Link href={href({ tab: "new" })} className={cx("flex-1 rounded-lg px-3 py-2 text-center", tab === "new" && "bg-surface shadow-sm")}>הכי חדשות</Link>
-        {user ? <Link href={href({ tab: "saved" })} className={cx("flex-1 rounded-lg px-3 py-2 text-center", tab === "saved" && "bg-surface shadow-sm")}>שמורות ({savedIds.size})</Link> : null}
+        {canMatch ? <Link prefetch={false} href={href({ tab: undefined })} className={cx("flex-1 rounded-lg px-3 py-2 text-center", tab === "match" && "bg-surface shadow-sm")}>מתאימות לי</Link> : null}
+        <Link prefetch={false} href={href({ tab: "new" })} className={cx("flex-1 rounded-lg px-3 py-2 text-center", tab === "new" && "bg-surface shadow-sm")}>הכי חדשות</Link>
+        {user ? <Link prefetch={false} href={href({ tab: "saved" })} className={cx("flex-1 rounded-lg px-3 py-2 text-center", tab === "saved" && "bg-surface shadow-sm")}>שמורות ({savedIds.size})</Link> : null}
       </nav>
 
       <Suspense>
@@ -87,7 +88,7 @@ export default async function JobsFeedPage({ searchParams }: { searchParams: Pro
       {tab === "match" ? <p className="text-sm text-muted">עבודות בתחומים ובאזור שבחרת בפרופיל.</p> : null}
       {!jobs?.length ? (
         <p className="rounded-2xl bg-background p-6 text-center text-muted">
-          {tab === "saved" ? "אין עבודות שמורות." : filtered ? "אין עבודות שמתאימות לסינון." : tab === "match" ? <>אין כרגע עבודות שמתאימות לתחומים ולאזור שלך. <Link href={href({ tab: "new" })} className="underline">לכל העבודות</Link></> : "אין עבודות פתוחות כרגע."}
+          {tab === "saved" ? "אין עבודות שמורות." : filtered ? "אין עבודות שמתאימות לסינון." : tab === "match" ? <>אין כרגע עבודות שמתאימות לתחומים ולאזור שלך. <Link prefetch={false} href={href({ tab: "new" })} className="underline">לכל העבודות</Link></> : "אין עבודות פתוחות כרגע."}
         </p>
       ) : null}
       <ul className="flex flex-col gap-3">

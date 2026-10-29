@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { getAuthUser } from "@/lib/onboarding";
 import { createClient } from "@/lib/supabase/server";
 import { loadCategoryTree } from "@/lib/categories";
 import { ProviderCard, loadProviderCards } from "@/components/provider-card";
@@ -18,7 +19,7 @@ export default async function ProvidersSearchPage({ searchParams }: { searchPara
   // Distance needs a town: the one in the filter, else the signed-in poster's town.
   let origin = sp.city?.trim() || null;
   if (!origin) {
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getAuthUser();
     if (user) origin = (await supabase.from("poster_profiles").select("city").eq("user_id", user.id).maybeSingle()).data?.city ?? null;
   }
   const sort = SORTS.some(([v]) => v === sp.sort) ? sp.sort! : "rating";

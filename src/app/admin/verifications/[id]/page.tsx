@@ -50,7 +50,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
 
   return (
     <div className="flex flex-col gap-5">
-      <Link href="/admin/verifications" className="text-sm text-muted underline">← לתור</Link>
+      <Link prefetch={false} href="/admin/verifications" className="text-sm text-muted underline">← לתור</Link>
       <div className="flex flex-wrap items-baseline gap-3">
         <h1 className="text-[26px] font-bold">{person?.full_name ?? "—"}</h1>
         <span dir="ltr" className="text-sm text-muted">{formatIlPhone(person?.phone)}</span>

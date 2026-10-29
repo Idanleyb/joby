@@ -19,12 +19,12 @@ export default async function FeedbackFormPage({ params }: { params: Promise<{ i
     if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
     return (
       <PageShell title="משוב">
-        <p className="rounded-2xl bg-background p-5 text-sm">המשוב על העבודה הזו כבר נשלח, או שהעבודה בוטלה. <Link href="/feedback" className="underline">לכל המשובים</Link></p>
+        <p className="rounded-2xl bg-background p-5 text-sm">המשוב על העבודה הזו כבר נשלח, או שהעבודה בוטלה. <Link prefetch={false} href="/feedback" className="underline">לכל המשובים</Link></p>
       </PageShell>
     );
   }
   return (
-    <PageShell title={item.title} subtitle={<>משוב על <Link href={item.iAmPoster ? `/providers/${item.otherId}` : `/posters/${item.otherId}`} className="underline"><bdi>{item.otherName}</bdi></Link></>}>
+    <PageShell title={item.title} subtitle={<>משוב על <Link prefetch={false} href={item.iAmPoster ? `/providers/${item.otherId}` : `/posters/${item.otherId}`} className="underline"><bdi>{item.otherName}</bdi></Link></>}>
       <FeedbackForm engagementId={id} iAmPoster={item.iAmPoster} otherName={item.otherName} allowNotYet={item.remindersSent < 2} />
     </PageShell>
   );

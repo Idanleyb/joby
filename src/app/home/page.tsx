@@ -23,17 +23,17 @@ function FeedbackDue({ items }: { items: FeedbackItem[] }) {
       <h2 className="font-bold">משוב על עבודות ({items.length})</h2>
       <ul className="flex flex-col gap-1 text-sm">
         {items.slice(0, 3).map((i) => (
-          <li key={i.engagementId}><Link href={`/feedback/${i.engagementId}`} className="underline underline-offset-4">{i.title}</Link> <span className="text-muted">· <bdi>{i.otherName}</bdi></span></li>
+          <li key={i.engagementId}><Link prefetch={false} href={`/feedback/${i.engagementId}`} className="underline underline-offset-4">{i.title}</Link> <span className="text-muted">· <bdi>{i.otherName}</bdi></span></li>
         ))}
       </ul>
-      {items.length > 3 ? <Link href="/feedback" className="text-sm underline">לכל המשובים</Link> : null}
+      {items.length > 3 ? <Link prefetch={false} href="/feedback" className="text-sm underline">לכל המשובים</Link> : null}
     </Card>
   );
 }
 
 function Tile({ href, value, label, warn }: { href: string; value: React.ReactNode; label: string; warn?: boolean }) {
   return (
-    <Link href={href} className={cx("flex flex-col gap-0.5 rounded-2xl border bg-surface p-4 hover:bg-background", warn ? "border-foreground" : "border-border")}>
+    <Link prefetch={false} href={href} className={cx("flex flex-col gap-0.5 rounded-2xl border bg-surface p-4 hover:bg-background", warn ? "border-foreground" : "border-border")}>
       <span className="text-xl font-bold">{value}</span>
       <span className="text-sm text-muted">{label}</span>
     </Link>
@@ -80,12 +80,12 @@ export default async function HomePage() {
         {!approved ? (
           <Card className="flex flex-col gap-2 border-foreground">
             <p className="font-semibold">{p.verification_status === "pending" ? "האימות בבדיקה — בדרך כלל עד 24 שעות." : "כדי להגיש מועמדות צריך להשלים את אימות השירות."}</p>
-            {p.verification_status !== "pending" ? <Link href="/provider/onboarding/proof" className={`${btn} bg-brand text-brand-contrast`}>להשלמת האימות</Link> : null}
+            {p.verification_status !== "pending" ? <Link prefetch={false} href="/provider/onboarding/proof" className={`${btn} bg-brand text-brand-contrast`}>להשלמת האימות</Link> : null}
           </Card>
         ) : null}
         <FeedbackDue items={feedbackDue.filter((i) => !i.iAmPoster)} />
         {pendingRequests ? (
-          <Link href="/proposals?tab=requests" className="flex items-center justify-between gap-3 rounded-2xl border border-action-border bg-action p-4 font-semibold">
+          <Link prefetch={false} href="/proposals?tab=requests" className="flex items-center justify-between gap-3 rounded-2xl border border-action-border bg-action p-4 font-semibold">
             <span>📨 {pendingRequests === 1 ? "פנייה ישירה אחת ממתינה לתשובה" : `${pendingRequests} פניות ישירות ממתינות לתשובה`}</span>
             <span aria-hidden="true">←</span>
           </Link>
@@ -100,11 +100,11 @@ export default async function HomePage() {
           <Card className="flex flex-col gap-2">
             <div className="flex items-center justify-between"><h2 className="font-bold">חוזק הפרופיל</h2><span className="font-bold">{value}%</span></div>
             <div className="h-2 overflow-hidden rounded-full bg-background"><div className="h-full rounded-full bg-brand" style={{ width: `${value}%` }} /></div>
-            {tips[0] ? <Link href={tips[0].href} className="text-sm underline underline-offset-4">הוספת {tips[0].label} (+{tips[0].gain}%)</Link> : null}
+            {tips[0] ? <Link prefetch={false} href={tips[0].href} className="text-sm underline underline-offset-4">הוספת {tips[0].label} (+{tips[0].gain}%)</Link> : null}
           </Card>
         ) : null}
         <section className="flex flex-col gap-3">
-          <div className="flex items-center justify-between"><h2 className="text-lg font-bold">עבודות חדשות בשבילך</h2><Link href="/jobs" className="text-sm underline">לכולן</Link></div>
+          <div className="flex items-center justify-between"><h2 className="text-lg font-bold">עבודות חדשות בשבילך</h2><Link prefetch={false} href="/jobs" className="text-sm underline">לכולן</Link></div>
           {latest?.length ? latest.map((j) => <JobCard key={j.id} job={{ ...j, subName: j.sub?.name_he ?? "" }} applyCost={Number(costRow?.value ?? 10)} />)
             : <p className="rounded-2xl bg-background p-5 text-sm text-muted">אין כרגע עבודות פתוחות בתחומים ובאזור שלך. נשלח התראה כשתתפרסם אחת.</p>}
         </section>
@@ -126,8 +126,8 @@ export default async function HomePage() {
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 py-8">
       <h1 className="text-[26px] font-bold sm:text-3xl">שלום{first ? `, ${first}` : ""}</h1>
       <FeedbackDue items={feedbackDue.filter((i) => i.iAmPoster)} />
-      <Link href="/jobs/new" className={`${btn} bg-brand text-brand-contrast`}>+ פרסום עבודה חדשה</Link>
-      <p className="-mt-2 text-center text-sm text-muted">או <Link href="/providers" className="underline">פנייה ישירה לנותן שירות</Link> · <Link href="/poster/requests" className="underline">הפניות ששלחתי</Link></p>
+      <Link prefetch={false} href="/jobs/new" className={`${btn} bg-brand text-brand-contrast`}>+ פרסום עבודה חדשה</Link>
+      <p className="-mt-2 text-center text-sm text-muted">או <Link prefetch={false} href="/providers" className="underline">פנייה ישירה לנותן שירות</Link> · <Link prefetch={false} href="/poster/requests" className="underline">הפניות ששלחתי</Link></p>
       <div className="grid grid-cols-3 gap-3">
         <Tile href="/poster/jobs" value={open.length} label="עבודות פתוחות" />
         <Tile href="/poster/jobs" value={newApps} label="מועמדים חדשים" warn={newApps > 0} />
@@ -141,7 +141,7 @@ export default async function HomePage() {
               const fresh = j.applications.filter((a) => !a.viewed_at && a.status !== "withdrawn").length;
               return (
                 <li key={j.id}>
-                  <Link href={`/poster/jobs/${j.id}`} className="flex items-center justify-between gap-3 p-4 hover:bg-background">
+                  <Link prefetch={false} href={`/poster/jobs/${j.id}`} className="flex items-center justify-between gap-3 p-4 hover:bg-background">
                     <span className="font-semibold">{j.title}</span>
                     <span className="shrink-0 text-xs text-muted">{fresh ? <b className="text-foreground">{fresh} חדשים · </b> : null}{j.status === "open" ? `${daysLeft(j.expires_at)} ימים` : "בבדיקה"}</span>
                   </Link>
@@ -152,8 +152,8 @@ export default async function HomePage() {
         </section>
       ) : null}
       <section className="flex flex-col gap-3">
-        <div className="flex items-center justify-between"><h2 className="text-lg font-bold">נותני שירות באזור שלך</h2><Link href="/providers" className="text-sm underline">חיפוש</Link></div>
-        {cards.length ? cards.map((c) => <ProviderCard key={c.user_id} p={c} />) : <p className="rounded-2xl bg-background p-5 text-sm text-muted">עוד אין נותני שירות מאומתים קרובים. <Link href="/providers" className="underline">לחיפוש בכל הארץ</Link></p>}
+        <div className="flex items-center justify-between"><h2 className="text-lg font-bold">נותני שירות באזור שלך</h2><Link prefetch={false} href="/providers" className="text-sm underline">חיפוש</Link></div>
+        {cards.length ? cards.map((c) => <ProviderCard key={c.user_id} p={c} />) : <p className="rounded-2xl bg-background p-5 text-sm text-muted">עוד אין נותני שירות מאומתים קרובים. <Link prefetch={false} href="/providers" className="underline">לחיפוש בכל הארץ</Link></p>}
       </section>
     </main>
   );

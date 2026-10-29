@@ -40,7 +40,7 @@ export default async function AdminHome() {
               {t.sub ? <p className={t.warn ? "text-sm font-semibold text-danger" : "text-sm text-muted"}>{t.sub}</p> : null}
             </Card>
           );
-          return t.href ? <Link key={t.label} href={t.href}>{body}</Link> : <div key={t.label}>{body}</div>;
+          return t.href ? <Link prefetch={false} key={t.label} href={t.href}>{body}</Link> : <div key={t.label}>{body}</div>;
         })}
       </div>
       {demoUsers ? (

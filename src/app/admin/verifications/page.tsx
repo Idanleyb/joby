@@ -23,8 +23,8 @@ export default async function VerificationQueue({ searchParams }: { searchParams
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
         <h1 className="text-[26px] font-bold">אימותים</h1>
-        <Link href="/admin/verifications" className={cx("text-sm", view === "open" ? "font-bold underline" : "text-muted")}>פתוחים</Link>
-        <Link href="/admin/verifications?view=done" className={cx("text-sm", view === "done" ? "font-bold underline" : "text-muted")}>הוחלטו</Link>
+        <Link prefetch={false} href="/admin/verifications" className={cx("text-sm", view === "open" ? "font-bold underline" : "text-muted")}>פתוחים</Link>
+        <Link prefetch={false} href="/admin/verifications?view=done" className={cx("text-sm", view === "done" ? "font-bold underline" : "text-muted")}>הוחלטו</Link>
       </div>
       {!rows?.length ? (
         <p className="text-muted">{view === "open" ? "אין אימותים ממתינים." : "עדיין אין החלטות."}</p>
@@ -49,7 +49,7 @@ export default async function VerificationQueue({ searchParams }: { searchParams
                     <td className={cx("p-3", view === "open" && age >= 20 && "font-bold text-danger")}>
                       {view === "open" ? `${age} ש׳` : r.decided_at?.slice(0, 10)}
                     </td>
-                    <td className="p-3">{view === "open" ? <Link href={`/admin/verifications/${r.id}`} className="font-semibold text-foreground underline">בדיקה</Link> : null}</td>
+                    <td className="p-3">{view === "open" ? <Link prefetch={false} href={`/admin/verifications/${r.id}`} className="font-semibold text-foreground underline">בדיקה</Link> : null}</td>
                   </tr>
                 );
               })}

@@ -39,10 +39,10 @@ export default async function InvitePage({ params, searchParams }: Props) {
         ) : !me ? (
           <>
             <p className="text-sm text-muted">כדי לקבל את ההזמנה צריך להיכנס או להירשם — עם מספר הטלפון שלך או עם Google.</p>
-            <Link href={`/login?next=${encodeURIComponent(here)}`} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand px-5 font-semibold text-brand-contrast">כניסה או הרשמה</Link>
+            <Link prefetch={false} href={`/login?next=${encodeURIComponent(here)}`} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand px-5 font-semibold text-brand-contrast">כניסה או הרשמה</Link>
           </>
         ) : nextStep(me) !== "/account" && nextStep(me) !== "/onboarding/poster" ? (
-          <Link href={`/onboarding?next=${encodeURIComponent(here)}`} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand px-5 font-semibold text-brand-contrast">להשלמת ההרשמה</Link>
+          <Link prefetch={false} href={`/onboarding?next=${encodeURIComponent(here)}`} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand px-5 font-semibold text-brand-contrast">להשלמת ההרשמה</Link>
         ) : (
           <form action={accept} className="flex flex-col gap-3">
             <p className="text-sm text-muted">אחרי האישור תתבקש/י להעלות מסמך שמאשר את הזוגיות (תעודת נישואין, ספח ת״ז, או לידועים בציבור — תצהיר).</p>

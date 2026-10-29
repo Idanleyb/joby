@@ -45,12 +45,12 @@ export default async function AdminInvitePage({ params, searchParams }: Props) {
         ) : !me ? (
           <>
             <p className="text-sm text-muted">כדי לאשר צריך להיכנס או להירשם — עם מספר הטלפון שלך (קוד SMS) או עם Google, ולאמת את כתובת המייל שאליה נשלחה ההזמנה: <span dir="ltr">{invite.email_hint}</span>.</p>
-            <Link href={`/login?next=${encodeURIComponent(here)}`} className={linkClass}>כניסה או הרשמה</Link>
+            <Link prefetch={false} href={`/login?next=${encodeURIComponent(here)}`} className={linkClass}>כניסה או הרשמה</Link>
           </>
         ) : step !== "/account" && step !== "/onboarding/poster" ? (
           <>
             <p className="text-sm text-muted">עוד צעד קטן לפני האישור: להשלים את ההרשמה.</p>
-            <Link href={`/onboarding?next=${encodeURIComponent(here)}`} className={linkClass}>להשלמת ההרשמה</Link>
+            <Link prefetch={false} href={`/onboarding?next=${encodeURIComponent(here)}`} className={linkClass}>להשלמת ההרשמה</Link>
           </>
         ) : (
           <form action={accept} className="flex flex-col gap-3">

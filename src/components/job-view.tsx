@@ -49,7 +49,7 @@ export function ApplyCostNote({ cost, className }: { cost: number; className?: s
   return (
     <p className={cx("text-xs text-muted", className)}>
       💳 הגשת מועמדות: <b className="text-foreground">{cost} קרדיטים</b> · חוזרים אם העבודה נסגרת בלי גיוס או שהפנייה לא נפתחה 30 ימים ·{" "}
-      <Link href="/how-it-works#credits" className="underline">חוקי הקרדיטים</Link>
+      <Link prefetch={false} href="/how-it-works#credits" className="underline">חוקי הקרדיטים</Link>
     </p>
   );
 }
@@ -58,7 +58,7 @@ export function JobCard({ job, action, applyCost }: { job: JobCardData; action?:
   return (
     <article className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
       <div className="flex items-start justify-between gap-3">
-        <Link href={`/jobs/${job.id}`} className="text-lg font-bold leading-snug hover:underline">{job.title}</Link>
+        <Link prefetch={false} href={`/jobs/${job.id}`} className="text-lg font-bold leading-snug hover:underline">{job.title}</Link>
         <span className="flex shrink-0 items-center gap-1.5 text-xs text-muted">{job.is_demo ? <DemoBadge /> : null}{timeAgo(job.published_at)}</span>
       </div>
       <p className="text-sm text-muted">{job.subName} · 📍 {placeText(job)}</p>

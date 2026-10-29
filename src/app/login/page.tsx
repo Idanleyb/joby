@@ -40,8 +40,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <GoogleButton next={after} />
       <DemoLogin accounts={await listDemoAccounts()} />
       <p className="text-center text-xs text-muted">
-        בהמשך את/ה מאשר/ת את <Link href="/terms" className="underline">תנאי השימוש</Link> ואת{" "}
-        <Link href="/privacy" className="underline">מדיניות הפרטיות</Link>.
+        בהמשך את/ה מאשר/ת את <Link prefetch={false} href="/terms" className="underline">תנאי השימוש</Link> ואת{" "}
+        <Link prefetch={false} href="/privacy" className="underline">מדיניות הפרטיות</Link>.
       </p>
     </PageShell>
   );

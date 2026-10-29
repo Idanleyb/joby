@@ -27,7 +27,7 @@ export default async function DirectRequestPage({ params }: { params: Promise<{ 
   if (open) {
     return (
       <PageShell title={`פנייה ל-${name}`}>
-        <p className="rounded-2xl bg-background p-5 text-sm">כבר שלחת פנייה ל-<bdi>{name}</bdi> והיא ממתינה לתשובה. <Link href="/poster/requests" className="underline">לפניות שלי</Link></p>
+        <p className="rounded-2xl bg-background p-5 text-sm">כבר שלחת פנייה ל-<bdi>{name}</bdi> והיא ממתינה לתשובה. <Link prefetch={false} href="/poster/requests" className="underline">לפניות שלי</Link></p>
       </PageShell>
     );
   }

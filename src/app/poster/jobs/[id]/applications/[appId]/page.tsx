@@ -33,7 +33,7 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
   const p = a.provider;
 
   return (
-    <PageShell title={<bdi>{p?.display_name ?? ""}</bdi>} subtitle={<>על העבודה: <Link href={`/poster/jobs/${job.id}`} className="underline underline-offset-4">{job.title}</Link></>}>
+    <PageShell title={<bdi>{p?.display_name ?? ""}</bdi>} subtitle={<>על העבודה: <Link prefetch={false} href={`/poster/jobs/${job.id}`} className="underline underline-offset-4">{job.title}</Link></>}>
       <MarkViewed jobId={job.id} appId={a.id} />
       {a.status === "hired" ? (
         <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">
@@ -52,7 +52,7 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
           {[p?.city, p?.years_experience != null ? `${p.years_experience} שנות ניסיון` : null, p?.jobs_done ? `${p.jobs_done} עבודות דרך Joby` : null,
             p && p.rating_count >= 3 && p.rating_avg ? `★ ${p.rating_avg} (${p.rating_count})` : null].filter(Boolean).join(" · ")}
         </p>
-        <Link href={`/providers/${a.provider_id}`} className="text-sm font-semibold underline underline-offset-4">לפרופיל המלא</Link>
+        <Link prefetch={false} href={`/providers/${a.provider_id}`} className="text-sm font-semibold underline underline-offset-4">לפרופיל המלא</Link>
       </Card>
 
       <Card className="flex flex-col gap-3">

@@ -84,7 +84,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           {me.googleVerified ? <><dt className="text-muted">כניסה</dt><dd>Google ✓</dd></> : null}
           <dt className="text-muted">מייל</dt><dd><span dir="ltr">{me.email ?? account?.email ?? "לא הוזן"}</span>{me.emailVerified ? " ✓" : null}</dd>
           <dt className="text-muted">עיר</dt><dd>{provider?.city ?? poster?.city ?? <span className="text-muted">לא הוזנה</span>}</dd>
-          {approved ? <><dt className="text-muted">קרדיטים</dt><dd><b>{wallet?.balance ?? 0}</b> · <Link href="/provider/credits" className="underline">היסטוריה</Link></dd></> : null}
+          {approved ? <><dt className="text-muted">קרדיטים</dt><dd><b>{wallet?.balance ?? 0}</b> · <Link prefetch={false} href="/provider/credits" className="underline">היסטוריה</Link></dd></> : null}
         </dl>
         <p className="text-xs text-muted">שינוי עיר: באזור העבודה בפרופיל{poster ? " או בפרופיל המפרסם" : ""}. לשינוי טלפון או מייל פנו לתמיכה.</p>
       </Card>
@@ -98,12 +98,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               {provider.provider_type === "spouse" ? " · בן/בת זוג של מילואימניק" : null}
             </p>
             {provider.onboarding_step < 8 ? (
-              <Link href="/provider/onboarding" className={`${linkCls} bg-brand text-brand-contrast`}>המשך לבנות את הפרופיל</Link>
+              <Link prefetch={false} href="/provider/onboarding" className={`${linkCls} bg-brand text-brand-contrast`}>המשך לבנות את הפרופיל</Link>
             ) : (
-              <Link href="/profile" className={`${linkCls} border border-border`}>לפרופיל שלי</Link>
+              <Link prefetch={false} href="/profile" className={`${linkCls} border border-border`}>לפרופיל שלי</Link>
             )}
             {["more_info", "rejected"].includes(provider.verification_status) ? (
-              <Link href="/provider/onboarding/proof" className="text-sm font-semibold text-foreground underline">לפרטים ולהעלאה מחדש</Link>
+              <Link prefetch={false} href="/provider/onboarding/proof" className="text-sm font-semibold text-foreground underline">לפרטים ולהעלאה מחדש</Link>
             ) : null}
           </>
         ) : (
@@ -136,12 +136,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           <>
             <p className="text-sm"><bdi>{poster.display_name}</bdi> · {POSTER_TYPE_LABEL[poster.poster_type]} · {poster.city}</p>
             <div className="grid grid-cols-2 gap-2">
-              <Link href="/jobs/new" className={`${linkCls} bg-brand text-brand-contrast`}>פרסום עבודה</Link>
-              <Link href="/profile/edit" className={`${linkCls} border border-border`}>עריכת פרופיל מפרסם</Link>
+              <Link prefetch={false} href="/jobs/new" className={`${linkCls} bg-brand text-brand-contrast`}>פרסום עבודה</Link>
+              <Link prefetch={false} href="/profile/edit" className={`${linkCls} border border-border`}>עריכת פרופיל מפרסם</Link>
             </div>
           </>
         ) : (
-          <Link href="/onboarding/poster" className={`${linkCls} border border-border bg-surface hover:bg-background`}>אני רוצה לפרסם עבודות</Link>
+          <Link prefetch={false} href="/onboarding/poster" className={`${linkCls} border border-border bg-surface hover:bg-background`}>אני רוצה לפרסם עבודות</Link>
         )}
       </Card>
 
@@ -150,8 +150,8 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <NotificationPrefs initial={prefs} provider={Boolean(provider)} />
       </Card>
 
-      <Link href="/how-it-works" className="text-center text-sm font-semibold underline">איך Joby עובד — כולל חוקי הקרדיטים</Link>
-      {admin ? <Link href="/admin" className="text-center text-sm font-semibold underline">ניהול (Admin)</Link> : null}
+      <Link prefetch={false} href="/how-it-works" className="text-center text-sm font-semibold underline">איך Joby עובד — כולל חוקי הקרדיטים</Link>
+      {admin ? <Link prefetch={false} href="/admin" className="text-center text-sm font-semibold underline">ניהול (Admin)</Link> : null}
 
       <form action="/auth/signout" method="post">
         <Button type="submit" variant="ghost" className="w-full">התנתקות</Button>

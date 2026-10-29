@@ -60,8 +60,8 @@ export function WelcomeForm({ defaultFirst, defaultLast, next, invited, returnin
             <label className="flex items-start gap-3">
               <input type="checkbox" name="terms" defaultChecked={v?.terms} className="mt-0.5 size-5 accent-[var(--brand)]" />
               <span>
-                קראתי ואני מאשר/ת את <Link href="/terms" target="_blank" className="underline">תנאי השימוש</Link> ואת{" "}
-                <Link href="/privacy" target="_blank" className="underline">מדיניות הפרטיות</Link>.
+                קראתי ואני מאשר/ת את <Link prefetch={false} href="/terms" target="_blank" className="underline">תנאי השימוש</Link> ואת{" "}
+                <Link prefetch={false} href="/privacy" target="_blank" className="underline">מדיניות הפרטיות</Link>.
               </span>
             </label>
             {fe.terms ? <p role="alert" className="font-medium text-danger">{fe.terms}</p> : null}

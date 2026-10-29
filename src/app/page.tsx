@@ -41,9 +41,9 @@ export default async function Home() {
           לפרסם עבודה.
         </p>
         <div className="flex flex-wrap gap-3">
-          <Link href="/jobs" className="rounded-lg bg-brand px-5 py-3 font-semibold text-brand-contrast">מצאו עבודה</Link>
-          <Link href="/providers" className="rounded-lg border border-border bg-surface px-5 py-3 font-semibold">גייסו מילואימניק</Link>
-          <Link href="/how-it-works" className="rounded-lg px-5 py-3 font-semibold underline underline-offset-4">איך זה עובד?</Link>
+          <Link prefetch={false} href="/jobs" className="rounded-lg bg-brand px-5 py-3 font-semibold text-brand-contrast">מצאו עבודה</Link>
+          <Link prefetch={false} href="/providers" className="rounded-lg border border-border bg-surface px-5 py-3 font-semibold">גייסו מילואימניק</Link>
+          <Link prefetch={false} href="/how-it-works" className="rounded-lg px-5 py-3 font-semibold underline underline-offset-4">איך זה עובד?</Link>
         </div>
       </header>
 

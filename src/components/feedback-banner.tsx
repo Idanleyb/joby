@@ -23,7 +23,7 @@ export async function FeedbackBanner() {
             ? "החשבון חסום לפעולות חדשות (הגשה, אישור פניות, פרסום) עד שתשאירו משוב על עבודה קודמת."
             : <>השאירו משוב על &quot;{warning!.title}&quot; עד <b>{dmy(warning!.deadline!)}</b>, אחרת החשבון ייחסם לפעולות חדשות.</>}
         </span>
-        <Link href={`/feedback/${(blocked ?? warning)!.engagementId}`} className="rounded-lg bg-white/90 px-3 py-1 font-semibold text-foreground">להשארת משוב</Link>
+        <Link prefetch={false} href={`/feedback/${(blocked ?? warning)!.engagementId}`} className="rounded-lg bg-white/90 px-3 py-1 font-semibold text-foreground">להשארת משוב</Link>
       </p>
     </div>
   );

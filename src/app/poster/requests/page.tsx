@@ -30,7 +30,7 @@ export default async function SentRequestsPage({ searchParams }: { searchParams:
   }));
 
   return (
-    <PageShell title="פניות ישירות שנשלחו" subtitle={<><Link href="/providers" className="underline underline-offset-4">לחיפוש נותני שירות</Link> · <Link href="/poster/jobs" className="underline underline-offset-4">העבודות שלי</Link></>}>
+    <PageShell title="פניות ישירות שנשלחו" subtitle={<><Link prefetch={false} href="/providers" className="underline underline-offset-4">לחיפוש נותני שירות</Link> · <Link prefetch={false} href="/poster/jobs" className="underline underline-offset-4">העבודות שלי</Link></>}>
       {sent ? <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">הפנייה נשלחה ✓ נעדכן אותך כשתגיע תשובה (עד 7 ימים).</p> : null}
       {!requests?.length ? <p className="rounded-2xl bg-background p-6 text-center text-muted">עוד לא שלחת פניות. אפשר לפנות לנותן שירות מהפרופיל שלו.</p> : null}
       <ul className="flex flex-col gap-3">
@@ -42,7 +42,7 @@ export default async function SentRequestsPage({ searchParams }: { searchParams:
               <div className="flex items-start justify-between gap-3">
                 <div className="flex flex-col">
                   <h3 className="font-bold leading-snug">{r.title}</h3>
-                  <span className="text-sm text-muted">אל <Link href={`/providers/${r.provider_id}`} className="underline"><bdi>{r.provider?.display_name}</bdi></Link> · {timeAgo(r.sent_at)}</span>
+                  <span className="text-sm text-muted">אל <Link prefetch={false} href={`/providers/${r.provider_id}`} className="underline"><bdi>{r.provider?.display_name}</bdi></Link> · {timeAgo(r.sent_at)}</span>
                 </div>
                 <span className={cx("shrink-0 rounded-lg px-2 py-0.5 text-xs font-semibold", STATUS_CLS[status] ?? "bg-background text-muted")}>
                   {REQUEST_STATUS[status]}{status === "pending" ? ` · ${daysLeft(r.expires_at)} ימים` : ""}
