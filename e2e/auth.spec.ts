@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { createGoogleLikeUser, expectPath, formAlert, injectSession, signInWithPhone } from "./helpers";
+import { createGoogleLikeUser, emailCodeFor, expectPath, formAlert, injectSession, signInWithPhone, TEST_CODE } from "./helpers";
 
 // Test numbers (supabase/config.toml): 050-000-0001 … 050-000-0004, code 123456.
 // Run on a fresh database (npm run db:reset).
@@ -27,22 +27,54 @@ test("login validates phone and code", async ({ page }) => {
   await expect(formAlert(page)).toContainText("הקוד שגוי");
 });
 
+test("new account confirms an email with a code", async ({ page }) => {
+  await page.waitForTimeout(1500); // the test before used this number: one SMS per second per number
+  await page.goto("/login");
+  await page.getByLabel("מספר טלפון נייד").fill("050-000-0004");
+  await page.getByRole("button", { name: "שלחו לי קוד" }).click();
+  await page.getByLabel("קוד אימות").fill(TEST_CODE);
+  await page.getByRole("button", { name: "אישור" }).click();
+  await expectPath(page, "/onboarding/email");
+  await expect(page.getByRole("heading", { name: "אימות כתובת מייל" })).toBeVisible();
+  await page.goto("/home"); // every page sends an unfinished account back to its step
+  await expectPath(page, "/onboarding/email");
+
+  await page.getByLabel("כתובת מייל").fill("not-an-email");
+  await page.getByRole("button", { name: "שלחו לי קוד" }).click();
+  await expect(formAlert(page)).toContainText("כתובת המייל אינה תקינה");
+  const email = `ruth.${Date.now()}@example.com`;
+  await page.getByLabel("כתובת מייל").fill(email);
+  await page.getByRole("button", { name: "שלחו לי קוד" }).click();
+  await expect(page.getByText(email)).toBeVisible();
+  await expect(page.getByRole("button", { name: /שליחה חוזרת בעוד/ })).toBeDisabled();
+  let code = "";
+  await expect.poll(() => (code = emailCodeFor(email) ?? "")).not.toBe("");
+  await page.getByLabel("קוד מהמייל").fill(code === "000000" ? "111111" : "000000");
+  await page.getByRole("button", { name: "אישור" }).click();
+  await expect(formAlert(page)).toContainText("הקוד שגוי");
+  await page.getByLabel("קוד מהמייל").fill(code);
+  await page.getByRole("button", { name: "אישור" }).click();
+  await expectPath(page, "/onboarding/welcome");
+});
+
 test("new poster: phone → welcome → poster details → account → sign out → sign in again", async ({ page }) => {
   await signInWithPhone(page, "050-000-0001");
   await expectPath(page, "/onboarding/welcome");
 
   await page.getByRole("button", { name: "המשך" }).click();
-  await expect(page.getByText("יש להזין שם פרטי ושם משפחה.")).toBeVisible();
+  await expect(page.getByText("יש להזין שם פרטי.")).toBeVisible();
+  await expect(page.getByText("יש להזין שם משפחה.")).toBeVisible();
   await expect(page.getByText("יש לבחור לפחות אפשרות אחת.")).toBeVisible();
   await expect(page.getByText("יש לאשר את תנאי השימוש")).toBeVisible();
-  await page.getByLabel("שם מלא").fill("Avi");
+  await page.getByLabel("שם פרטי").fill("Avi");
   await page.getByText("לפרסם עבודות ולגייס").click();
   await page.getByRole("button", { name: "המשך" }).click();
-  await expect(page.getByText("יש להזין שם פרטי ושם משפחה.")).toBeVisible();
+  await expect(page.getByText("יש להזין שם משפחה.")).toBeVisible();
+  await expect(page.getByLabel("שם פרטי")).toHaveValue("Avi");
   await expect(page.getByRole("checkbox").first()).not.toBeChecked();
   await expect(page.getByRole("checkbox").nth(1)).toBeChecked(); // choice kept after the error
 
-  await page.getByLabel("שם מלא").fill("Avi Mor");
+  await page.getByLabel("שם משפחה").fill("Mor");
   await page.getByText("קראתי ואני מאשר/ת").click();
   await page.getByRole("button", { name: "המשך" }).click();
   await expectPath(page, "/onboarding/poster");
@@ -75,7 +107,8 @@ test("new poster: phone → welcome → poster details → account → sign out 
 
 test("new provider goes to the verification step and can add the poster role", async ({ page }) => {
   await signInWithPhone(page, "+972 50 000 0002");
-  await page.getByLabel("שם מלא").fill("Noa Barak");
+  await page.getByLabel("שם פרטי").fill("Noa");
+  await page.getByLabel("שם משפחה").fill("Barak");
   await page.getByText("להציע שירותים").click();
   await page.getByText("קראתי ואני מאשר/ת").click();
   await page.getByRole("button", { name: "המשך" }).click();
@@ -99,22 +132,25 @@ test("new provider goes to the verification step and can add the poster role", a
   await expect(page.getByText("Noa B. · אדם פרטי · תל אביב-יפו")).toBeVisible();
 });
 
-test("Google sign-up: mobile number without an SMS code, then continues with the Google name", async ({ page, context, baseURL }) => {
+test("Google sign-up: phone confirmed by SMS code, email already confirmed by Google, names prefilled", async ({ page, context, baseURL }) => {
   await createGoogleLikeUser("dana.google@example.com", "Dana Levi", "test-password-123");
   await injectSession(context, baseURL!, "dana.google@example.com", "test-password-123");
 
   await page.goto("/account");
   await expectPath(page, "/onboarding/phone");
-  await expect(page.getByRole("heading", { name: "מה מספר הנייד שלך?" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "שלחו לי קוד" })).toHaveCount(0); // no SMS for Google users
+  await expect(page.getByRole("heading", { name: "אימות מספר טלפון" })).toBeVisible();
   await page.getByLabel("מספר טלפון נייד").fill("12");
-  await page.getByRole("button", { name: "המשך" }).click();
+  await page.getByRole("button", { name: "שלחו לי קוד" }).click();
   await expect(formAlert(page)).toContainText("מספר נייד ישראלי");
   await page.getByLabel("מספר טלפון נייד").fill("050-000-0003");
-  await page.getByRole("button", { name: "המשך" }).click();
+  await page.getByRole("button", { name: "שלחו לי קוד" }).click();
+  await page.getByLabel("קוד אימות").fill(TEST_CODE);
+  await page.getByRole("button", { name: "אישור" }).click();
 
+  // No email step: Google confirmed the address.
   await expectPath(page, "/onboarding/welcome");
-  await expect(page.getByLabel("שם מלא")).toHaveValue("Dana Levi");
+  await expect(page.getByLabel("שם פרטי")).toHaveValue("Dana");
+  await expect(page.getByLabel("שם משפחה")).toHaveValue("Levi");
 });
 
 test("Google user cannot take a phone number that already has an account", async ({ page, context, baseURL }) => {
@@ -122,7 +158,7 @@ test("Google user cannot take a phone number that already has an account", async
   await injectSession(context, baseURL!, "eli.google@example.com", "test-password-123");
   await page.goto("/onboarding/phone");
   await page.getByLabel("מספר טלפון נייד").fill("050-000-0001");
-  await page.getByRole("button", { name: "המשך" }).click();
+  await page.getByRole("button", { name: "שלחו לי קוד" }).click();
   await expect(formAlert(page)).toContainText("כבר רשום");
 });
 

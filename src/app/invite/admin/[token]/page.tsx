@@ -44,7 +44,7 @@ export default async function AdminInvitePage({ params, searchParams }: Props) {
           <p>{!invite ? "ההזמנה לא נמצאה." : invite.status === "accepted" ? "ההזמנה כבר אושרה." : invite.expired && invite.status === "pending" ? "תוקף ההזמנה פג. בקשו הזמנה חדשה מאדמין." : "ההזמנה בוטלה."}</p>
         ) : !me ? (
           <>
-            <p className="text-sm text-muted">כדי לאשר צריך להיכנס או להירשם — עם מספר הטלפון שלך (קוד SMS) או עם Google. ההזמנה נשלחה אל <span dir="ltr">{invite.email_hint}</span>.</p>
+            <p className="text-sm text-muted">כדי לאשר צריך להיכנס או להירשם — עם מספר הטלפון שלך (קוד SMS) או עם Google, ולאמת את כתובת המייל שאליה נשלחה ההזמנה: <span dir="ltr">{invite.email_hint}</span>.</p>
             <Link href={`/login?next=${encodeURIComponent(here)}`} className={linkClass}>כניסה או הרשמה</Link>
           </>
         ) : step !== "/account" && step !== "/onboarding/poster" ? (
@@ -54,7 +54,7 @@ export default async function AdminInvitePage({ params, searchParams }: Props) {
           </>
         ) : (
           <form action={accept} className="flex flex-col gap-3">
-            <p className="text-sm text-muted">האישור יוסיף הרשאת ניהול לחשבון שאיתו נכנסת{me.fullName ? ` (${me.fullName})` : ""}. אם זה לא החשבון הנכון — התנתקו ונכנסו עם החשבון הנכון.</p>
+            <p className="text-sm text-muted">ההזמנה נשלחה אל <span dir="ltr">{invite.email_hint}</span>. אפשר לאשר רק מחשבון שהמייל הזה מאומת בו{me.email ? <> (בחשבון הזה: <span dir="ltr">{me.email}</span>)</> : null}.</p>
             {error ? <p role="alert" className="text-sm font-medium text-danger">{appErrorMessage({ message: error })}</p> : null}
             <Button type="submit">אישור ההזמנה</Button>
           </form>

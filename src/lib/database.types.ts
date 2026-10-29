@@ -1093,6 +1093,9 @@ export type Database = {
       profiles: {
         Row: {
           contact_phone: string | null;
+          email_verified: boolean;
+          first_name: string | null;
+          last_name: string | null;
           google_verified: boolean;
           is_demo: boolean;
           created_at: string;
@@ -1112,6 +1115,9 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           contact_phone?: string | null;
+          email_verified?: boolean;
+          first_name?: string | null;
+          last_name?: string | null;
           google_verified?: boolean;
           is_demo?: boolean;
           created_at?: string;
@@ -1130,6 +1136,9 @@ export type Database = {
         };
         Update: {
           contact_phone?: string | null;
+          email_verified?: boolean;
+          first_name?: string | null;
+          last_name?: string | null;
           google_verified?: boolean;
           is_demo?: boolean;
           created_at?: string;
@@ -1869,7 +1878,8 @@ export type Database = {
         Args: {
           p_as_poster: boolean;
           p_as_provider: boolean;
-          p_full_name: string;
+          p_first_name: string;
+          p_last_name: string;
           p_marketing_opt_in?: boolean;
         };
         Returns: undefined;
@@ -2036,7 +2046,15 @@ export type Database = {
       setting_int: { Args: { p_key: string }; Returns: number };
       setting_json: { Args: { p_key: string }; Returns: Json };
       short_name: { Args: { p_full: string }; Returns: string };
-      set_contact_phone: { Args: { p_phone: string }; Returns: string };
+      set_my_names: {
+        Args: { p_first_name: string; p_last_name: string };
+        Returns: undefined;
+      };
+      issue_email_code: {
+        Args: { p_email: string; p_user: string };
+        Returns: string;
+      };
+      verify_email_code: { Args: { p_code: string }; Returns: string | null };
       identity_verified: { Args: { p_user: string }; Returns: boolean };
       reachable_phone: { Args: { p_user: string }; Returns: string };
       shortlist_application: {

@@ -70,6 +70,14 @@ export const APP_ERRORS: Record<string, string> = {
   cannot_remove_self: "אי אפשר להסיר את ההרשאה של עצמך.",
   invalid_email: "כתובת המייל אינה תקינה.",
   invite_used: "ההזמנה כבר אושרה או בוטלה.",
+  email_taken: "המייל הזה כבר מאומת בחשבון אחר.",
+  code_too_soon: "אפשר לבקש קוד חדש בעוד חצי דקה.",
+  too_many_codes: "נשלחו יותר מדי קודים. נסו שוב בעוד שעה.",
+  code_attempts: "יותר מדי ניסיונות. בקשו קוד חדש.",
+  code_expired: "תוקף הקוד פג. בקשו קוד חדש.",
+  code_invalid: "הקוד שגוי. נסו שוב או בקשו קוד חדש.",
+  email_not_verified: "יש לאמת כתובת מייל.",
+  invite_email_mismatch: "ההזמנה נשלחה לכתובת מייל אחרת. היכנסו עם החשבון שהמייל הזה מאומת בו.",
 };
 
 export function appErrorMessage(error: { message?: string } | null | undefined): string {

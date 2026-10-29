@@ -51,3 +51,17 @@ export function adminInviteEmail(opts: { name: string; link: string; message?: s
 </table></td></tr></table></body></html>`;
   return { subject: "הוזמנת להיות אדמין ב-Joby", text, html };
 }
+
+/** The email-confirmation code (founder, 2026-10-29: every account confirms an email). */
+export function emailCodeEmail(code: string) {
+  const text = `קוד האימות שלך ל-Joby: ${code}\n\nהקוד בתוקף 10 דקות. אם לא ביקשת אותו, אפשר להתעלם מהמייל.`;
+  const html = `<!doctype html><html lang="he" dir="rtl"><body style="margin:0;background:#f4f4f4;font-family:Arial,Helvetica,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:24px 0"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border:1px solid #e5e5e5;border-radius:12px;direction:rtl;text-align:right">
+<tr><td style="padding:24px 28px 8px;font-size:22px;font-weight:bold;color:#111">Joby</td></tr>
+<tr><td style="padding:8px 28px;font-size:16px;line-height:1.7;color:#111">קוד האימות שלך:</td></tr>
+<tr><td style="padding:8px 28px 16px"><span dir="ltr" style="display:inline-block;font-size:30px;font-weight:bold;letter-spacing:6px;color:#111;background:#f4f4f4;border-radius:10px;padding:10px 18px">${code}</span></td></tr>
+<tr><td style="padding:0 28px 24px;font-size:12px;color:#666">הקוד בתוקף 10 דקות. אם לא ביקשת אותו, אפשר להתעלם מהמייל.</td></tr>
+</table></td></tr></table></body></html>`;
+  return { subject: `${code} — קוד האימות שלך ל-Joby`, text, html };
+}

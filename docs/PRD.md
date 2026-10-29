@@ -13,7 +13,7 @@ supply marketplace where anyone can hire.*
 | **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027)                  |
 | **Owner**    | Idan Leibovitch, Founder & Product                                                          |
 | **Date**     | October 25, 2026                                                                            |
-| **Status**   | v1.6 — Google sign-in without SMS; demo data; session timeout; admin invitations (October 29, 2026) · in build |
+| **Status**   | v1.6 — verified phone and email for every account; demo data; session timeout; admin invitations (October 29, 2026) · in build |
 | **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                                  |
 
 <table>
@@ -193,6 +193,7 @@ reference for browsing providers (Flow B).
 | **Company accounts with multiple seats**          | Single-user posters are enough for beta                                                                                   | Later                            |
 | **English and Arabic interface**                  | Hebrew only at launch; strings built for translation                                                                      | Later                            |
 | **"On reserve duty" status**                      | Removed from the MVP by the founder (v1.1)                                                                                | Later                            |
+| **Active-reservist check by military or national ID** | Next step after the MVP: confirm "active reservist" status from an official source instead of (or in addition to) Form 3010. Candidate routes: the self-issued digital active-reservist certificate (IDF certificates site, valid 3 years) read like the 3010; a data agreement with the Reserves Directorate / Ministry of Defense or the reservists' benefits club; government identity login. Needs legal review of consent and ID handling | After MVP |
 | **Duplicate-identity resolution workflow**        | MVP flags the request in the verification queue and admin approves or rejects; a dedicated end-to-end process comes later | Phase 1–2 (not required for MVP) |
 
 # 3 Users & Roles
@@ -229,7 +230,7 @@ Approved by the founder on October 25, 2026.
 | **\#** | **Decision**        | **Approved value**                                                                                                                                                                                                                                       |
 |--------|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 1      | Eligibility         | 30+ cumulative reserve days on or after October 7, 2023, proven by one cumulative Form 3010 or several per-period forms                                                                                                                                  |
-| 2      | Sign-up             | Phone OTP or Google account; Google users must verify a phone number                                                                                                                                                                                     |
+| 2      | Sign-up             | Phone OTP or Google account. Every account (v1.6): first and last name, a phone confirmed by SMS code, and an email confirmed by code (Google confirms the email)                                                                                                                                                                                     |
 | 3      | Welcome credits     | 100 credits on approval (equal to 10 applications), for reservists and spouses                                                                                                                                                                           |
 | 4      | Apply cost          | 10 credits, paid by the provider when the application is sent                                                                                                                                                                                            |
 | 5      | Direct request cost | 2 credits, paid by the provider, charged only when the provider approves a poster's direct request                                                                                                                                                       |
@@ -249,10 +250,10 @@ Approved by the founder on October 25, 2026.
 
 | **Change**          | **Detail**                                                                                                                                                                                                                                                                 |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Google sign-in**  | No SMS code for Google users. They type their mobile number once (required, not verified by code); it is used for contact sharing and WhatsApp. A number that already belongs to another account is refused. Trust badge renamed "Account verified" (phone code or Google) |
+| **Sign-up details** | Every account gives first name, last name, a mobile number confirmed by SMS code (Google users too) and an email confirmed by a 6-digit code sent by email (Google sign-ups skip it: Google confirmed the address). One account per confirmed email. Existing accounts complete what is missing the next time they use the app. Replaces the earlier v1.6 change "Google needs no SMS code" |
 | **Session timeout** | Automatic sign-out after 60 minutes without activity, with a warning 2 minutes before; signing in again returns to the same page                                                                                                                                           |
 | **Demo data**       | POC dataset loaded as tagged "Demo" content with four demo sign-in accounts; demo and real users never transact; removable from the admin dashboard                                                                                                                        |
-| **Admin invitations** | Admins invite new admins or reviewers by email from the admin console. Default Hebrew email: "Hi [name], you've been invited to be an admin on JOBY. To accept, open this link." The invitee signs in as usual and accepts; links expire after 7 days and can be revoked. Admins can remove other admins, never themselves |
+| **Admin invitations** | Admins invite new admins or reviewers by email from the admin console. Default Hebrew email: "Hi [name], you've been invited to be an admin on JOBY. To accept, open this link." The invitee signs in as usual and accepts from an account whose confirmed email is the invited one; links expire after 7 days and can be revoked. Admins can remove other admins, never themselves |
 
 ## 4.2 Changes in v1.5 (October 28, 2026)
 
@@ -312,7 +313,8 @@ for public launch, **P2** is nice to have.
 |------------|-----------------------------------------------------------------------------------------------------------------------------------------|--------------|
 | **AUTH-1** | As a visitor, I want to sign up with my phone number and a one-time code, so I can start without a password.                            | P0           |
 | **AUTH-2** | As a visitor, I want to sign up with my Google account.                                                                                 | P0           |
-| **AUTH-3** | As a Google user, I type my mobile number once, without an SMS code (v1.6), so Joby can reach me on WhatsApp and share it after a hire. | P0           |
+| **AUTH-3** | As a Google user, I confirm my mobile number with an SMS code, so Joby can reach me on WhatsApp and share it after a hire. | P0           |
+| **AUTH-5** | As a new user, I give my first and last name and confirm my email with a 6-digit code (v1.6). Google sign-ups skip the email code. | P0           |
 | **AUTH-4** | As a new user, I choose "I offer services" or "I want to hire", and I can add the other role later.                                     | P0           |
 
 **RULES**
@@ -1045,7 +1047,7 @@ reservist")</p>
 <tr class="even">
 <td><strong>Authentication</strong></td>
 <td><p>Sign up / sign in (phone or Google)</p>
-<p>Code entry · Phone verification for Google users</p>
+<p>Code entry · Phone verification (SMS code) · Email verification (code)</p>
 <p>Role choice</p></td>
 </tr>
 <tr class="odd">

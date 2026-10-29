@@ -66,33 +66,35 @@ join (values ('972500000001', 'yossi'), ('972500000002', 'noa'), ('972500000003'
              ('972500000005', 'admin'), ('972500000006', 'eli'), ('972500000007', 'ruth')) v(phone, n)
   on v.phone = u.phone;
 insert into public.admins (user_id, role) values (test.uid('admin'), 'admin');
+-- Everyone confirmed an email by code (the email step is tested in 13d).
+update public.profiles p set email = t.name || '@example.com', email_verified = true from test.users t where t.id = p.id;
 
 select test.check((select count(*) from public.profiles) = 7, 'profiles created by auth trigger');
 select test.check((select phone from public.profiles where id = test.uid('yossi')) = '+972500000001', 'phone normalized');
 
 \echo '  1. sign-up and onboarding'
 select test.login('yossi'); set role authenticated;
-select public.complete_signup('Yossi Mizrahi', true, false);
+select public.complete_signup('Yossi', 'Mizrahi', true, false);
 select test.check((select verification_status = 'draft' and display_name = 'Yossi M.'
                    from public.provider_profiles where user_id = auth.uid()), 'draft provider with short name');
 select test.check((select balance from public.provider_wallets where provider_id = auth.uid()) = 0, 'empty wallet');
 reset role;
 
 select test.login('avi'); set role authenticated;
-select public.complete_signup('Avi Mor', false, true);
+select public.complete_signup('Avi', 'Mor', false, true);
 select test.expect_error($$select public.upsert_poster_profile('Acme', 'business', 'Tel Aviv')$$, 'company_required');
 select public.upsert_poster_profile('Avi Mor', 'private', 'Rishon LeZion');
 reset role;
 
 select test.login('dana'); set role authenticated;
-select public.complete_signup('Dana Levi', false, true);
+select public.complete_signup('Dana', 'Levi', false, true);
 select public.upsert_poster_profile('Dana Levi', 'hr', 'Petah Tikva', 'Brightpath Software');
 reset role;
 
 -- A user without a verified phone cannot finish sign-up (Google user before phone step).
 update auth.users set phone_confirmed_at = null where id = test.uid('ruth');
 select test.login('ruth'); set role authenticated;
-select test.expect_error($$select public.complete_signup('Ruth', false, true)$$, 'phone_not_verified');
+select test.expect_error($$select public.complete_signup('Ruth', '', false, true)$$, 'phone_not_verified');
 reset role;
 update auth.users set phone_confirmed_at = now() where id = test.uid('ruth');
 
@@ -149,7 +151,7 @@ select test.check((select extracted is null and days_total is null from public.v
 
 -- Duplicate identity is flagged, not silently accepted.
 select test.login('eli'); set role authenticated;
-select public.complete_signup('Eli Cohen', true, false);
+select public.complete_signup('Eli', 'Cohen', true, false);
 reset role;
 set role service_role;
 select public.submit_verification(test.uid('eli'), 'form_3010', array[test.uid('eli') || '/x.pdf'], '{}', 40, 'hash-yossi');
@@ -227,7 +229,7 @@ select test.check((select to_phone from public.notifications where event = 'spou
 select set_config('test.invite_token', (select invite_token from public.spouse_links where invite_phone = '+972500000002'), false);
 select test.login('noa'); set role authenticated;
 select test.check((select count(*) from public.spouse_links) = 0, 'invite not visible to others before accepting');
-select public.complete_signup('Noa Barak', false, false);
+select public.complete_signup('Noa', 'Barak', false, false);
 select test.expect_error($$select public.accept_spouse_invite('wrong-token')$$, 'invite_invalid');
 select public.accept_spouse_invite(current_setting('test.invite_token'));
 select test.check((select provider_type from public.provider_profiles where user_id = auth.uid()) = 'spouse', 'spouse profile created');
@@ -477,7 +479,7 @@ set role anon;
 select test.check((select reservist_name from public.get_spouse_invite(current_setting('test.invite2'))) = 'Eli C.', 'invite readable by token');
 reset role;
 select test.login('ruth'); set role authenticated;
-select public.complete_signup('Ruth Amsalem', true, false);
+select public.complete_signup('Ruth', 'Amsalem', true, false);
 select test.check((select provider_type from public.provider_profiles where user_id = auth.uid()) = 'reservist', 'draft reservist before accepting');
 select public.accept_spouse_invite(current_setting('test.invite2'));
 select test.check((select provider_type from public.provider_profiles where user_id = auth.uid()) = 'spouse', 'draft converted to spouse');
@@ -494,8 +496,9 @@ insert into public.provider_subcategories values (test.uid('eli'), test.sub('ele
 insert into auth.users (phone, phone_confirmed_at, raw_user_meta_data)
 values ('972500000008', now(), '{"full_name": "Gal Peretz"}');
 insert into test.users select 'gal', id from auth.users where phone = '972500000008';
+update public.profiles set email = 'gal@example.com', email_verified = true where id = test.uid('gal');
 select test.login('gal'); set role authenticated;
-select public.complete_signup('Gal Peretz', false, true);
+select public.complete_signup('Gal', 'Peretz', false, true);
 select public.upsert_poster_profile('Gal Peretz', 'private', 'פתח תקווה');
 select set_config('test.job_near', public.create_job(test.sub('electricity'), 'New sockets in the kitchen',
   'Need four new sockets and a dedicated line for the oven in a kitchen renovation, this month.',
@@ -546,23 +549,51 @@ reset role;
 
 select test.check(not exists (select 1 from public.public_reviews where engagement_title is null), 'reviews carry the engagement title');
 
-\echo ' 13d. Google sign-in: no SMS code, but a mobile number is required'
-insert into auth.users (email, raw_user_meta_data, raw_app_meta_data)
-values ('google.user@example.com', '{"full_name": "Tal Google"}', '{"provider": "google", "providers": ["google"]}');
+\echo ' 13d. every account: first and last name, phone by SMS code, email by code'
+-- Google confirms the email but not the phone: the SMS code is still required.
+insert into auth.users (email, email_confirmed_at, raw_user_meta_data, raw_app_meta_data)
+values ('google.user@example.com', now(), '{"full_name": "Tal Google", "given_name": "Tal", "family_name": "Google"}',
+        '{"provider": "google", "providers": ["google"]}');
 insert into test.users select 'tal', id from auth.users where email = 'google.user@example.com';
-select test.check((select google_verified and not phone_verified from public.profiles where id = test.uid('tal')), 'Google user marked verified');
+select test.check((select email_verified and not phone_verified and first_name = 'Tal' and last_name = 'Google'
+                     from public.profiles where id = test.uid('tal')), 'Google: email verified, names taken, phone not');
 select test.login('tal'); set role authenticated;
-select test.expect_error($$select public.complete_signup('Tal Google', false, true)$$, 'phone_required');
-select test.expect_error($$select public.set_contact_phone('050-000-0001')$$, 'phone_taken');
-select test.expect_error($$select public.set_contact_phone('12345')$$, 'invalid_phone');
-select public.set_contact_phone('050-111-2233');
-select public.complete_signup('Tal Google', false, true);
-select public.upsert_poster_profile('Tal G.', 'private', 'חיפה');
-select test.check(public.reachable_phone(auth.uid()) = '+972501112233', 'contact phone stored');
+select test.expect_error($$select public.complete_signup('Tal', 'Google', false, true)$$, 'phone_not_verified');
 reset role;
--- Phone (SMS) users do not use the Google number step.
-select test.login('dana'); set role authenticated;
-select test.expect_error($$select public.set_contact_phone('050-111-2244')$$, 'phone_not_verified');
+-- The SMS code for a phone added to the account (phone change) confirms it.
+update auth.users set phone = '972501112233', phone_confirmed_at = now() where id = test.uid('tal');
+select test.check((select phone_verified and email_verified from public.profiles where id = test.uid('tal')), 'phone confirmed, email kept');
+select test.login('tal'); set role authenticated;
+select test.expect_error($$select public.complete_signup('Tal', 'G', false, true)$$, 'name_required');
+select public.complete_signup('Tal', 'Google', false, true);
+select test.check((select full_name from public.profiles where id = auth.uid()) = 'Tal Google', 'full name from first + last');
+reset role;
+
+-- A phone user confirms an email with a code.
+insert into auth.users (phone, phone_confirmed_at) values ('972500000009', now());
+insert into test.users select 'omer', id from auth.users where phone = '972500000009';
+select test.login('omer'); set role authenticated;
+select test.expect_error($$select public.complete_signup('Omer', 'Adam', false, true)$$, 'email_not_verified');
+select test.expect_error($$select public.issue_email_code(auth.uid(), 'omer@example.com')$$, 'permission denied');
+reset role;
+select test.expect_error(format($$select public.issue_email_code(%L, 'google.user@example.com')$$, test.uid('omer')), 'email_taken');
+select test.expect_error(format($$select public.issue_email_code(%L, 'nope')$$, test.uid('omer')), 'invalid_email');
+select public.issue_email_code(test.uid('omer'), 'Omer@Example.com') as omer_code \gset
+select test.check(:'omer_code' ~ '^\d{6}$', 'six-digit code');
+select test.expect_error(format($$select public.issue_email_code(%L, 'omer@example.com')$$, test.uid('omer')), 'code_too_soon');
+select test.check(not exists (select 1 from private.email_codes where code_hash = :'omer_code'), 'only a hash is stored');
+select test.login('omer'); set role authenticated;
+select test.check(public.verify_email_code('000000') is null or :'omer_code' = '000000', 'wrong code refused');
+select test.check(public.verify_email_code(:'omer_code') = 'omer@example.com', 'right code accepted');
+select test.check((select email_verified and email = 'omer@example.com' from public.profiles where id = auth.uid()), 'email confirmed');
+select public.complete_signup('Omer', 'Adam', false, true);
+reset role;
+-- Five wrong codes lock the code.
+update private.email_codes set attempts = 0;
+select public.issue_email_code(test.uid('ruth'), 'ruth.new@example.com') as ruth_code \gset
+update private.email_codes set attempts = 5 where user_id = test.uid('ruth');
+select test.login('ruth'); set role authenticated;
+select test.expect_error(format($$select public.verify_email_code(%L)$$, :'ruth_code'), 'code_attempts');
 reset role;
 
 \echo ' 13e. admin invitations by email'
@@ -586,6 +617,10 @@ select test.check((select full_name = 'Tal Google' and status = 'pending' and no
                      from public.get_admin_invite(:'tal_token')),
                   'anon reads the invitation summary');
 select test.expect_error($$select public.accept_admin_invite('abc')$$, 'permission denied');
+reset role;
+-- Someone else with the link cannot use it: the confirmed email must match.
+select test.login('dana'); set role authenticated;
+select test.expect_error(format($$select public.accept_admin_invite(%L)$$, :'tal_token'), 'invite_email_mismatch');
 reset role;
 select test.login('tal'); set role authenticated;
 select test.expect_error($$select public.accept_admin_invite('nope')$$, 'invite_invalid');

@@ -15,9 +15,10 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
   if (step !== "/onboarding/welcome") redirect(step);
 
   return (
-    <PageShell title="ברוכים הבאים ל-Joby" subtitle={<>עוד רגע מתחילים. כמה פרטים קצרים · <Link href="/how-it-works" target="_blank" className="underline underline-offset-4">איך Joby עובד?</Link></>}>
+    <PageShell title={me?.termsAccepted ? "השלמת פרטים" : "ברוכים הבאים ל-Joby"} subtitle={me?.termsAccepted ? "שם פרטי ושם משפחה בנפרד — זה כל מה שחסר." : <>עוד רגע מתחילים. כמה פרטים קצרים · <Link href="/how-it-works" target="_blank" className="underline underline-offset-4">איך Joby עובד?</Link></>}>
       <Card>
-        <WelcomeForm defaultName={me?.fullName ?? ""} next={next} invited={next?.startsWith("/invite/admin/") ? "admin" : next?.startsWith("/invite/") ? "spouse" : undefined} />
+        <WelcomeForm defaultFirst={me?.firstName ?? me?.fullName?.split(" ")[0] ?? ""} defaultLast={me?.lastName ?? me?.fullName?.split(" ").slice(1).join(" ") ?? ""} next={next}
+          returning={me?.termsAccepted} invited={next?.startsWith("/invite/admin/") ? "admin" : next?.startsWith("/invite/") ? "spouse" : undefined} />
       </Card>
     </PageShell>
   );

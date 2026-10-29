@@ -79,10 +79,10 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       <Card className="flex flex-col gap-3">
         <h2 className="text-lg font-bold">פרטים אישיים</h2>
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-          <dt className="text-muted">שם</dt><dd className="font-semibold"><bdi>{me.fullName}</bdi></dd>
+          <dt className="text-muted">שם</dt><dd className="font-semibold"><bdi>{me.firstName && me.lastName ? `${me.firstName} ${me.lastName}` : me.fullName}</bdi></dd>
           <dt className="text-muted">טלפון</dt><dd><span dir="ltr">{formatIlPhone(me.phone)}</span>{me.phoneVerified ? " ✓" : null}</dd>
           {me.googleVerified ? <><dt className="text-muted">כניסה</dt><dd>Google ✓</dd></> : null}
-          <dt className="text-muted">מייל</dt><dd dir="ltr" className="text-end">{account?.email ?? <span className="text-muted">לא הוזן</span>}</dd>
+          <dt className="text-muted">מייל</dt><dd><span dir="ltr">{me.email ?? account?.email ?? "לא הוזן"}</span>{me.emailVerified ? " ✓" : null}</dd>
           <dt className="text-muted">עיר</dt><dd>{provider?.city ?? poster?.city ?? <span className="text-muted">לא הוזנה</span>}</dd>
           {approved ? <><dt className="text-muted">קרדיטים</dt><dd><b>{wallet?.balance ?? 0}</b> · <Link href="/provider/credits" className="underline">היסטוריה</Link></dd></> : null}
         </dl>

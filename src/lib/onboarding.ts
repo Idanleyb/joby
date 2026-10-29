@@ -1,17 +1,20 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 
-export type OnboardingStep = "/login" | "/onboarding/phone" | "/onboarding/welcome" | "/onboarding/poster" | "/account";
+export type OnboardingStep = "/login" | "/onboarding/phone" | "/onboarding/email" | "/onboarding/welcome" | "/onboarding/poster" | "/account";
 
 export type Me = {
   userId: string;
   fullName: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+  /** Email confirmed by code (or by Google). Required for everyone (founder, 2026-10-29). */
+  emailVerified: boolean;
   phone: string | null;
   phoneVerified: boolean;
-  /** Signed in with Google: no SMS code needed (founder, 2026-10-29). */
+  /** Signed in with Google (the email is confirmed by Google; the phone still needs an SMS code). */
   googleVerified: boolean;
-  /** Has a number we can reach (verified phone, or the one a Google user typed). */
-  hasPhone: boolean;
   termsAccepted: boolean;
   isPoster: boolean;
   isProvider: boolean;
@@ -31,7 +34,7 @@ export async function getMe(): Promise<Me | null> {
   const [{ data: profile }, { data: poster }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("full_name, phone, contact_phone, phone_verified, google_verified, terms_accepted_at, is_poster, is_provider, status, is_demo")
+      .select("full_name, first_name, last_name, email, email_verified, phone, phone_verified, google_verified, terms_accepted_at, is_poster, is_provider, status, is_demo")
       .eq("id", user.id)
       .maybeSingle(),
     supabase.from("poster_profiles").select("user_id").eq("user_id", user.id).maybeSingle(),
@@ -40,10 +43,13 @@ export async function getMe(): Promise<Me | null> {
   return {
     userId: user.id,
     fullName: profile?.full_name ?? null,
-    phone: profile?.phone ?? profile?.contact_phone ?? null,
+    firstName: profile?.first_name ?? null,
+    lastName: profile?.last_name ?? null,
+    email: profile?.email ?? null,
+    emailVerified: profile?.email_verified ?? false,
+    phone: profile?.phone ?? null,
     phoneVerified: profile?.phone_verified ?? false,
     googleVerified: profile?.google_verified ?? false,
-    hasPhone: Boolean(profile?.phone ?? profile?.contact_phone),
     termsAccepted: Boolean(profile?.terms_accepted_at),
     isPoster: profile?.is_poster ?? false,
     isProvider: profile?.is_provider ?? false,
@@ -54,15 +60,17 @@ export async function getMe(): Promise<Me | null> {
 }
 
 /**
- * Where the user should be right now (PRD 5.1, 5.7):
- * sign in → verified phone (SMS code; Google users only type their number) → name, roles and terms → poster details → account.
- * The provider wizard (Form 3010, CV, …) is added in the next build step.
+ * Where the user should be right now (PRD 5.1, 5.7; founder 2026-10-29):
+ * sign in → phone confirmed by SMS code (Google users too) → email confirmed by code (skipped when
+ * Google confirmed it) → first and last name, roles and terms → poster details → account.
+ * Accounts created before a step existed are sent to it the next time they use the app.
+ * Demo accounts (sample data) skip the email and name checks.
  */
 export function nextStep(me: Me | null): OnboardingStep {
   if (!me) return "/login";
-  // Phone users confirm by SMS; Google users only type their number (no code).
-  if (!(me.phoneVerified || (me.googleVerified && me.hasPhone))) return "/onboarding/phone";
-  if (!me.termsAccepted) return "/onboarding/welcome";
+  if (!me.phoneVerified) return "/onboarding/phone";
+  if (!me.emailVerified && !me.isDemo) return "/onboarding/email";
+  if (!me.termsAccepted || (!me.isDemo && (!me.firstName || !me.lastName))) return "/onboarding/welcome";
   if (me.isPoster && !me.hasPosterProfile) return "/onboarding/poster";
   return "/account";
 }

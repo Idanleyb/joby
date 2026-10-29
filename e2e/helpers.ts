@@ -1,4 +1,5 @@
 import { expect, type Page, type BrowserContext } from "@playwright/test";
+import { existsSync, readFileSync } from "node:fs";
 
 export const SUPABASE_URL = process.env.E2E_SUPABASE_URL ?? "http://127.0.0.1:54321";
 const SERVICE_KEY = process.env.E2E_SUPABASE_SERVICE_KEY ?? "";
@@ -12,13 +13,44 @@ export async function signInWithPhone(page: Page, localPhone: string) {
 }
 
 /** Phone + code on the current page (keeps ?next= on the login URL). */
-export async function enterPhoneAndCode(page: Page, localPhone: string) {
+export async function enterPhoneAndCode(page: Page, localPhone: string, email?: string) {
   await page.getByLabel("מספר טלפון נייד").fill(localPhone);
   await page.getByRole("button", { name: "שלחו לי קוד" }).click();
   await page.getByLabel("קוד אימות").fill(TEST_CODE);
   await page.getByRole("button", { name: "אישור" }).click();
   // Wait until sign-in has navigated on (to onboarding, the account, or the requested page).
   await page.waitForURL((u) => !u.pathname.startsWith("/login") && !u.pathname.startsWith("/onboarding/phone") && u.pathname !== "/onboarding");
+  // New accounts confirm an email next (founder, 2026-10-29); tests pass it automatically.
+  if (new URL(page.url()).pathname === "/onboarding/email") {
+    await verifyEmailStep(page, email ?? `u${localPhone.replace(/\D/g, "")}.${Date.now()}@example.com`);
+  }
+}
+
+/**
+ * The email step: type the address, read the code from the local SMTP sink's log
+ * (E2E_MAIL_LOG, aiosmtpd Debugging output), type it, wait to move on.
+ */
+export async function verifyEmailStep(page: Page, email: string) {
+  await page.getByLabel("כתובת מייל").fill(email);
+  await page.getByRole("button", { name: "שלחו לי קוד" }).click();
+  await expect(page.getByLabel("קוד מהמייל")).toBeVisible();
+  let code = "";
+  await expect.poll(() => (code = emailCodeFor(email) ?? ""), { timeout: 10_000 }).not.toBe("");
+  await page.getByLabel("קוד מהמייל").fill(code);
+  await page.getByRole("button", { name: "אישור" }).click();
+  await page.waitForURL((u) => !u.pathname.startsWith("/onboarding/email") && u.pathname !== "/onboarding");
+}
+
+/** The latest code emailed to that address (decoded from the subject line). */
+export function emailCodeFor(email: string): string | null {
+  const log = process.env.E2E_MAIL_LOG;
+  if (!log || !existsSync(log)) throw new Error("E2E_MAIL_LOG must point to the SMTP sink log");
+  const messages = readFileSync(log, "utf8").split("---------- MESSAGE FOLLOWS ----------").reverse();
+  const msg = messages.find((m) => new RegExp(`^To: ${email.replace(/[.+]/g, "\\$&")}\\s*$`, "mi").test(m));
+  if (!msg) return null;
+  const subject = (msg.match(/^Subject: (.*(?:\n[ \t].*)*)/m)?.[1] ?? "").replace(/\n[ \t]/g, " ");
+  const decoded = subject.replace(/=\?UTF-8\?B\?([^?]+)\?=\s*/gi, (_, b) => Buffer.from(b, "base64").toString("utf8"));
+  return decoded.match(/\d{6}/)?.[0] ?? null;
 }
 
 /** Form error messages (ignores Next.js's hidden route announcer). */
@@ -98,7 +130,9 @@ export const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAA
 
 /** Welcome screen: name, roles, terms. */
 export async function completeWelcome(page: Page, name: string, roles: ("provider" | "poster")[]) {
-  await page.getByLabel("שם מלא").fill(name);
+  const [first, ...rest] = name.split(" ");
+  await page.getByLabel("שם פרטי").fill(first);
+  await page.getByLabel("שם משפחה").fill(rest.join(" ") || "Test");
   if (roles.includes("provider")) await page.getByText("להציע שירותים", { exact: true }).click();
   if (roles.includes("poster")) await page.getByText("לפרסם עבודות ולגייס").click();
   await page.getByText("קראתי ואני מאשר/ת").click();

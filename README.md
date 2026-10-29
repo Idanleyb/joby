@@ -13,7 +13,7 @@ A two-sided marketplace: **verified reservists** (30+ reserve days since 7 Oct 2
 | App | Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Hebrew, right-to-left |
 | Hosting | Vercel |
 | Database, auth, files, scheduled jobs | Supabase (Postgres, Auth, Storage, pg_cron) |
-| Sign-in | Phone OTP (Twilio via Supabase Auth) · Google (no SMS code; the user types a mobile number) |
+| Sign-in | Phone OTP (Twilio via Supabase Auth) · Google · every account also confirms a phone (SMS code) and an email (6-digit code sent by the app over SMTP) |
 | Later steps | WhatsApp Cloud API · Resend (email) · Claude API (Form 3010 + CV reading) |
 
 ## Project layout
@@ -67,14 +67,16 @@ npm run lint && npm run typecheck && npm run build
 End-to-end (real browser, phone width) — needs the app and the local Supabase stack running, on a fresh database:
 
 ```bash
-npm run db:reset && JOBY_AI_FAKE=1 npm run build && JOBY_AI_FAKE=1 npm start   # app on :3000, canned AI readings
+python3 -m aiosmtpd -n -c aiosmtpd.handlers.Debugging -l 127.0.0.1:2525 > /tmp/joby-mail.log &   # local email sink
+npm run db:reset && JOBY_AI_FAKE=1 npm run build && SMTP_HOST=127.0.0.1 SMTP_PORT=2525 JOBY_AI_FAKE=1 npm start   # app on :3000
+E2E_MAIL_LOG=/tmp/joby-mail.log \
 E2E_SUPABASE_URL=http://127.0.0.1:54321 \
 E2E_SUPABASE_ANON_KEY=<anon key from supabase status> \
 E2E_SUPABASE_SERVICE_KEY=<service_role key from supabase status> \
 npm run test:e2e
 ```
 
-They use the test phone numbers from `supabase/config.toml` (code `123456`), so no SMS is sent. `JOBY_AI_FAKE=1` makes Form 3010 / CV reading return canned results based on the file name (see `src/lib/ai/form3010.ts`), and is refused on Vercel production.
+They use the test phone numbers from `supabase/config.toml` (code `123456`), so no SMS is sent; email codes go to the local sink (`pip install aiosmtpd`) and the tests read them from its log. `JOBY_AI_FAKE=1` makes Form 3010 / CV reading return canned results based on the file name (see `src/lib/ai/form3010.ts`), and is refused on Vercel production.
 
 CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests on every push and pull request.
 
@@ -114,7 +116,7 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
    ```
    More admins: **/admin/admins → הזמנת אדמין** (name, email, role). The invitation email is sent by the app over SMTP — see step 7.
 6. **Vercel**: import the GitHub repo, framework Next.js, and set the variables from `.env.example` (Production and Preview separately). `SUPABASE_SECRET_KEY` and `ID_HASH_SALT` are server-only — never prefix them with `NEXT_PUBLIC_`.
-7. **Email (admin invitations)**: set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` in Vercel and redeploy. Simplest for the beta is a Gmail account: turn on 2-Step Verification, create an **App password** (Google Account → Security → App passwords), then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_USER=<the gmail address>`, `SMTP_PASS=<the 16-letter app password>`, `MAIL_FROM=Joby <the gmail address>`. Any other SMTP service (Resend, Brevo…) works the same way. Without these settings invitations still work: the screen shows the link to copy and send yourself.
+7. **Email (required — sign-up email codes and admin invitations)**: every new account confirms its email with a code the app sends, so **sign-up does not work until this is set**. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` in Vercel and redeploy. Simplest for the beta is a Gmail account: turn on 2-Step Verification, create an **App password** (Google Account → Security → App passwords), then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_USER=<the gmail address>`, `SMTP_PASS=<the 16-letter app password>`, `MAIL_FROM=Joby <the gmail address>`. Any other SMTP service (Resend, Brevo…) works the same way. Gmail allows about 500 emails a day, enough for the beta; move to a sending service (Resend, Brevo…) before launch.
 
 ## Demo data
 

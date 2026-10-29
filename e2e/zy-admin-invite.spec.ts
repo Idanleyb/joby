@@ -52,7 +52,7 @@ test("an admin invites a new admin by email, who signs up and accepts", async ({
   await expect(invitee.getByRole("heading", { name: "היי Rina Invite," })).toBeVisible();
   await expect(invitee.getByText("קיבלת הזמנה מ-JOBY להיות אדמין במערכת")).toBeVisible();
   await invitee.getByRole("link", { name: "כניסה או הרשמה" }).click();
-  await enterPhoneAndCode(invitee, INVITEE.local);
+  await enterPhoneAndCode(invitee, INVITEE.local, EMAIL); // the invited address, confirmed by code
   if (invitee.url().includes("/onboarding/welcome")) await completeWelcome(invitee, "Rina Invite", []);
   await expect(invitee).toHaveURL(/\/invite\/admin\//);
   await invitee.getByRole("button", { name: "אישור ההזמנה" }).click();
