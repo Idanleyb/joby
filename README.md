@@ -126,7 +126,7 @@ Sample data for demonstrations: 100 providers (80 reservists, 20 spouses), 28 po
 2. Supabase → Authentication → Providers → Phone → **Test phone numbers**: add `972500000101`, `972500000102`, `972500000103`, `972500000104`, each with code `123456` (no SMS is sent).
 3. Supabase → SQL Editor: paste and run each `supabase/demo/load_demo_part_N_of_6.sql` (any order, about 120 kB each — the editor rejects one big file), then `load_demo_finish.sql`. If a part is missing, the finish file says which.
 
-Sign in with 050-000-0101 (Yossi, reservist electrician), 050-000-0102 (Noa, spouse illustrator), 050-000-0103 (Avi Mor, private poster) or 050-000-0104 (Lumen Analytics, HR). Remove everything with the button on `/admin` or `select private.purge_demo();`. Demo and real users can never transact with each other.
+Easiest: on the sign-in page, under **נסו חשבון דמו**, click one of the four accounts (no SMS; hidden when no demo data is loaded; turn off with `DEMO_LOGIN=off`). Or sign in with 050-000-0101 (Yossi, reservist electrician), 050-000-0102 (Noa, spouse illustrator), 050-000-0103 (Avi Mor, private poster) or 050-000-0104 (Lumen Analytics, HR). Remove everything with the button on `/admin` or `select private.purge_demo();`. Demo and real users can never transact with each other.
 
 ## Data credits
 

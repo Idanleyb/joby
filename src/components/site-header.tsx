@@ -3,6 +3,7 @@ import { getMe, nextStep } from "@/lib/onboarding";
 import { getMode } from "@/lib/mode";
 import { RoleSwitch } from "@/components/role-switch";
 import { DemoBadge } from "@/components/ui";
+import { createClient } from "@/lib/supabase/server";
 
 export async function SiteHeader() {
   let me = null;
@@ -13,6 +14,9 @@ export async function SiteHeader() {
   }
   const ready = me && nextStep(me) === "/account";
   const mode = ready ? await getMode(me!) : null;
+  const isAdmin = ready
+    ? Boolean((await (await createClient()).from("admins").select("role").eq("user_id", me!.userId).maybeSingle()).data)
+    : false;
 
   return (
     <header className="sticky top-0 z-20 bg-brand text-brand-contrast">
@@ -25,7 +29,10 @@ export async function SiteHeader() {
           {me?.isDemo ? <span className="flex items-center gap-1 text-xs"><DemoBadge />חשבון דמו</span> : null}
         </div>
         {mode ? (
-          <RoleSwitch mode={mode} />
+          <div className="flex items-center gap-2">
+            {isAdmin ? <Link href="/admin" className="rounded-lg px-2 py-1.5 text-sm font-semibold hover:bg-white/10 md:hidden">ניהול</Link> : null}
+            <RoleSwitch mode={mode} />
+          </div>
         ) : (
           <nav className="flex items-center gap-1 text-sm font-semibold">
             <Link href="/how-it-works" className="hidden rounded-lg px-3 py-2 hover:bg-white/10 sm:inline">איך זה עובד</Link>

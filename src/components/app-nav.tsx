@@ -15,7 +15,10 @@ export async function AppNav() {
   if (!me || nextStep(me) !== "/account") return null;
   const mode = await getMode(me);
   const supabase = await createClient();
-  const { count } = await supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", me.userId).eq("in_app", true).is("read_at", null);
+  const [{ count }, { data: admin }] = await Promise.all([
+    supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", me.userId).eq("in_app", true).is("read_at", null),
+    supabase.from("admins").select("role").eq("user_id", me.userId).maybeSingle(),
+  ]);
 
   const items: NavItem[] = mode === "work"
     ? [
@@ -34,6 +37,8 @@ export async function AppNav() {
         { href: "/profile", label: "פרופיל", icon: "user", mobile: true },
         { href: "/account", label: "חשבון", icon: "settings", mobile: true },
       ];
+  // Admins and reviewers: the admin console in the sidebar (on phones it is in the header).
+  if (admin) items.push({ href: "/admin", label: "ניהול", icon: "shield" });
   return (
     <>
       <NavLinks items={items} />

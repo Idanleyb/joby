@@ -6,6 +6,8 @@ import { safeNext } from "@/lib/next-param";
 import { PhoneOtpForm } from "@/components/phone-otp-form";
 import { GoogleButton } from "@/components/google-button";
 import { Card, PageShell } from "@/components/ui";
+import { DemoLogin } from "@/components/demo-login";
+import { listDemoAccounts } from "@/lib/demo-login";
 
 export const metadata: Metadata = { title: "כניסה · Joby" };
 
@@ -36,6 +38,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <span className="h-px flex-1 bg-border" />
       </div>
       <GoogleButton next={after} />
+      <DemoLogin accounts={await listDemoAccounts()} />
       <p className="text-center text-xs text-muted">
         בהמשך את/ה מאשר/ת את <Link href="/terms" className="underline">תנאי השימוש</Link> ואת{" "}
         <Link href="/privacy" className="underline">מדיניות הפרטיות</Link>.

@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { unreadCount } from "@/app/notifications/actions";
 import { cx } from "@/components/ui";
-import { IconBell, IconBriefcase, IconHome, IconInbox, IconSearch, IconSettings, IconUser, IconUsers } from "@/components/icons";
+import { IconBell, IconBriefcase, IconHome, IconInbox, IconSearch, IconSettings, IconShieldCheck, IconUser, IconUsers } from "@/components/icons";
 
-export type NavItem = { href: string; label: string; icon: "home" | "search" | "inbox" | "bell" | "user" | "settings" | "briefcase" | "users"; badge?: number; mobile?: boolean };
+export type NavItem = { href: string; label: string; icon: "home" | "search" | "inbox" | "bell" | "user" | "settings" | "briefcase" | "users" | "shield"; badge?: number; mobile?: boolean };
 
-const ICONS = { home: IconHome, search: IconSearch, inbox: IconInbox, bell: IconBell, user: IconUser, settings: IconSettings, briefcase: IconBriefcase, users: IconUsers };
+const ICONS = { home: IconHome, search: IconSearch, inbox: IconInbox, bell: IconBell, user: IconUser, settings: IconSettings, briefcase: IconBriefcase, users: IconUsers, shield: IconShieldCheck };
 
 function isActive(path: string, href: string) {
   if (href === "/jobs") return path === "/jobs" || (path.startsWith("/jobs/") && path !== "/jobs/new");

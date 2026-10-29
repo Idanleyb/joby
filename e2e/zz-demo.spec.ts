@@ -24,6 +24,15 @@ test.afterAll(() => {
   psql("select private.purge_demo();");
 });
 
+test("one-click demo sign-in from the login page (no SMS)", async ({ page }) => {
+  await page.goto("/login");
+  const box = page.getByRole("region", { name: "נסו חשבון דמו" });
+  await expect(box.getByRole("button")).toHaveCount(4);
+  await box.getByRole("button", { name: /בת זוג של מילואימניק/ }).click();
+  await expectPath(page, "/home");
+  await expect(page.getByText("חשבון דמו")).toBeVisible();
+});
+
 test("demo provider (Yossi): home, approve a direct request, apply to a demo job", async ({ page }) => {
   await signInWithPhone(page, "050-000-0101");
   await expectPath(page, "/home");
