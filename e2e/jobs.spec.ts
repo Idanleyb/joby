@@ -122,6 +122,10 @@ test("poster opens the application, reveals contact and hires", async ({ page })
   await expect(page.getByText("₪1,800")).toBeVisible();
   await expect.poll(async () => (await serviceRest(`applications?select=viewed_at&job_id=eq.${jobId}`))[0].viewed_at).not.toBeNull();
 
+  await page.getByRole("button", { name: "הוספה למועדפים ★" }).click();
+  await expect(page.getByRole("button", { name: "הסרה מהמועדפים" })).toBeVisible();
+  await expect(page.getByText("במועדפים ★")).toBeVisible();
+
   await page.getByRole("button", { name: "יצירת קשר (חשיפת טלפון)" }).click();
   await page.getByRole("button", { name: "חשיפה" }).click();
   await expect(page.getByRole("heading", { name: "פרטי קשר" })).toBeVisible();

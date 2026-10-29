@@ -7,6 +7,7 @@ export function notificationText(event: string, p: P): { text: string; href?: st
   switch (event) {
     case "job_alert": return { icon: "🔔", text: `עבודה חדשה שמתאימה לך: ${s(p.title)}`, href: `/jobs/${job}` };
     case "application_viewed": return { icon: "👀", text: "המפרסם צפה במועמדות שלך", href: `/jobs/${job}` };
+    case "application_shortlisted": return { icon: "★", text: "המפרסם סימן את המועמדות שלך כמועדפת", href: `/jobs/${job}` };
     case "applicant_contacted": return { icon: "📞", text: "המפרסם רוצה ליצור איתך קשר — פרטי הקשר זמינים", href: "/proposals" };
     case "you_were_hired": return { icon: "🎉", text: "נבחרת לעבודה!", href: "/proposals?tab=hired" };
     case "not_selected": return { icon: "•", text: "המפרסם בחר נותן שירות אחר לעבודה", href: `/jobs/${job}` };

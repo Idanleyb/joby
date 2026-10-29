@@ -524,6 +524,15 @@ select public.mark_application_viewed(current_setting('test.app_near')::uuid);
 reset role;
 select test.check((select count(*) from public.notifications where user_id = test.uid('eli') and event = 'application_viewed') = 1,
                   '"viewed" notice sent once');
+-- Favorites: the provider is told once, even if the poster un-marks and marks again.
+select test.login('gal'); set role authenticated;
+select public.shortlist_application(current_setting('test.app_near')::uuid, true);
+select public.shortlist_application(current_setting('test.app_near')::uuid, false);
+select public.shortlist_application(current_setting('test.app_near')::uuid, true);
+reset role;
+select test.check((select count(*) from public.notifications where user_id = test.uid('eli') and event = 'application_shortlisted') = 1,
+                  '"favorite" notice sent once');
+select test.check((select status from public.applications where id = current_setting('test.app_near')::uuid) = 'shortlisted', 'marked favorite');
 select set_config('request.jwt.claim.sub', '', false); set role anon;
 select test.check(current_setting('test.job_near')::uuid in (select public.jobs_near('ראש העין', 10)), 'area filter: 10 km');
 select test.check(current_setting('test.job_far')::uuid not in (select public.jobs_near('ראש העין', 50)), 'area filter excludes Eilat');

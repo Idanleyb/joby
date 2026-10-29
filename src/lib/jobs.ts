@@ -8,7 +8,7 @@ export const JOB_STATUS_LABEL: Record<string, string> = {
   held: "בבדיקה", open: "פתוחה", hired: "נבחר נותן שירות", closed_no_hire: "נסגרה בלי גיוס", expired: "פג תוקף", removed: "הוסרה",
 };
 export const APP_STATUS_LABEL: Record<string, string> = {
-  sent: "נשלחה", viewed: "נצפתה", shortlisted: "ברשימה הקצרה", contacted: "המפרסם יצר קשר", hired: "נבחרת! 🎉",
+  sent: "נשלחה", viewed: "נצפתה", shortlisted: "במועדפים ★", contacted: "המפרסם יצר קשר", hired: "נבחרת! 🎉",
   not_selected: "לא נבחרת", credited_back: "הקרדיטים הוחזרו", withdrawn: "בוטלה",
 };
 

@@ -82,7 +82,7 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
             <ActionButton action={contactApp.bind(null, job.id, a.id)} label="יצירת קשר (חשיפת טלפון)" confirm="ייחשפו פרטי הקשר של שניכם — לך ולנותן/ת השירות." confirmLabel="חשיפה" />
           ) : null}
           {a.status !== "contacted" ? (
-            <ActionButton action={shortlistApp.bind(null, job.id, a.id, a.status !== "shortlisted")} label={a.status === "shortlisted" ? "הסרה מהרשימה הקצרה" : "לרשימה הקצרה ★"} />
+            <ActionButton action={shortlistApp.bind(null, job.id, a.id, a.status !== "shortlisted")} label={a.status === "shortlisted" ? "הסרה מהמועדפים" : "הוספה למועדפים ★"} />
           ) : null}
           <ActionButton variant="ghost" action={declineApp.bind(null, job.id, a.id)} label="לא מתאים" confirm="לסמן כלא מתאים? נשלח הודעה מנומסת." confirmLabel="סימון" />
         </div>

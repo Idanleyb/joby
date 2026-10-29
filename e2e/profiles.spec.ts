@@ -15,6 +15,7 @@ test("provider: notifications, proposals tabs, availability and photo gallery", 
   await expect(page.getByText("עבודה חדשה שמתאימה לך: החלפת לוח חשמל ישן")).toBeVisible();
   await expect(page.getByText("המפרסם צפה במועמדות שלך").first()).toBeVisible();
   await expect(page.getByText("נבחרת לעבודה!")).toBeVisible();
+  await expect(page.getByText("המפרסם סימן את המועמדות שלך כמועדפת")).toBeVisible();
   await page.getByRole("button", { name: "סימון הכול כנקרא" }).click();
   await expect(page.getByText("אין התראות חדשות")).toBeVisible();
 

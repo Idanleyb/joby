@@ -253,6 +253,7 @@ Approved by the founder on October 25, 2026.
 | **Sign-up details** | Every account gives first name, last name, a mobile number confirmed by SMS code (Google users too) and an email confirmed by a 6-digit code sent by email (Google sign-ups skip it: Google confirmed the address). One account per confirmed email. Existing accounts complete what is missing the next time they use the app. Replaces the earlier v1.6 change "Google needs no SMS code" |
 | **Session timeout** | Automatic sign-out after 60 minutes without activity, with a warning 2 minutes before; signing in again returns to the same page                                                                                                                                           |
 | **Demo data**       | POC dataset loaded as tagged "Demo" content with four demo sign-in accounts; demo and real users never transact; removable from the admin dashboard                                                                                                                        |
+| **Favorites** | "Shortlist" renamed "מועדפים" (favorites), the common Hebrew term. The provider gets an in-app notice the first time a poster marks the application as a favorite |
 | **Admin invitations** | Admins invite new admins or reviewers by email from the admin console. Default Hebrew email: "Hi [name], you've been invited to be an admin on JOBY. To accept, open this link." The invitee signs in as usual and accepts from an account whose confirmed email is the invited one; links expire after 7 days and can be revoked. Admins can remove other admins, never themselves |
 
 ## 4.2 Changes in v1.5 (October 28, 2026)
@@ -633,7 +634,7 @@ The poster edits city, about, website, logo and company name.
 | **ID**    | **User story**                                                                                                                   | **Priority** |
 |-----------|----------------------------------------------------------------------------------------------------------------------------------|--------------|
 | **APP-1** | As a verified provider, I apply with a short pitch and see the credit cost and my balance before I confirm.                      | P0           |
-| **APP-2** | As a poster, I review applicants with their badges, rating, distance, pitch and price, then shortlist, contact, decline or hire. | P0           |
+| **APP-2** | As a poster, I review applicants with their badges, rating, distance, pitch and price, then mark favorites, contact, decline or hire. | P0           |
 | **APP-3** | As a provider, I get my credits back automatically if my application is ignored or the job closes without a hire.                | P0           |
 
 **APPLICATION FORM**
@@ -648,7 +649,7 @@ availability date, optional attached service card. Confirmation sheet:
 |-------------------|------------------------------------------------------------------------------------------------------------------------------------------|
 | **Sent**          | Application submitted; 10 credits deducted                                                                                               |
 | **Viewed**        | Poster opened the application detail (opening the list does not count). This is the event that stops the 30-day credit-back timer        |
-| **Shortlisted**   | Poster shortlisted the applicant                                                                                                         |
+| **Favorite**      | Poster marked the applicant as a favorite ("מועדפים"; was "shortlist"). The provider is notified the first time                          |
 | **Contacted**     | Poster tapped Contact: the provider's phone and email are revealed to the poster, and the provider is notified with the poster's details |
 | **Hired**         | Poster marked this applicant as hired; an engagement is created (section 5.12)                                                           |
 | **Not selected**  | Poster declined, or hired someone else                                                                                                   |
@@ -968,6 +969,7 @@ All values are configurable by admin without a code release.
 | **Spouse approved / rejected**                               | Spouse + reservist | ✓                                 | ✓            | ✓          |
 | **New matching job**                                         | Provider           | Instant or daily digest (setting) | Daily digest | ✓          |
 | **New application**                                          | Poster             | First per job, then digest        | ✓            | ✓          |
+| **Marked as a favorite by the poster**                       | Provider           | —                                 | —            | ✓          |
 | **Applicant contacted you**                                  | Provider           | ✓                                 | ✓            | ✓          |
 | **Not selected**                                             | Provider           | —                                 | ✓            | ✓          |
 | **Credit-back issued**                                       | Provider           | ✓                                 | —            | ✓          |
