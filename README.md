@@ -120,7 +120,7 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
 
 ## Speed
 
-- **Same region**: `vercel.json` runs the server functions in Frankfurt (`fra1`). If the Supabase project is in another region (Supabase → Project Settings → General → Region), change `regions` to the closest Vercel region — a mismatch adds ~100 ms to every database call.
+- **Same region**: `vercel.json` runs the server functions in the Supabase project's region — now Tokyo (`hnd1`), because the current Supabase project is in Northeast Asia (Tokyo). For users in Israel, a Supabase project in Frankfurt with `fra1` is much faster (Supabase cannot move a project: create a new one and run the bootstrap SQL). If the Supabase project is in another region (Supabase → Project Settings → General → Region), change `regions` to the closest Vercel region — a mismatch adds ~100 ms to every database call.
 - **JWT signing keys**: in Supabase → Project Settings → JWT Keys, switch to the new (asymmetric) signing keys. The session check that runs on every request then verifies locally instead of calling the auth server.
 - Links don't prefetch; `src/app/loading.tsx` shows a skeleton while a page loads.
 
