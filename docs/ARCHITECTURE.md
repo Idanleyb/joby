@@ -40,6 +40,7 @@ pg_cron (every 10 min) ──▶ private.run_timers()
 | `1100_job_saves` | saved jobs (owner-only) | 5.9 |
 | `1200_profiles_search` | `il_cities` + `distance_km`, distance matching (`my_matching_jobs`, `jobs_near`), job alerts, "application viewed" notice, `search_providers`, availability + gallery, poster "about", `portfolio` bucket | 5.5, 5.7, 5.9, 5.19, 5.20 |
 | `20261028000200_demo_data` | `is_demo` tags, demo/real separation triggers, `private.load_demo(jsonb)`, `private.purge_demo()`, `admin_purge_demo()` | demo |
+| `20261029000100_demo_staged_load` | demo data loaded in small parts: `private.demo_stage`, `private.load_demo_staged()` | demo |
 | `20261028000100_reviews_title` | `public_reviews` adds `engagement_title` | 5.14 |
 
 ## Key RPC functions
@@ -121,7 +122,7 @@ Uploads go to `<bucket>/<user_id>/<file>`. Verification documents are private to
 
 ## Demo data
 
-`scripts/demo/gen_data.py` and `localize.py` are the POC generator (unchanged); `build_demo.py` maps their output to the real schema, adds scripted scenarios for the four sign-in accounts and writes `supabase/demo/load_demo.sql`. `private.load_demo` inserts every table generically (columns from the JSON keys, defaults for the rest), shifts timestamps to "now", maps subcategory slugs to ids, recomputes counters and ratings with the live functions, and skips job alerts while loading (`joby.loading_demo`). `private.purge_demo()` deletes the demo accounts from `auth.users`; everything else cascades. Rebuild: `cd <tmp> && python3 scripts/demo/gen_data.py && python3 scripts/demo/localize.py && python3 scripts/demo/build_demo.py`.
+`scripts/demo/gen_data.py` and `localize.py` are the POC generator (unchanged); `build_demo.py` maps their output to the real schema, adds scripted scenarios for the four sign-in accounts and writes `supabase/demo/load_demo_part_N_of_M.sql` (≈120 kB each, compact column format, staged in `private.demo_stage`) and `load_demo_finish.sql` (`private.load_demo_staged()` merges the parts and calls `private.load_demo`). `private.load_demo` inserts every table generically (columns from the JSON keys, defaults for the rest), shifts timestamps to "now", maps subcategory slugs to ids, recomputes counters and ratings with the live functions, and skips job alerts while loading (`joby.loading_demo`). `private.purge_demo()` deletes the demo accounts from `auth.users`; everything else cascades. Rebuild: `cd <tmp> && python3 scripts/demo/gen_data.py && python3 scripts/demo/localize.py && python3 scripts/demo/build_demo.py`.
 
 ## Session timeout
 

@@ -1,11 +1,18 @@
 -- =============================================================================
--- Demo data: loads supabase/demo/load_demo.sql, checks it obeys the live rules,
+-- Demo data: loads the supabase/demo part files, checks it obeys the live rules,
 -- checks demo and real users cannot transact, then removes it all again.
 -- =============================================================================
 \set QUIET on
 set client_min_messages = warning;
 
-\ir ../demo/load_demo.sql
+-- The same files an admin pastes into the SQL Editor: every part, then the finish file.
+\ir ../demo/load_demo_part_1_of_6.sql
+\ir ../demo/load_demo_part_2_of_6.sql
+\ir ../demo/load_demo_part_3_of_6.sql
+\ir ../demo/load_demo_part_4_of_6.sql
+\ir ../demo/load_demo_part_5_of_6.sql
+\ir ../demo/load_demo_part_6_of_6.sql
+\ir ../demo/load_demo_finish.sql
 
 do $$
 declare n integer; bad integer;
@@ -37,6 +44,7 @@ begin
   if not exists (select 1 from public.jobs where status = 'held') then raise exception 'FAILED: held job'; end if;
   -- Sign-in accounts have phones; the rest do not.
   if (select count(*) from public.profiles where is_demo and phone is not null) <> 4 then raise exception 'FAILED: four demo sign-in accounts'; end if;
+  if exists (select 1 from private.demo_stage) then raise exception 'FAILED: staging not cleared'; end if;
   -- Loading twice is refused.
   begin
     perform private.load_demo('{"reference_time":"2026-10-25T15:00:00Z"}'::jsonb);

@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
 import { execFileSync } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 import { expectPath, signInWithPhone } from "./helpers";
 
-// Loads supabase/demo/load_demo.sql into the test database, walks the demo flows with the four
+// Loads the supabase/demo part files into the test database, walks the demo flows with the four
 // demo sign-in accounts, then removes the demo data. Needs E2E_DB_URL (psql connection string).
 const DB = process.env.E2E_DB_URL;
 test.describe.configure({ mode: "serial" });
@@ -12,7 +13,12 @@ test.skip(!DB, "E2E_DB_URL not set");
 const psql = (sql: string) => execFileSync("psql", ["-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DB!, "-c", sql], { encoding: "utf8" });
 
 test.beforeAll(() => {
-  execFileSync("psql", ["-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DB!, "-f", path.join(__dirname, "../supabase/demo/load_demo.sql")]);
+  // Exactly what an admin pastes into the SQL Editor: every part file, then the finish file.
+  const dir = path.join(__dirname, "../supabase/demo");
+  const parts = fs.readdirSync(dir).filter((f) => f.startsWith("load_demo_part_")).sort((a, b) => parseInt(a.split("_")[3]) - parseInt(b.split("_")[3]));
+  for (const f of [...parts, "load_demo_finish.sql"]) {
+    execFileSync("psql", ["-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DB!, "-f", path.join(dir, f)]);
+  }
 });
 test.afterAll(() => {
   psql("select private.purge_demo();");

@@ -49,7 +49,7 @@ export default async function AdminHome() {
           <p className="text-sm text-muted">{demoUsers} חשבונות דמו ו-{demoJobs ?? 0} עבודות דמו, כולל מועמדויות, פניות, משובים וקרדיטים. הם מסומנים ״דמו״ בכל מקום ולא מתערבבים עם משתמשים אמיתיים. לפני ההשקה מסירים אותם.</p>
           {role === "admin" ? (
             <ActionButton action={purgeDemo} label="הסרת כל נתוני הדמו" pendingLabel="מסירים…"
-              confirm="להסיר את כל חשבונות הדמו וכל מה שקשור אליהם? אי אפשר לבטל. (אפשר לטעון מחדש מהקובץ load_demo.sql)" confirmLabel="הסרה" />
+              confirm="להסיר את כל חשבונות הדמו וכל מה שקשור אליהם? אי אפשר לבטל. (אפשר לטעון מחדש מקובצי load_demo בתיקייה supabase/demo)" confirmLabel="הסרה" />
           ) : null}
         </Card>
       ) : null}

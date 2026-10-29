@@ -118,9 +118,9 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
 
 Sample data for demonstrations: 100 providers (80 reservists, 20 spouses), 28 posters, 52 jobs, 377 applications, 155 direct requests, 130 engagements with feedback, and a full credit ledger — all tagged **דמו**.
 
-1. Apply the database update that adds demo support (migration `20261028000200_demo_data`).
+1. Apply the database updates that add demo support (migrations `20261028000200_demo_data` and `20261029000100_demo_staged_load`).
 2. Supabase → Authentication → Providers → Phone → **Test phone numbers**: add `972500000101`, `972500000102`, `972500000103`, `972500000104`, each with code `123456` (no SMS is sent).
-3. Supabase → SQL Editor → paste `supabase/demo/load_demo.sql` → Run.
+3. Supabase → SQL Editor: paste and run each `supabase/demo/load_demo_part_N_of_6.sql` (any order, about 120 kB each — the editor rejects one big file), then `load_demo_finish.sql`. If a part is missing, the finish file says which.
 
 Sign in with 050-000-0101 (Yossi, reservist electrician), 050-000-0102 (Noa, spouse illustrator), 050-000-0103 (Avi Mor, private poster) or 050-000-0104 (Lumen Analytics, HR). Remove everything with the button on `/admin` or `select private.purge_demo();`. Demo and real users can never transact with each other.
 
