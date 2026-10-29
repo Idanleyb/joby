@@ -546,6 +546,25 @@ reset role;
 
 select test.check(not exists (select 1 from public.public_reviews where engagement_title is null), 'reviews carry the engagement title');
 
+\echo ' 13d. Google sign-in: no SMS code, but a mobile number is required'
+insert into auth.users (email, raw_user_meta_data, raw_app_meta_data)
+values ('google.user@example.com', '{"full_name": "Tal Google"}', '{"provider": "google", "providers": ["google"]}');
+insert into test.users select 'tal', id from auth.users where email = 'google.user@example.com';
+select test.check((select google_verified and not phone_verified from public.profiles where id = test.uid('tal')), 'Google user marked verified');
+select test.login('tal'); set role authenticated;
+select test.expect_error($$select public.complete_signup('Tal Google', false, true)$$, 'phone_required');
+select test.expect_error($$select public.set_contact_phone('050-000-0001')$$, 'phone_taken');
+select test.expect_error($$select public.set_contact_phone('12345')$$, 'invalid_phone');
+select public.set_contact_phone('050-111-2233');
+select public.complete_signup('Tal Google', false, true);
+select public.upsert_poster_profile('Tal G.', 'private', 'חיפה');
+select test.check(public.reachable_phone(auth.uid()) = '+972501112233', 'contact phone stored');
+reset role;
+-- Phone (SMS) users do not use the Google number step.
+select test.login('dana'); set role authenticated;
+select test.expect_error($$select public.set_contact_phone('050-111-2244')$$, 'phone_not_verified');
+reset role;
+
 \echo ' 14. ledger integrity'
 select test.check(not exists (
   select 1 from public.provider_wallets w

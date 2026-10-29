@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { createGoogleLikeUser, expectPath, formAlert, injectSession, signInWithPhone, TEST_CODE } from "./helpers";
+import { createGoogleLikeUser, expectPath, formAlert, injectSession, signInWithPhone } from "./helpers";
 
 // Test numbers (supabase/config.toml): 050-000-0001 … 050-000-0004, code 123456.
 // Run on a fresh database (npm run db:reset).
@@ -99,16 +99,19 @@ test("new provider goes to the verification step and can add the poster role", a
   await expect(page.getByText("Noa B. · אדם פרטי · תל אביב-יפו")).toBeVisible();
 });
 
-test("Google sign-up must add a phone, then continues with the Google name", async ({ page, context, baseURL }) => {
+test("Google sign-up: mobile number without an SMS code, then continues with the Google name", async ({ page, context, baseURL }) => {
   await createGoogleLikeUser("dana.google@example.com", "Dana Levi", "test-password-123");
   await injectSession(context, baseURL!, "dana.google@example.com", "test-password-123");
 
   await page.goto("/account");
   await expectPath(page, "/onboarding/phone");
+  await expect(page.getByRole("heading", { name: "מה מספר הנייד שלך?" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "שלחו לי קוד" })).toHaveCount(0); // no SMS for Google users
+  await page.getByLabel("מספר טלפון נייד").fill("12");
+  await page.getByRole("button", { name: "המשך" }).click();
+  await expect(formAlert(page)).toContainText("מספר נייד ישראלי");
   await page.getByLabel("מספר טלפון נייד").fill("050-000-0003");
-  await page.getByRole("button", { name: "שלחו לי קוד" }).click();
-  await page.getByLabel("קוד אימות").fill(TEST_CODE);
-  await page.getByRole("button", { name: "אישור" }).click();
+  await page.getByRole("button", { name: "המשך" }).click();
 
   await expectPath(page, "/onboarding/welcome");
   await expect(page.getByLabel("שם מלא")).toHaveValue("Dana Levi");
@@ -119,7 +122,7 @@ test("Google user cannot take a phone number that already has an account", async
   await injectSession(context, baseURL!, "eli.google@example.com", "test-password-123");
   await page.goto("/onboarding/phone");
   await page.getByLabel("מספר טלפון נייד").fill("050-000-0001");
-  await page.getByRole("button", { name: "שלחו לי קוד" }).click();
+  await page.getByRole("button", { name: "המשך" }).click();
   await expect(formAlert(page)).toContainText("כבר רשום");
 });
 

@@ -34,7 +34,7 @@ export function PosterProfile({ p, actions }: { p: PosterView; actions?: React.R
           <h2 className="flex items-center gap-2 text-[22px] font-bold"><bdi>{p.display_name}</bdi>{p.is_demo ? <DemoBadge /> : null}</h2>
           <p className="text-sm text-muted">{TYPE[p.poster_type]} · 📍 {p.city} · ב-Joby מאז {since(p.created_at)}</p>
           <div className="flex flex-wrap gap-1.5 text-xs font-semibold">
-            <span className="rounded-full bg-brand px-2.5 py-1 text-brand-contrast">✓ טלפון מאומת</span>
+            <span className="rounded-full bg-brand px-2.5 py-1 text-brand-contrast">✓ חשבון מאומת</span>
             {p.rating_count >= 3 && p.rating_avg ? <span className="rounded-full bg-action px-2.5 py-1 text-foreground">★ {p.rating_avg} ({p.rating_count})</span> : null}
           </div>
           {p.website ? <a href={p.website} target="_blank" rel="noopener noreferrer nofollow" dir="ltr" className="text-sm text-foreground underline">{p.website.replace(/^https?:\/\//, "")}</a> : null}

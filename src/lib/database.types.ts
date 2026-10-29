@@ -1049,6 +1049,8 @@ export type Database = {
       };
       profiles: {
         Row: {
+          contact_phone: string | null;
+          google_verified: boolean;
           is_demo: boolean;
           created_at: string;
           email: string | null;
@@ -1066,6 +1068,8 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          contact_phone?: string | null;
+          google_verified?: boolean;
           is_demo?: boolean;
           created_at?: string;
           email?: string | null;
@@ -1082,6 +1086,8 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          contact_phone?: string | null;
+          google_verified?: boolean;
           is_demo?: boolean;
           created_at?: string;
           email?: string | null;
@@ -1952,6 +1958,9 @@ export type Database = {
       setting_int: { Args: { p_key: string }; Returns: number };
       setting_json: { Args: { p_key: string }; Returns: Json };
       short_name: { Args: { p_full: string }; Returns: string };
+      set_contact_phone: { Args: { p_phone: string }; Returns: string };
+      identity_verified: { Args: { p_user: string }; Returns: boolean };
+      reachable_phone: { Args: { p_user: string }; Returns: string };
       shortlist_application: {
         Args: { p_app: string; p_on?: boolean };
         Returns: undefined;

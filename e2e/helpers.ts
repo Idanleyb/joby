@@ -30,12 +30,13 @@ export async function expectPath(page: Page, path: string) {
   await expect(page).toHaveURL(new RegExp(`${path.replace(/\//g, "\\/")}(\\?.*)?$`));
 }
 
-/** Admin API: create a user the way Google sign-up would (email + name, no phone). */
+/** Admin API: create a user the way Google sign-up would (email + name, provider "google", no phone). */
 export async function createGoogleLikeUser(email: string, fullName: string, password: string) {
   const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
     method: "POST",
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, "content-type": "application/json" },
-    body: JSON.stringify({ email, password, email_confirm: true, user_metadata: { full_name: fullName } }),
+    body: JSON.stringify({ email, password, email_confirm: true, user_metadata: { full_name: fullName },
+      app_metadata: { provider: "google", providers: ["google"] } }),
   });
   if (!res.ok) throw new Error(`create user failed: ${res.status} ${await res.text()}`);
 }

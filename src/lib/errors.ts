@@ -52,6 +52,8 @@ export const APP_ERRORS: Record<string, string> = {
   own_job: "אי אפשר להגיש מועמדות לעבודה שפרסמת.",
   own_profile: "אי אפשר לפנות לעצמך.",
   phone_not_verified: "יש לאמת מספר טלפון.",
+  phone_required: "יש להוסיף מספר טלפון נייד.",
+  phone_taken: "המספר הזה כבר רשום לחשבון אחר. התנתקו והיכנסו עם קוד SMS למספר הזה.",
   poster_profile_required: "יש להשלים פרופיל מפרסם.",
   profile_missing: "הפרופיל לא נמצא.",
   protected_field: "לא ניתן לשנות שדה זה.",

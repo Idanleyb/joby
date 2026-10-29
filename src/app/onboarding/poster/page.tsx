@@ -13,7 +13,7 @@ export default async function PosterOnboardingPage() {
   if (step !== "/onboarding/poster" && !(step === "/account" && me && !me.hasPosterProfile)) redirect(step);
 
   return (
-    <PageShell title="פרטי המפרסם" subtitle="פרסום עבודות ב-Joby חינמי. אין צורך באימות מסמכים — רק טלפון מאומת.">
+    <PageShell title="פרטי המפרסם" subtitle="פרסום עבודות ב-Joby חינמי. אין צורך באימות מסמכים — רק טלפון נייד.">
       <Card>
         <PosterForm />
       </Card>

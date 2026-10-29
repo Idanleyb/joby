@@ -1,4 +1,4 @@
-**PRODUCT REQUIREMENTS DOCUMENT · v1.5**
+**PRODUCT REQUIREMENTS DOCUMENT · v1.6**
 
 **Joby — MVP**
 
@@ -7,14 +7,14 @@ The Miluim Marketplace
 *Closed beta and public launch scope for a verified, reservist-only
 supply marketplace where anyone can hire.*
 
-|              |                                                                                           |
-|--------------|-------------------------------------------------------------------------------------------|
-| **Product**  | Joby (working name) — the Miluim Marketplace                                              |
-| **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027)                |
-| **Owner**    | Idan Leibovitch, Founder & Product                                                        |
-| **Date**     | October 25, 2026                                                                          |
-| **Status**   | v1.5 — direct requests, feedback screens, introduction page (October 28, 2026) · in build |
-| **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                                |
+|              |                                                                                             |
+|--------------|---------------------------------------------------------------------------------------------|
+| **Product**  | Joby (working name) — the Miluim Marketplace                                                |
+| **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027)                  |
+| **Owner**    | Idan Leibovitch, Founder & Product                                                          |
+| **Date**     | October 25, 2026                                                                            |
+| **Status**   | v1.6 — Google sign-in without SMS; demo data; session timeout (October 29, 2026) · in build |
+| **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                                  |
 
 <table>
 <colgroup>
@@ -245,7 +245,15 @@ Approved by the founder on October 25, 2026.
 | 15     | Channels            | WhatsApp and email for notifications and support                                                                                                                                                                                                         |
 | 16     | Platform            | Responsive web app, Hebrew, right-to-left, mobile-first                                                                                                                                                                                                  |
 
-## 4.1 Changes in v1.5 (October 28, 2026)
+## 4.1 Changes in v1.6 (October 29, 2026)
+
+| **Change**          | **Detail**                                                                                                                                                                                                                                                                 |
+|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Google sign-in**  | No SMS code for Google users. They type their mobile number once (required, not verified by code); it is used for contact sharing and WhatsApp. A number that already belongs to another account is refused. Trust badge renamed "Account verified" (phone code or Google) |
+| **Session timeout** | Automatic sign-out after 60 minutes without activity, with a warning 2 minutes before; signing in again returns to the same page                                                                                                                                           |
+| **Demo data**       | POC dataset loaded as tagged "Demo" content with four demo sign-in accounts; demo and real users never transact; removable from the admin dashboard                                                                                                                        |
+
+## 4.2 Changes in v1.5 (October 28, 2026)
 
 | **Change**            | **Detail**                                                                                                                                                                                                                      |
 |-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -255,7 +263,7 @@ Approved by the founder on October 25, 2026.
 | **Feedback screens**  | Built: feedback list and form for both sides, home reminders, and a site-wide banner from the last reminder (countdown) and while blocked (section 5.14)                                                                        |
 | **Reviews**           | Reviews show the job title, like Upwork's work history                                                                                                                                                                          |
 
-## 4.2 Changes in v1.4 (October 28, 2026)
+## 4.3 Changes in v1.4 (October 28, 2026)
 
 | **Change**           | **Detail**                                                                                                                                                                                                               |
 |----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -268,13 +276,13 @@ Approved by the founder on October 25, 2026.
 | **Distance**         | Israeli localities with coordinates (1,263 CBS localities). Matching, job alerts, the area filter and provider search use straight-line distance between town centres                                                    |
 | **Provider search**  | New: filters by category, area and availability; sort by rating, distance, price or A–Z (section 5.20)                                                                                                                   |
 
-## 4.3 Changes in v1.3 (October 27, 2026)
+## 4.4 Changes in v1.3 (October 27, 2026)
 
 | **Change**                  | **Detail**                                                                                                                                                      |
 |-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Categories per provider** | Unlimited (was up to 3). Providers choose every subcategory they work in; job alerts match on all of them. Skills stay at up to 15 and service cards at up to 3 |
 
-## 4.4 Changes in v1.2 (October 27, 2026)
+## 4.5 Changes in v1.2 (October 27, 2026)
 
 | **Change**       | **Detail**                                                                                                                                                                                           |
 |------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -282,7 +290,7 @@ Approved by the founder on October 25, 2026.
 | **Refunds**      | No refund for unopened applications when the job ends with a hire. Without a hire (closed, expired after up to 60 days, or removed), all applications are refunded except withdrawn ones             |
 | **Duplicate ID** | Accounts are unique by user and phone (enforced by the database). The same ID number on a second account goes to admin to approve or reject; a dedicated resolution process is planned for Phase 1–2 |
 
-## 4.5 Changes in v1.1
+## 4.6 Changes in v1.1
 
 | **Change**               | **Detail**                                                                                                        |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------|
@@ -299,12 +307,12 @@ for public launch, **P2** is nice to have.
 
 ## 5.1 Sign-up and sign-in (AUTH)
 
-| **ID**     | **User story**                                                                                               | **Priority** |
-|------------|--------------------------------------------------------------------------------------------------------------|--------------|
-| **AUTH-1** | As a visitor, I want to sign up with my phone number and a one-time code, so I can start without a password. | P0           |
-| **AUTH-2** | As a visitor, I want to sign up with my Google account.                                                      | P0           |
-| **AUTH-3** | As a Google user, I verify my phone number before continuing, so Joby can reach me on WhatsApp.              | P0           |
-| **AUTH-4** | As a new user, I choose "I offer services" or "I want to hire", and I can add the other role later.          | P0           |
+| **ID**     | **User story**                                                                                                                          | **Priority** |
+|------------|-----------------------------------------------------------------------------------------------------------------------------------------|--------------|
+| **AUTH-1** | As a visitor, I want to sign up with my phone number and a one-time code, so I can start without a password.                            | P0           |
+| **AUTH-2** | As a visitor, I want to sign up with my Google account.                                                                                 | P0           |
+| **AUTH-3** | As a Google user, I type my mobile number once, without an SMS code (v1.6), so Joby can reach me on WhatsApp and share it after a hire. | P0           |
+| **AUTH-4** | As a new user, I choose "I offer services" or "I want to hire", and I can add the other role later.                                     | P0           |
 
 **RULES**
 
@@ -539,9 +547,9 @@ business / HR or recruiter / public body or non-profit), company name
 verification.
 
 Poster trust signals are computed automatically and shown on every job
-and direct request: **phone verified**, **member since**, **jobs
-posted**, **hire rate** (hires ÷ closed jobs) and **poster rating**
-(after 3 reviews).
+and direct request: **account verified** (phone code or Google),
+**member since**, **jobs posted**, **hire rate** (hires ÷ closed jobs)
+and **poster rating** (after 3 reviews).
 
 **POSTER PROFILE (V1.4)**
 

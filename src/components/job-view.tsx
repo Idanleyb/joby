@@ -36,7 +36,7 @@ export function PosterTrust({ p, name }: { p?: PosterSignals | null; name?: stri
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
       <span className="font-semibold text-foreground"><bdi>{p.display_name}</bdi></span>
       <span>{POSTER_TYPE[p.poster_type]}</span>
-      <span>✓ טלפון מאומת</span>
+      <span>✓ חשבון מאומת</span>
       <span>{p.jobs_posted} עבודות פורסמו</span>
       {hireRate != null ? <span>{hireRate}% גיוס</span> : null}
       {p.rating_count >= 3 && p.rating_avg ? <span>★ {p.rating_avg} ({p.rating_count})</span> : null}
