@@ -51,7 +51,9 @@ const waLink = (phone: string | null) => (phone ? `https://wa.me/${phone.replace
 
 function contactLines(c: Contact | undefined): string[] {
   if (!c) return [];
-  return [`טלפון: **${c.phone ?? "—"}** · מייל: **${c.email ?? "—"}**`];
+  // LRI … PDI keeps "+972…" and addresses left-to-right inside Hebrew text.
+  const ltr = (v: string | null) => (v ? `\u2066${v}\u2069` : "—");
+  return [`טלפון: **${ltr(c.phone)}** · מייל: **${ltr(c.email)}**`];
 }
 function contactButton(ctx: Ctx, c: Contact | undefined, fallback: string) {
   const wa = waLink(c?.phone ?? null);
