@@ -1,29 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getPublicRules } from "@/lib/app-settings";
 import { IconBriefcase, IconCheckList, IconDocHeart, IconIdCard, IconLink, IconMegaphone, IconPhone, IconSend, IconShieldCheck, IconSparkle, IconStar } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "איך Joby עובד · Joby",
   description: "המרקטפלייס של המילואים: מי מציע שירותים, איך מצטרפים, איך עובדים הקרדיטים ואיך מגייסים.",
 };
-
-const DEFAULTS = { welcome_credits: 100, apply_cost: 10, request_cost: 2, credit_back_unopened_days: 30, job_open_days: 30, job_extension_days: 30, request_expiry_days: 7, eligibility_min_days: 30 };
-
-async function settings() {
-  try {
-    const supabase = await createClient();
-    const { data } = await supabase.from("app_settings").select("key, value").in("key", Object.keys(DEFAULTS));
-    const out = { ...DEFAULTS };
-    for (const r of data ?? []) {
-      const n = Number(r.value);
-      if (Number.isFinite(n)) (out as Record<string, number>)[r.key] = n;
-    }
-    return out;
-  } catch {
-    return DEFAULTS;
-  }
-}
 
 type StepIcon = (p: React.SVGProps<SVGSVGElement>) => React.ReactElement;
 
@@ -64,7 +47,7 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
 }
 
 export default async function HowItWorksPage() {
-  const s = await settings();
+  const s = await getPublicRules();
   const toc: [string, string][] = [["about", "מה זה Joby"], ["providers", "נותני שירות"], ["spouses", "בני ובנות זוג"], ["credits", "קרדיטים"], ["posters", "מגייסים ומחפשי שירות"], ["feedback", "משוב ואמון"]];
 
   return (

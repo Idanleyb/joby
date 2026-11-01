@@ -5,6 +5,7 @@ import "@fontsource-variable/rubik";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { AppNav } from "@/components/app-nav";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
   title: "Joby — המרקטפלייס של המילואים",
@@ -20,7 +21,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SiteHeader />
         <div className="flex">
           <AppNav />
-          <div className="min-w-0 flex-1 pb-20 md:pb-0">{children}</div>
+          <div className="min-w-0 flex-1 pb-20 md:pb-0">{children}<SiteFooter /></div>
         </div>
       </body>
     </html>
