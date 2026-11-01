@@ -17,6 +17,7 @@ export type EmailContent = {
   blocks: Block[];
   button?: { label: string; href: string };
   secondary?: { label: string; href: string };
+  answers?: { label: string; href: string }[];   // a row of equal buttons (feedback: yes / not yet / no)
 };
 
 export type Footer = { site: string; supportWhatsapp: string | null; settingsHref: string };
@@ -63,6 +64,7 @@ export function renderEmail(c: EmailContent, f: Footer): RenderedEmail {
 <tr><td style="padding:24px 28px 8px;font-size:22px;font-weight:bold;color:#111">Joby</td></tr>
 ${c.greeting ? `<tr><td style="${P}">${esc(c.greeting)}</td></tr>` : ""}
 ${c.blocks.map(blockHtml).join("\n")}
+${c.answers?.length ? `<tr><td style="padding:14px 28px 6px"><table role="presentation" cellpadding="0" cellspacing="0" style="width:100%"><tr>${c.answers.map((a) => `<td style="padding:0 0 0 8px"><a href="${esc(a.href)}" style="display:block;text-align:center;border:1px solid #111;color:#111;text-decoration:none;font-weight:bold;padding:12px 8px;border-radius:10px">${esc(a.label)}</a></td>`).join("")}</tr></table></td></tr>` : ""}
 ${c.button ? `<tr><td style="padding:18px 28px 6px"><a href="${esc(c.button.href)}" style="display:inline-block;background:#111;color:#fff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:10px">${esc(c.button.label)}</a></td></tr>` : ""}
 ${c.secondary ? `<tr><td style="padding:6px 28px"><a href="${esc(c.secondary.href)}" style="color:#111;font-size:15px">${esc(c.secondary.label)}</a></td></tr>` : ""}
 <tr><td style="padding:20px 28px 6px"><hr style="border:none;border-top:1px solid #E5E5E5;margin:0"></td></tr>
@@ -72,6 +74,7 @@ ${c.secondary ? `<tr><td style="padding:6px 28px"><a href="${esc(c.secondary.hre
   const text = [
     c.greeting,
     ...c.blocks.map(blockText),
+    ...(c.answers ?? []).map((a) => `${a.label}: ${a.href}`),
     c.button ? `${c.button.label}: ${c.button.href}` : null,
     c.secondary ? `${c.secondary.label}: ${c.secondary.href}` : null,
     "—",

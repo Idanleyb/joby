@@ -110,3 +110,30 @@ describe("left-to-right values", () => {
     expect(m.html).toContain('<b><span dir="ltr" style="unicode-bidi:isolate">+972501234567</span></b>');
   });
 });
+
+import { createHmac } from "node:crypto";
+import { verifyResendWebhook } from "@/lib/email/webhook";
+import { templateId } from "@/lib/email/templates";
+
+describe("tracking", () => {
+  it("maps events to the content doc's template IDs", () => {
+    expect(templateId("provider_nudge", { day: 3, proof_sent: false })).toBe("P2_2a");
+    expect(templateId("feedback_reminder", { final: true })).toBe("P4_3");
+    expect(templateId("new_application", { count: 1 })).toBe("H3_2");
+    expect(templateId("welcome_provider", {}, { user: { id: "x", firstName: "", providerType: "spouse", balance: null }, jobs: new Map() })).toBe("P1_4");
+  });
+  it("feedback emails carry yes / not yet / no buttons that preselect the answer", () => {
+    const c = contentFor("feedback_request", { engagement_id: "e1" }, ctx())!;
+    expect(c.answers?.map((a) => a.href.split("?")[1])).toEqual(["answer=yes", "answer=not_yet", "answer=no"]);
+    expect(contentFor("feedback_reminder", { engagement_id: "e1", final: true }, ctx())!.answers).toHaveLength(2);
+  });
+  it("verifies Resend (Svix) webhook signatures", () => {
+    const secret = "whsec_" + Buffer.from("test-secret-key-123").toString("base64");
+    const body = '{"type":"email.opened","data":{"email_id":"abc"}}';
+    const ts = String(Math.floor(Date.now() / 1000));
+    const sig = createHmac("sha256", Buffer.from("test-secret-key-123")).update(`msg_1.${ts}.${body}`).digest("base64");
+    expect(verifyResendWebhook(body, { id: "msg_1", timestamp: ts, signature: `v1,${sig}` }, secret)).toBe(true);
+    expect(verifyResendWebhook(body + " ", { id: "msg_1", timestamp: ts, signature: `v1,${sig}` }, secret)).toBe(false);
+    expect(verifyResendWebhook(body, { id: "msg_1", timestamp: String(Number(ts) - 3600), signature: `v1,${sig}` }, secret)).toBe(false);
+  });
+});

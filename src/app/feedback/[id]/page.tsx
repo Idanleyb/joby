@@ -8,10 +8,11 @@ import { FeedbackForm } from "./feedback-form";
 
 export const metadata: Metadata = { title: "משוב · Joby" };
 
-export default async function FeedbackFormPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function FeedbackFormPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ answer?: string }> }) {
   const { id } = await params;
+  const { answer } = await searchParams;
   const me = await getMe();
-  if (!me) redirect(`/login?next=/feedback/${id}`);
+  if (!me) redirect(`/login?next=${encodeURIComponent(`/feedback/${id}${answer ? `?answer=${answer}` : ""}`)}`);
   if (nextStep(me) !== "/account") redirect(nextStep(me));
   const items = await loadFeedbackDue(me.userId);
   const item = items.find((i) => i.engagementId === id);
@@ -25,7 +26,7 @@ export default async function FeedbackFormPage({ params }: { params: Promise<{ i
   }
   return (
     <PageShell title={item.title} subtitle={<>משוב על <Link prefetch={false} href={item.iAmPoster ? `/providers/${item.otherId}` : `/posters/${item.otherId}`} className="underline"><bdi>{item.otherName}</bdi></Link></>}>
-      <FeedbackForm engagementId={id} iAmPoster={item.iAmPoster} otherName={item.otherName} allowNotYet={item.remindersSent < 2} />
+      <FeedbackForm engagementId={id} iAmPoster={item.iAmPoster} otherName={item.otherName} allowNotYet={item.remindersSent < 2} initialAnswer={answer ?? ""} />
     </PageShell>
   );
 }

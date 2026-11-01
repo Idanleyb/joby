@@ -97,6 +97,8 @@ The database only writes rows to `public.notifications` (the outbox). In-app not
 Events written by triggers for the email journeys: `welcome_provider` / `welcome_poster` (role added), `application_sent`, `job_published`, `hire_confirmed`, `job_closed_no_hire`, `credits_used_up`.
 Hourly `private.run_lifecycle()` writes the time-based ones once per user (recorded in `private.lifecycle_sends`): `provider_nudge` and `poster_nudge` (days from the `nudge_days` setting), `profile_strength_tip`, `first_application_nudge`, `no_matches_tip`, `request_expiring`, `job_no_applicants`, `applications_unopened`, `reengagement`, `beta_survey` (only when `beta_survey_url` is set) and `admin_sla_alert`.
 
+**Email stats.** With a Resend key (`RESEND_API_KEY`, or `SMTP_PASS` when `SMTP_HOST` is `smtp.resend.com`) lifecycle emails go through the Resend API (`src/lib/email/send.ts`), tagged with the template ID from the content doc (`templateId()`), with Reply-To `SUPPORT_EMAIL`. The outbox row keeps `email_template` and Resend's `email_provider_id`. Resend webhooks (`/api/resend/webhook`, Svix signature checked with `RESEND_WEBHOOK_SECRET`) call `record_email_event()` to fill delivered / opened / clicked / bounced / complained. `/admin/emails` shows `admin_email_stats(days)` per template, including "conversion": whether the person did what the email asked within 14 days (`private.email_converted`). Feedback emails link to `/feedback/<id>?answer=yes|not_yet|no`, which opens the form with that answer chosen.
+
 WhatsApp delivery (the `status` column) is a later step.
 
 ## Files

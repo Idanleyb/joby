@@ -1,8 +1,9 @@
 import "server-only";
 import { createServiceClient } from "@/lib/supabase/server";
-import { mailConfigured, sendMail } from "@/lib/mail";
+import { mailConfigured } from "@/lib/mail";
+import { sendTracked } from "./send";
 import { renderEmail, type EmailContent, type Footer } from "./layout";
-import { applicantsDigest, contentFor, jobAlertDigest, NO_EMAIL, type Contact, type Ctx, type Eng, type Job, type Req } from "./templates";
+import { applicantsDigest, contentFor, jobAlertDigest, NO_EMAIL, templateId, type Contact, type Ctx, type Eng, type Job, type Req } from "./templates";
 import { isQuiet, israelClock } from "./quiet";
 
 /**
@@ -112,12 +113,16 @@ export async function dispatchEmails(now = new Date()): Promise<Result> {
       } else content = contentFor(unit.rows[0].event, unit.rows[0].payload, ctx);
 
       if (!content) { await close(db, ids, "skipped"); result.skipped += ids.length; continue; }
+      const template = unit.kind === "jobs" ? "P3_1" : unit.kind === "applicants" ? "H3_2b" : templateId(unit.rows[0].event, unit.rows[0].payload, ctx);
       const mail = renderEmail(content, footerBase as Footer);
-      const ok = await sendMail({ to: person.email, ...mail });
-      if (ok) {
-        await db.from("notifications").update({ email_status: "sent", email_sent_at: new Date().toISOString(), email_claimed_at: null }).in("id", ids);
+      const sent = await sendTracked({ to: person.email, ...mail, tags: { template, event: unit.rows[0].event } });
+      if (sent.ok) {
+        await db.from("notifications").update({
+          email_status: "sent", email_sent_at: new Date().toISOString(), email_claimed_at: null,
+          email_template: template, email_provider_id: sent.id,
+        }).in("id", ids);
         result.sent += 1; budget -= 1;
-      } else await retry(db, unit.rows, "smtp send failed", result);
+      } else await retry(db, unit.rows, sent.error ?? "send failed", result);
     } catch (e) {
       await retry(db, unit.rows, e instanceof Error ? e.message : String(e), result);
     }

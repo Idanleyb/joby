@@ -364,6 +364,9 @@ export function contentFor(event: string, p: P, ctx: Ctx): EmailContent | null {
       const other = eng ? ctx.names.get(eng.provider_id === u.id ? eng.poster_id : eng.provider_id) ?? "הצד השני" : "הצד השני";
       const title = eng?.title ?? "העבודה";
       const href = L(`/feedback/${str(p.engagement_id)}`);
+      const yes = { label: "כן, עבדנו יחד", href: `${href}?answer=yes` };
+      const notYet = { label: "עוד לא", href: `${href}?answer=not_yet` };
+      const no = { label: "לא יצא מזה", href: `${href}?answer=no` };
       const posterLine = eng && eng.poster_id === u.id ? ["הדירוג שלך עוזר למשרת/ת המילואים לקבל את העבודה הבאה."] : [];
       if (event === "feedback_request") return { // P4.1
         subject: `איך היה לעבוד עם ${other}?`, preheader: "שאלה אחת של כן/לא, ודירוג של דקה.", greeting: hi,
@@ -372,9 +375,9 @@ export function contentFor(event: string, p: P, ctx: Ctx): EmailContent | null {
           "עבדתם ביחד? הפידבק לוקח דקה. הוא עוזר למשרתי מילואים לבנות מוניטין, ולמעסיקים למצוא את האנשים הנכונים.",
           ...posterLine,
           "הביקורות עולות יחד: אף צד לא רואה מה השני כתב לפני שהגיש.",
-          "עוד לא סיימתם לעבוד? אפשר לסמן \"עוד לא\" ונשאל שוב בהמשך.",
+          "**עבדתם ביחד?** לחיצה על התשובה פותחת את הטופס, עם התשובה כבר מסומנת.",
         ],
-        button: { label: "לתת פידבק", href },
+        answers: [yes, notYet, no],
       };
       if (p.final) return { // P4.3 (no block, v1.7)
         subject: `עוד דקה אחת: פידבק על ${title}`, preheader: "הדירוג שלך עוזר למשרתי מילואים ולמעסיקים לבחור בביטחון.", greeting: hi,
@@ -382,13 +385,14 @@ export function contentFor(event: string, p: P, ctx: Ctx): EmailContent | null {
           `זו התזכורת האחרונה לפידבק על **${title}** עם ${other}.`,
           "כל דירוג עוזר למשרתי מילואים לבנות מוניטין, ולמעסיקים למצוא את האנשים הנכונים. זה לוקח דקה.",
           "במילואים כרגע? אפשר לחזור לזה בכל זמן מרשימת הפידבק במסך הבית.",
+          "**עבדתם ביחד?**",
         ],
-        button: { label: "לתת פידבק", href },
+        answers: [yes, no],
       };
       return { // P4.2
         subject: `תזכורת: פידבק על ${title}`, preheader: "דקה אחת, ואפשר גם לסמן \"עוד לא\".", greeting: hi,
-        blocks: [`עדיין לא קיבלנו פידבק על העבודה עם ${other}. אם העבודה עוד לא התחילה, אפשר לסמן "עוד לא" ונשאל שוב בהמשך.`],
-        button: { label: "לתת פידבק", href },
+        blocks: [`עדיין לא קיבלנו פידבק על העבודה עם ${other}. אם העבודה עוד לא התחילה, אפשר לסמן "עוד לא" ונשאל שוב בהמשך.`, "**עבדתם ביחד?**"],
+        answers: [yes, notYet, no],
       };
     }
 
@@ -695,3 +699,73 @@ export const NO_EMAIL = new Set([
   "application_viewed", "application_shortlisted", "credit_back_issued", "admin_invite", "admin_invite_accepted",
   "spouse_invite", "job_claim_link", "feedback_block_warning", "account_blocked_feedback", "account_unblocked",
 ]);
+
+/**
+ * Template ID (as in the content doc) for an outbox row, used to tag emails and
+ * group the stats in /admin/emails. ASCII only (Resend tag rules): "P2.2a" → "P2_2a".
+ */
+export function templateId(event: string, p: P, ctx?: Pick<Ctx, "user" | "jobs">): string {
+  const day = num(p.day);
+  const id = (() => {
+    switch (event) {
+      case "welcome_provider": return ctx?.user.providerType === "spouse" ? "P1.4" : "P1.2";
+      case "verification_submitted": return "P1.6";
+      case "verification_approved": case "spouse_approved_self": return "P1.7";
+      case "verification_rejected": return "P1.8";
+      case "verification_more_info": return "P1.9";
+      case "spouse_approved": return "P1.10";
+      case "spouse_eligibility_decided": return "P1.11";
+      case "provider_nudge": return day <= 1 ? "P2.1" : day <= 3 ? (p.proof_sent || p.spouse ? "P2.2b" : "P2.2a") : day <= 7 ? "P2.3" : "P2.4";
+      case "profile_strength_tip": return "P2.5";
+      case "job_alert": return "P3.1";
+      case "no_matches_tip": return "P3.1b";
+      case "first_application_nudge": return "P3.2";
+      case "application_sent": return "P3.3";
+      case "applicant_contacted": return "P3.4";
+      case "you_were_hired": return "P3.5";
+      case "not_selected": return "P3.6";
+      case "direct_request_received": return "P3.8";
+      case "request_expiring": return "P3.9";
+      case "low_credit_balance": return "P3.10";
+      case "credits_used_up": return "P3.11";
+      case "feedback_request": return "P4.1";
+      case "feedback_reminder": return p.final ? "P4.3" : "P4.2";
+      case "feedback_revealed": return "P4.4";
+      case "reengagement": return "P5";
+      case "welcome_poster": return "H1.2";
+      case "poster_nudge": return day <= 1 ? "H2.1" : day <= 3 ? "H2.2" : day <= 7 ? "H2.3" : "H2.4";
+      case "job_published": return "H3.1";
+      case "new_application": return Number(p.count ?? 1) > 1 ? "H3.2b" : "H3.2";
+      case "job_no_applicants": return "H3.3";
+      case "applications_unopened": return "H3.4";
+      case "request_approved": return "H3.5";
+      case "request_declined": case "request_expired": return "H3.6";
+      case "hire_confirmed": return "H3.7";
+      case "job_expiring": return "H3.8";
+      case "job_closed_no_hire": return "H3.9";
+      case "extra_hire_approved": case "extra_hire_declined": return "H3.10";
+      case "job_removed": return "H3.11";
+      case "job_posted_on_behalf": return "H3.12";
+      case "beta_survey": return day >= 21 ? "B2" : "B1";
+      case "admin_sla_alert": return "O1";
+      default: return event;
+    }
+  })();
+  return id.replace(/\./g, "_");
+}
+
+/** Hebrew names for the stats page. */
+export const TEMPLATE_NAMES: Record<string, string> = {
+  P1_2: "ברוכים הבאים (נותן/ת שירות)", P1_4: "ברוכים הבאים (בן/בת זוג)", P1_6: "המסמכים התקבלו", P1_7: "אומת/ה + קרדיטים",
+  P1_8: "האימות נדחה", P1_9: "נדרש מסמך נוסף", P1_10: "בן/בת הזוג אושר/ה", P1_11: "עדכון זכאות",
+  P2_1: "תזכורת פרופיל · יום 1", P2_2a: "תזכורת פרופיל · יום 3 (3010)", P2_2b: "תזכורת פרופיל · יום 3 (קו״ח)",
+  P2_3: "תזכורת פרופיל · יום 7", P2_4: "תזכורת פרופיל · יום 14", P2_5: "חוזק פרופיל",
+  P3_1: "תקציר משרות (בוקר)", P3_1b: "שבוע בלי התאמות", P3_2: "עוד לא הגשת", P3_3: "אישור הגשה", P3_4: "המפרסם יצר קשר",
+  P3_5: "נבחרת לעבודה", P3_6: "לא נבחרת", P3_8: "פנייה ישירה", P3_9: "פנייה פגה בקרוב", P3_10: "מעט קרדיטים", P3_11: "הקרדיטים נגמרו",
+  P4_1: "בקשת פידבק", P4_2: "תזכורת פידבק", P4_3: "תזכורת פידבק אחרונה", P4_4: "הביקורות פורסמו", P5: "חזרה לפעילות",
+  H1_2: "ברוכים הבאים (מעסיק)", H2_1: "תזכורת מעסיק · יום 1", H2_2: "תזכורת מעסיק · יום 3", H2_3: "תזכורת מעסיק · יום 7",
+  H2_4: "תזכורת מעסיק · יום 14", H3_1: "משרה פורסמה", H3_2: "הגשה ראשונה", H3_2b: "תקציר הגשות (ערב)",
+  H3_3: "אין הגשות אחרי 72 שעות", H3_4: "הגשות שלא נפתחו", H3_5: "פנייה אושרה", H3_6: "פנייה נדחתה / פגה", H3_7: "אישור גיוס",
+  H3_8: "משרה נסגרת בקרוב", H3_9: "משרה נסגרה בלי גיוס", H3_10: "גיוס נוסף", H3_11: "משרה הוסרה", H3_12: "פורסמה בשמך",
+  B1: "סקר בטא · יום 7", B2: "סקר בטא · יום 21", O1: "התראת SLA לאדמינים",
+};

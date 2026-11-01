@@ -693,6 +693,21 @@ select test.check((select count(*) from public.notifications where event = 'admi
                   = (select count(*) from public.admins)
                   or not exists (select 1 from public.verification_requests where status = 'pending'), 'SLA alert once per admin');
 
+-- Email stats: a sent email, a Resend event, and the admin report.
+update public.notifications set email_status = 'sent', email_sent_at = now() - interval '1 day',
+       email_template = 'P2_3', email_provider_id = 'resend-test-1'
+ where id = (select id from public.notifications where event = 'provider_nudge' and user_id = test.uid('omer') limit 1);
+select test.check(public.record_email_event('resend-test-1', 'email.opened') = 1, 'webhook event matched');
+select public.record_email_event('resend-test-1', 'email.clicked');
+update public.provider_profiles set onboarding_step = 8 where user_id = test.uid('omer');
+select test.login('admin'); set role authenticated;
+select test.check((select emails = 1 and opened = 1 and clicked = 1 and measurable = 1 and converted = 1
+                     from public.admin_email_stats(30) where template = 'P2_3'), 'stats per template with conversion');
+reset role;
+select test.login('omer'); set role authenticated;
+select test.expect_error('select * from public.admin_email_stats(30)', 'not_authorized');
+reset role;
+
 \echo ' 14. ledger integrity'
 select test.check(not exists (
   select 1 from public.provider_wallets w

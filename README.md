@@ -123,7 +123,8 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
    select vault.create_secret('https://www.joby-ai.com/api/notifications/dispatch', 'joby_dispatch_url');
    select vault.create_secret('<the CRON_SECRET value>', 'joby_cron_secret');
    ```
-   pg_cron then calls the worker every 5 minutes (`private.call_email_worker`). Check with `select * from cron.job_run_details order by start_time desc limit 5;` and `select email_status, count(*) from notifications group by 1;`. Optional: `update app_settings set value = '"https://forms…"' where key = 'beta_survey_url';` turns on the beta survey emails.
+   pg_cron then calls the worker every 5 minutes (`private.call_email_worker`). Check with `select * from cron.job_run_details order by start_time desc limit 5;` and `select email_status, count(*) from notifications group by 1;`. Beta survey emails stay off while `beta_survey_url` is empty.
+9. **Email stats** (`/admin/emails`): in Resend → Domains → `mail.joby-ai.com` → turn on **Click tracking** and **Open tracking** (Resend asks for a tracking subdomain CNAME; add it in Cloudflare, DNS only). Then Resend → Webhooks → Add endpoint `https://www.joby-ai.com/api/resend/webhook` with the events delivered, opened, clicked, bounced, complained; copy its signing secret into Vercel as `RESEND_WEBHOOK_SECRET` and redeploy.
 
 ## Speed
 
