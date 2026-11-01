@@ -102,7 +102,7 @@ export default async function HowItWorksPage() {
           [IconIdCard, "בונים פרופיל", "אפשר להעלות קורות חיים והפרופיל מתמלא לבד. בוחרים תחומים (ללא הגבלה), אזור עבודה או עבודה מרחוק, כותבים קצת על עצמכם ומוסיפים שירותים עם מחירים ותמונות מעבודות."],
           [IconBriefcase, "מקבלים עבודה", <>מגישים מועמדות לעבודות שמתאימות לכם ({s.apply_cost} קרדיטים), או מקבלים פניות ישירות ממפרסמים ומאשרים ({s.request_cost} קרדיטים). כשיש התאמה, נחשפים פרטי הקשר של שני הצדדים.</>],
         ]} />
-        <p className="rounded-xl bg-gain p-3 text-sm">עם אישור האימות מקבלים <b>{s.welcome_credits} קרדיטים מתנה</b> — מספיק ל-{Math.floor(s.welcome_credits / s.apply_cost)} הגשות.</p>
+        <p className="rounded-xl bg-gain p-3 text-sm">עם אישור האימות מקבלים <b>{s.welcome_credits} קרדיטים מתנה</b> — מספיק ל-{Math.floor(s.welcome_credits / s.apply_cost)} הגשות. כרגע הכול בחינם: הקרדיטים רק מראים איך המערכת תעבוד בעתיד.</p>
       </Section>
 
       <Section id="spouses" eyebrow="בני ובנות זוג" title="בן או בת זוג של מילואימניק">
@@ -115,6 +115,10 @@ export default async function HowItWorksPage() {
       </Section>
 
       <Section id="credits" eyebrow="קרדיטים" title="איך עובדים הקרדיטים">
+        <div className="flex flex-col gap-1.5 rounded-xl border-2 border-foreground bg-gain p-4 text-sm leading-relaxed">
+          <span className="self-start rounded-full bg-surface px-2.5 py-0.5 text-xs font-bold">כרגע הכול בחינם</span>
+          <span><b>בתקופה הזו Joby חינמי לגמרי גם לנותני שירות — אין שום תשלום.</b> הקרדיטים מוצגים כאן כדי שתכירו איך המערכת תעבוד בעתיד. אם הקרדיטים נגמרים, פונים לתמיכה ומקבלים עוד, בלי עלות.</span>
+        </div>
         <p className="text-sm text-muted">רק נותני שירות משתמשים בקרדיטים. פרסום עבודות ופניות ישירות — חינם למגייסים.</p>
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="flex flex-col gap-1 rounded-xl bg-gain p-4">
@@ -151,7 +155,7 @@ export default async function HowItWorksPage() {
                   <td className="p-3">{l}</td>
                   <td className="p-3">
                     <span className="rounded-full bg-surface px-2.5 py-0.5 text-xs font-semibold">
-                      {kind === "gain" ? "מקבלים" : kind === "cost" ? "משלמים" : "בלי עלות"}
+                      {kind === "gain" ? "מקבלים" : kind === "cost" ? "יורדים" : "בלי עלות"}
                     </span>
                   </td>
                   <td className="p-3 text-end font-display text-base font-bold" dir="ltr">{v}</td>
@@ -176,7 +180,7 @@ export default async function HowItWorksPage() {
           <span className="self-start rounded-full bg-surface px-2.5 py-0.5 text-xs font-bold">שימו לב · אין החזר</span>
           <span>כשמבטלים מועמדות בעצמכם, או אחרי שהמפרסם בחר נותן שירות לעבודה.</span>
         </div>
-        <p className="text-xs text-muted">קרדיטים לא פגים, אין להם ערך כספי ואי אפשר להעביר אותם. בתקופת הבטא, לקרדיטים נוספים פונים לתמיכה; אחרי ההשקה יהיה אפשר לרכוש.</p>
+        <p className="text-xs text-muted">קרדיטים לא פגים, אין להם ערך כספי ואי אפשר להעביר אותם. כרגע לא קונים קרדיטים — לקרדיטים נוספים פונים לתמיכה, בחינם.</p>
       </Section>
 
       <Section id="posters" eyebrow="מגייסים ומחפשי שירות" title="צריכים מישהו לעבודה?">

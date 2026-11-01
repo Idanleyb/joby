@@ -22,6 +22,7 @@ test("intro page explains roles and credits; every apply point shows the 10-cred
     await expect(page.getByRole("heading", { name: h })).toBeVisible();
   }
   await expect(page.getByRole("row", { name: /הגשת מועמדות לעבודה/ })).toContainText("−10");
+  await expect(page.getByText("בתקופה הזו Joby חינמי לגמרי גם לנותני שירות")).toBeVisible();
   await expect(page.getByRole("row", { name: /אישור פנייה ישירה/ })).toContainText("−2");
   await expect(page.getByText("100 קרדיטים מתנה").first()).toBeVisible();
 
