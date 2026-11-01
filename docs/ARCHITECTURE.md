@@ -80,9 +80,24 @@ Errors are raised as stable codes (e.g. `insufficient_credits`); `src/lib/errors
 8. Reveal one-sided reviews 14 days after submission.
 9. Expire spouse invites.
 
+PRD v1.7 removed the feedback block: the last reminder (+14 days) carries no warning and `is_feedback_blocked()` always returns false.
+
 ## Notifications
 
-The database only writes rows to `public.notifications` (the outbox). A worker (later step) reads queued rows, applies quiet hours, and sends WhatsApp templates / email. In-app notifications are the same rows (`in_app = true`).
+The database only writes rows to `public.notifications` (the outbox). In-app notifications are the same rows (`in_app = true`).
+
+**Email (PRD v1.7).** Each row has its own email state (`email_status`: pending → sending → sent / skipped / failed). Every 5 minutes pg_cron runs `private.call_email_worker()`, which POSTs to `/api/notifications/dispatch` with `Authorization: Bearer <CRON_SECRET>` (URL and secret live in Supabase Vault as `joby_dispatch_url` and `joby_cron_secret`). The worker (`src/lib/email/dispatch.ts`):
+
+- does nothing during quiet hours (22:00–08:00 Israel time) and the Shabbat window (Fri 16:00 – Sat 20:00); both are settings;
+- claims rows (pending → sending) so two runs never send the same email; claims older than 15 minutes are released;
+- sends job alerts as one morning digest (from 08:30) and further applications as one evening digest (from 18:00); the first application on a job goes out at once;
+- renders the Hebrew template (`src/lib/email/templates.ts`, IDs from the "Joby email content and user journeys" doc) inside one RTL layout (`layout.ts`) and sends over SMTP (`src/lib/mail.ts`, Resend in production);
+- skips demo accounts, suspended accounts and events that have no email (`NO_EMAIL`); rows of users without an email wait 2 days, then are skipped; 3 failed attempts → failed.
+
+Events written by triggers for the email journeys: `welcome_provider` / `welcome_poster` (role added), `application_sent`, `job_published`, `hire_confirmed`, `job_closed_no_hire`, `credits_used_up`.
+Hourly `private.run_lifecycle()` writes the time-based ones once per user (recorded in `private.lifecycle_sends`): `provider_nudge` and `poster_nudge` (days from the `nudge_days` setting), `profile_strength_tip`, `first_application_nudge`, `no_matches_tip`, `request_expiring`, `job_no_applicants`, `applications_unopened`, `reengagement`, `beta_survey` (only when `beta_survey_url` is set) and `admin_sla_alert`.
+
+WhatsApp delivery (the `status` column) is a later step.
 
 ## Files
 
@@ -134,4 +149,4 @@ Uploads go to `<bucket>/<user_id>/<file>`. Verification documents are private to
 
 ## What is not built yet
 
-The notification worker (WhatsApp/email); reports UI; cleanup of abandoned uploads; payments (P1).
+The WhatsApp notification worker; reports UI; cleanup of abandoned uploads; payments (P1).

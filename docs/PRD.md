@@ -1,4 +1,4 @@
-**PRODUCT REQUIREMENTS DOCUMENT · v1.6**
+**PRODUCT REQUIREMENTS DOCUMENT · v1.7**
 
 **Joby — MVP**
 
@@ -13,8 +13,8 @@ supply marketplace where anyone can hire.*
 | **Document** | PRD for the MVP: closed beta (January 2027) and public launch (March 2027)                  |
 | **Owner**    | Idan Leibovitch, Founder & Product                                                          |
 | **Date**     | October 25, 2026                                                                            |
-| **Status**   | v1.6 — verified phone and email for every account; demo data; session timeout; admin invitations (October 29, 2026) · in build |
-| **Related**  | Joby Business Plan v1.0 (October 22, 2026)                                                  |
+| **Status**   | v1.7 — no account block for missing feedback; transactional email on Resend; lifecycle email journeys approved (November 1, 2026) · in build |
+| **Related**  | Joby Business Plan v1.0 (October 22, 2026) · Joby email content and user journeys (MVP), November 1, 2026 |
 
 <table>
 <colgroup>
@@ -144,7 +144,7 @@ reference for browsing providers (Flow B).
 | **Job feed tabs**                             | Upwork                   | Matches · Newest · Saved                                        |
 | **Category-first browsing with visual cards** | Fiverr                   | Browse providers: photo, headline, rating, area, starting price |
 | **Productized services**                      | Fiverr (simplified gigs) | Up to 3 service cards per provider with a "starting from" price |
-| **Two-way blind reviews**                     | Upwork, Airbnb           | Mandatory feedback after every engagement, revealed together    |
+| **Two-way blind reviews**                     | Upwork, Airbnb           | Two-way feedback requested after every engagement, revealed together |
 
 ## 2.2 In scope
 
@@ -166,11 +166,12 @@ reference for browsing providers (Flow B).
 - Credits wallet with welcome credits, admin grants and automatic
   credit-back
 
-- Mandatory two-way feedback after every engagement
+- Two-way feedback after every engagement, with reminders
 
 - Ten launch categories and "Suggest a category"
 
-- WhatsApp and email for notifications and support
+- WhatsApp and email for notifications and support, including the
+  lifecycle email journeys (v1.7)
 
 - Reporting, moderation and an admin console with queues, tools and a
   KPI dashboard
@@ -193,6 +194,7 @@ reference for browsing providers (Flow B).
 | **Company accounts with multiple seats**          | Single-user posters are enough for beta                                                                                   | Later                            |
 | **English and Arabic interface**                  | Hebrew only at launch; strings built for translation                                                                      | Later                            |
 | **"On reserve duty" status**                      | Removed from the MVP by the founder (v1.1)                                                                                | Later                            |
+| **Account block for missing feedback**            | Removed by the founder (v1.7) to keep friction low in the beta; reminders only                                           | Later, if feedback completion stays below target |
 | **Move the database to Frankfurt** | The Supabase project is in Tokyo; every page makes 13–25 database calls, so users in Israel wait for a long round trip per click (Vercel functions now run in Tokyo to limit it). Move to a new Supabase project in Frankfurt (eu-central-1) with Vercel in `fra1`: run the bootstrap SQL, redo Auth settings (Twilio, Google, URLs, test numbers), switch the 3 Supabase values in Vercel. Before the beta opens | Next step or the one after |
 | **Active-reservist check by military or national ID** | Next step after the MVP: confirm "active reservist" status from an official source instead of (or in addition to) Form 3010. Candidate routes: the self-issued digital active-reservist certificate (IDF certificates site, valid 3 years) read like the 3010; a data agreement with the Reserves Directorate / Ministry of Defense or the reservists' benefits club; government identity login. Needs legal review of consent and ID handling | After MVP |
 | **Duplicate-identity resolution workflow**        | MVP flags the request in the verification queue and admin approves or rejects; a dedicated end-to-end process comes later | Phase 1–2 (not required for MVP) |
@@ -239,7 +241,7 @@ Approved by the founder on October 25, 2026.
 | 7      | Credit-back         | Unopened for 30 days while the job is still open → refunded. Job ends with a hire → no refund, even for unopened applications. Job closes, expires (after up to 60 days) or is removed without a hire → every application refunded except withdrawn ones |
 | 8      | Credit purchases    | Ship at public launch (March 2027). The beta runs on welcome credits plus admin grants                                                                                                                                                                   |
 | 9      | Budget              | Mandatory for Programming & Tech, Digital Marketing, Business, Finance and Lawyers, and for any remote job. Optional elsewhere ("Open to quotes")                                                                                                        |
-| 10     | Feedback            | Mandatory two-way feedback after every hire and every approved direct request; reminders after 7 and 14 days (the third warns of a block); account blocked after 30 days; blind reveal                                                                   |
+| 10     | Feedback            | Two-way feedback requested after every hire and every approved direct request; request 3 days after the engagement, reminders after 7 and 14 days; blind reveal. No account block for missing feedback in the MVP (v1.7)                                 |
 | 11     | Spouse              | Added by a verified reservist; proof of marriage or common-law partnership; manual admin approval. Admin decides manually on the spouse's eligibility if the reservist account changes                                                                   |
 | 12     | CV                  | Upload with AI autofill; manual fill always available                                                                                                                                                                                                    |
 | 13     | Categories          | Ten launch categories (section 6) plus "Missing your occupation? Tell us"                                                                                                                                                                                |
@@ -247,7 +249,17 @@ Approved by the founder on October 25, 2026.
 | 15     | Channels            | WhatsApp and email for notifications and support                                                                                                                                                                                                         |
 | 16     | Platform            | Responsive web app, Hebrew, right-to-left, mobile-first                                                                                                                                                                                                  |
 
-## 4.1 Changes in v1.6 (October 29, 2026)
+## 4.1 Changes in v1.7 (November 1, 2026)
+
+| **Change**          | **Detail**                                                                                                                                                                                                                                                                 |
+|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Feedback block removed** | No account block for missing feedback in the MVP. The request (engagement + 3 days) and reminders (+7, +14 days) stay; the last reminder carries no warning. After it, the feedback stays open in the Feedback list with no further reminders. No block banner, no blocked/unblocked notifications. Replaces the block in v1.1 and v1.5 |
+| **Email platform**  | Transactional email on Resend, also used as the custom SMTP for Supabase Auth email codes. Journeys (delays, branches, quiet hours) run in Supabase: an events table, scheduled jobs and a channel router (email / WhatsApp / in-app). WhatsApp stays on Twilio |
+| **Lifecycle emails** | 50 Hebrew templates approved: sign-up and welcome, verification, profile-completion nudges (1 / 3 / 7 / 14 days), jobs and applications, matching and hiring for posters, feedback, re-engagement, beta surveys and an internal SLA alert. Content lives in "Joby email content and user journeys (MVP)" |
+| **Free during beta** | Welcome emails, verification approval and credit emails say the service is currently free and credits cost nothing. A provider who uses all 100 credits gets a "credits used up" email offering a free top-up through support |
+| **Poster profile**  | Required fields kept to the minimum: name, verified phone and email (from sign-up), poster type and city; company name only for business, HR/recruiter and public-body types. No separate HR profile. Poster nudges target the first job or direct request |
+
+## 4.2 Changes in v1.6 (October 29, 2026)
 
 | **Change**          | **Detail**                                                                                                                                                                                                                                                                 |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -257,17 +269,17 @@ Approved by the founder on October 25, 2026.
 | **Favorites** | "Shortlist" renamed "מועדפים" (favorites), the common Hebrew term. The provider gets an in-app notice the first time a poster marks the application as a favorite |
 | **Admin invitations** | Admins invite new admins or reviewers by email from the admin console. Default Hebrew email: "Hi [name], you've been invited to be an admin on JOBY. To accept, open this link." The invitee signs in as usual and accepts from an account whose confirmed email is the invited one; links expire after 7 days and can be revoked. Admins can remove other admins, never themselves |
 
-## 4.2 Changes in v1.5 (October 28, 2026)
+## 4.3 Changes in v1.5 (October 28, 2026)
 
 | **Change**            | **Detail**                                                                                                                                                                                                                      |
 |-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Introduction page** | New public page "How Joby works": what the marketplace is, steps for reservists, for spouses and for posters, the credit table and refund rules, and how feedback works. Numbers are read from the live settings (section 5.21) |
 | **Credit note**       | Every place a provider can apply shows "Applying: 10 credits" with the short refund rule and a link to the credit rules: job cards, the job page and the apply form                                                             |
 | **Direct requests**   | Built: "Send a direct request" on provider profiles, a Requests tab in Proposals (approve for 2 credits / decline with an optional reason), and the poster's "Sent requests" page (section 5.11)                                |
-| **Feedback screens**  | Built: feedback list and form for both sides, home reminders, and a site-wide banner from the last reminder (countdown) and while blocked (section 5.14)                                                                        |
+| **Feedback screens**  | Built: feedback list and form for both sides, home reminders, and a site-wide banner from the last reminder (countdown) and while blocked (section 5.14). The countdown and block banner are removed in v1.7                    |
 | **Reviews**           | Reviews show the job title, like Upwork's work history                                                                                                                                                                          |
 
-## 4.3 Changes in v1.4 (October 28, 2026)
+## 4.4 Changes in v1.4 (October 28, 2026)
 
 | **Change**           | **Detail**                                                                                                                                                                                                               |
 |----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -276,17 +288,17 @@ Approved by the founder on October 25, 2026.
 | **Provider profile** | Adds availability (available now / busy until a date), a photo gallery of past work (up to 6), a stats row (rating, jobs done, response time, member since) and a private profile-strength meter with tips (section 5.5) |
 | **Poster profile**   | Public profile page modelled on Upwork's client profile: about, logo, stats, open jobs and reviews (section 5.7)                                                                                                         |
 | **Notifications**    | In-app notifications page with unread badge; new events: job alert and "your application was viewed" (section 5.19)                                                                                                      |
-| **Account**          | Reserve badge (days band only), phone, email, city, credits and notification settings. Address is the city only                                                                                                          |
+| **Account**          | Reserve badge (days band only), phone, email, city, credits and notification settings. Address is the city only                                                                                                         |
 | **Distance**         | Israeli localities with coordinates (1,263 CBS localities). Matching, job alerts, the area filter and provider search use straight-line distance between town centres                                                    |
 | **Provider search**  | New: filters by category, area and availability; sort by rating, distance, price or A–Z (section 5.20)                                                                                                                   |
 
-## 4.4 Changes in v1.3 (October 27, 2026)
+## 4.5 Changes in v1.3 (October 27, 2026)
 
 | **Change**                  | **Detail**                                                                                                                                                      |
 |-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Categories per provider** | Unlimited (was up to 3). Providers choose every subcategory they work in; job alerts match on all of them. Skills stay at up to 15 and service cards at up to 3 |
 
-## 4.5 Changes in v1.2 (October 27, 2026)
+## 4.6 Changes in v1.2 (October 27, 2026)
 
 | **Change**       | **Detail**                                                                                                                                                                                           |
 |------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -294,12 +306,12 @@ Approved by the founder on October 25, 2026.
 | **Refunds**      | No refund for unopened applications when the job ends with a hire. Without a hire (closed, expired after up to 60 days, or removed), all applications are refunded except withdrawn ones             |
 | **Duplicate ID** | Accounts are unique by user and phone (enforced by the database). The same ID number on a second account goes to admin to approve or reject; a dedicated resolution process is planned for Phase 1–2 |
 
-## 4.6 Changes in v1.1
+## 4.7 Changes in v1.1
 
 | **Change**               | **Detail**                                                                                                        |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------|
 | **Removed**              | "On reserve duty" status, its badge, notification and settings                                                    |
-| **Feedback enforcement** | Request at engagement + 3 days; reminders after 7 and 14 days (the third warns of the block); block after 30 days |
+| **Feedback enforcement** | Request at engagement + 3 days; reminders after 7 and 14 days (the third warns of the block); block after 30 days. Block removed in v1.7 |
 | **Spouses**              | Common-law partners accepted; admin decides manually if the reservist account changes                             |
 | **Extra hires**          | Poster can request another hire on the same job; admin decides; both sides notified                               |
 | **Confirmed**            | Project management under Business; salted ID hash stored; no refund on withdrawal; WhatsApp Business account      |
@@ -546,10 +558,12 @@ cards in browse, and can be attached to an application.
 
 ## 5.7 Poster onboarding (POS)
 
-One screen after phone verification: name, poster type (private person /
-business / HR or recruiter / public body or non-profit), company name
-(businesses), city. Optional: logo and website. No document
-verification.
+One screen after phone verification. Required (v1.7 minimum): poster
+type (private person / business / HR or recruiter / public body or
+non-profit) and city; company name only for business, HR or recruiter
+and public-body types. Name, phone and email come from sign-up.
+Optional: logo and website. No document verification and no separate
+HR profile.
 
 Poster trust signals are computed automatically and shown on every job
 and direct request: **account verified** (phone code or Google),
@@ -740,7 +754,8 @@ attaches to the engagement.
 
 - All deductions are atomic; the balance can never go negative.
 
-- Low-balance nudge below 20 credits.
+- Low-balance nudge below 20 credits; "credits used up" email below 10
+  credits, offering a free top-up through support during the beta (v1.7).
 
 - Purchase bundles at public launch: 50 / 120 / 300 credits, around ₪1
   per credit with a bundle discount; final pricing decided before
@@ -748,8 +763,9 @@ attaches to the engagement.
 
 ## 5.14 Two-way feedback and ratings (FBK)
 
-Every engagement must end in feedback from both sides. The data builds
-reputations now and powers matching later.
+Every engagement asks both sides for feedback. The data builds
+reputations now and powers matching later. In the MVP, missing feedback
+never limits an account (v1.7).
 
 | **When**                | **What happens**                                                                                                                                                                                                          |
 |-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -759,8 +775,7 @@ reputations now and powers matching later.
 | **Not yet**             | Keeps the reminder schedule running; the question is asked again in the next reminder. From reminder 3, only Yes / No                                                                                                     |
 | **No**                  | Reason picker: the other side didn't respond / price / availability / not a fit / other. Stored for matching; not shown publicly and not counted in the score                                                             |
 | **Request + 7 days**    | Reminder 2 on WhatsApp, email and in the app                                                                                                                                                                              |
-| **Request + 14 days**   | Reminder 3 with a clear warning: "Leave your feedback by \[date\] or your account will be blocked." An in-app banner shows the countdown until feedback is submitted                                                      |
-| **Request + 30 days**   | Account blocked: a provider cannot apply or approve requests; a poster cannot post jobs or send requests. Sign-in still works, and submitting the feedback lifts the block immediately. The user is notified of the block |
+| **Request + 14 days**   | Reminder 3, the last one, with no warning. After it, the feedback stays open in the Feedback list with no further reminders and no block                                                                                  |
 | **Reveal**              | Both reviews become visible when both are submitted, or 14 days after the first submission                                                                                                                                |
 
 | **Poster rates the provider**          | **Provider rates the poster**          |
@@ -776,12 +791,11 @@ reputations now and powers matching later.
 
 **RULES**
 
-- Screens (v1.5): a "Feedback" list (also on the home page) with every
-  engagement still awaiting the user's feedback — before the request it
-  can already be given ("early"); the form asks "Did you work together?"
-  (Yes / Not yet / No; "Not yet" disappears after the last reminder); a
-  site-wide banner shows the deadline from the last reminder and the
-  block while it applies.
+- Screens (v1.5, updated v1.7): a "Feedback" list (also on the home
+  page) with every engagement still awaiting the user's feedback —
+  before the request it can already be given ("early"); the form asks
+  "Did you work together?" (Yes / Not yet / No; "Not yet" disappears
+  after the last reminder). No deadline countdown or block banner.
 
 - Provider score = average overall rating of revealed reviews, shown
   with one decimal and the review count after 3 reviews. Poster rating
@@ -811,7 +825,7 @@ or rejects them. Meanwhile the provider can register under Others →
 - WhatsApp and email land in one shared inbox for the ops team.
 
 - A FAQ page with 10–15 questions: verification, credits, credit-back,
-  spouses, feedback, account blocks.
+  spouses, feedback, account suspensions.
 
 - Support hours Sunday–Thursday, 09:00–18:00. Target first response
   under 4 business hours.
@@ -951,16 +965,21 @@ All values are configurable by admin without a code release.
 | **Direct request expiry**                      | 7 days                                                                                      |
 | **Maximum direct requests per poster per day** | 20                                                                                          |
 | **Feedback request**                           | 3 days after the engagement                                                                 |
-| **Feedback reminders**                         | 7 and 14 days after the request (the third carries the block warning)                       |
-| **Feedback block**                             | 30 days after the request; lifted as soon as feedback is submitted                          |
+| **Feedback reminders**                         | 7 and 14 days after the request (the third is the last)                                     |
+| **Feedback block**                             | None in the MVP (v1.7); feedback stays open after the last reminder                         |
 | **Blind reveal**                               | When both submit, or 14 days after the first submission                                     |
 | **Score visible after**                        | 3 revealed reviews                                                                          |
 | **Subcategories per provider · service cards** | Unlimited · 3                                                                               |
-| **Low-balance nudge**                          | Below 20 credits                                                                            |
+| **Low-balance nudge · credits used up**        | Below 20 credits · below 10 credits                                                         |
+| **Profile-completion nudges**                  | 1, 3, 7 and 14 days after sign-up until submitted (providers) or until the first job or request (posters) |
 | **Mistaken-hire reversal window**              | 48 hours, through support                                                                   |
 | **Hires per job**                              | One by default; extra hires need admin approval                                             |
 
 # 8 Notifications Matrix
+
+Full Hebrew content, triggers and the extra lifecycle emails (nudges,
+receipts, re-engagement, beta surveys) are in "Joby email content and
+user journeys (MVP)" (v1.7).
 
 | **Event**                                                    | **Recipient**      | **WhatsApp**                      | **Email**    | **In-app** |
 |--------------------------------------------------------------|--------------------|-----------------------------------|--------------|------------|
@@ -980,10 +999,11 @@ All values are configurable by admin without a code release.
 | **You were hired**                                           | Provider           | ✓                                 | ✓            | ✓          |
 | **Job expires in 2 days (with Extend button)**               | Poster             | ✓                                 | ✓            | ✓          |
 | **Feedback request / reminders (request, +7, +14 days)**     | Both               | ✓                                 | ✓            | ✓          |
-| **Account blocked / unblocked for missing feedback**         | Blocked user       | ✓                                 | ✓            | ✓          |
 | **Extra hire approved / declined**                           | Poster + applicant | ✓                                 | ✓            | ✓          |
 | **Feedback revealed**                                        | Both               | —                                 | ✓            | ✓          |
 | **Low credit balance**                                       | Provider           | —                                 | ✓            | ✓          |
+| **Credits used up (v1.7)**                                   | Provider           | ✓                                 | ✓            | ✓          |
+| **Profile-completion nudges (v1.7)**                         | Provider / poster  | Day 3 only                        | ✓            | —          |
 
 **RULES**
 
@@ -1166,10 +1186,10 @@ idempotent and retried</td>
 | **application_viewed / applicant_contacted / hired** | hours since application                            |
 | **direct_request_sent / direct_request_responded**   | outcome, hours to response                         |
 | **credit_back_issued**                               | reason (unopened / job ended)                      |
-| **feedback_submitted**                               | direction, worked together, overall score          |
+| **feedback_submitted**                               | direction, worked together, overall score, reminder number before submit |
 | **category_suggested · support_contacted**           | context, channel                                   |
-| **feedback_block_applied / feedback_block_lifted**   | role, days since request                           |
 | **extra_hire_requested / extra_hire_decided**        | job id, outcome, hours to decision                 |
+| **email_sent / email_opened / email_clicked (v1.7)** | template id, journey, channel                      |
 
 ## 12.2 Admin KPI dashboard
 
@@ -1193,12 +1213,13 @@ idempotent and retried</td>
 | **Authentication**                 | Supabase Auth: phone OTP and Google OAuth                                         | Phone verification step for Google users                                                                                       |
 | **SMS**                            | SMS provider with Israeli delivery                                                | Sign-in codes and invite fallback                                                                                              |
 | **WhatsApp**                       | Joby WhatsApp Business account, connected to the WhatsApp Business Platform (API) | The API is needed for automated templated messages; business verification and template approval follow the brand-name decision |
-| **Email**                          | Transactional email service plus a support address                                | Digests and notifications                                                                                                      |
+| **Email**                          | Resend (transactional email API) plus a support address (v1.7)                  | Lifecycle emails and digests through the API; also the custom SMTP for Supabase Auth email codes. Sending domain with SPF, DKIM and DMARC after the brand-name decision. Free tier is capped at 100 emails a day, so plan on the paid plan for the beta |
+| **Notification worker**            | Supabase: events table, scheduled jobs and a channel router (v1.7)               | Runs the email journeys (delays, branches, stop conditions), quiet hours, Shabbat window and user settings across email, WhatsApp and in-app |
 | **Support inbox**                  | Shared inbox covering WhatsApp and email                                          | One queue for the ops lead                                                                                                     |
 | **AI extraction**                  | Vision-capable LLM API                                                            | 3010 and CV parsing; zero data retention                                                                                       |
 | **Payments (P1)**                  | Israeli card processor with automatic invoices and receipts                       | Selected before public launch                                                                                                  |
 | **Product analytics · monitoring** | Product analytics tool · error tracking                                           | Events in section 12                                                                                                           |
-| **Scheduled jobs**                 | Database cron or edge functions                                                   | Job expiry, credit-back, request expiry, feedback reminders and blocks, document deletion                                      |
+| **Scheduled jobs**                 | Database cron or edge functions                                                   | Job expiry, credit-back, request expiry, feedback reminders, profile-completion nudges, document deletion                      |
 
 # 14 Release Plan
 
@@ -1220,14 +1241,14 @@ idempotent and retried</td>
 | **Two forms overlap**                                     | Overlapping days counted once                                                                            |
 | **Name on 3010 differs from the account name**            | Admin requests clarification; account name corrected through support                                     |
 | **Same ID number on another account**                     | Request flagged "Possible duplicate identity" in the queue; admin approves or rejects                    |
-| **Provider runs out of credits during beta**              | "Contact support for more credits"; admin grants with a reason                                           |
+| **Provider runs out of credits during beta**              | "Credits used up" email; "Contact support for more credits"; admin grants with a reason, free of charge  |
 | **Poster deletes a job with applicants**                  | Treated as Closed without hire: all applications refunded                                                |
 | **Poster hires the wrong person**                         | Reversed through support within 48 hours; engagement cancelled                                           |
 | **Poster hires without opening every application**        | No refund for the unopened applications                                                                  |
 | **No hire after 60 days**                                 | Job expires; all applications refunded except withdrawn ones                                             |
 | **Poster wants a second provider for the same job**       | "Hire another applicant" request; admin decides; both sides notified                                     |
-| **Provider is called up for reserve duty mid-engagement** | No special status in the MVP; support can extend the feedback deadline on request                        |
-| **Only one side submits feedback**                        | Revealed 14 days after submission; the other side is blocked 30 days after the request until they submit |
+| **Provider is called up for reserve duty mid-engagement** | No special status in the MVP; feedback stays open with no penalty and can be given after returning       |
+| **Only one side submits feedback**                        | Revealed 14 days after submission; the other side can still submit later (no block in the MVP)          |
 | **Retaliation rating**                                    | Prevented by the blind reveal; abusive comments can be reported and hidden                               |
 | **Reservist account deleted or verification revoked**     | Admin decides manually whether the linked spouse stays eligible; the spouse is notified                  |
 | **Spouse invite sent to a number already registered**     | Link created when the existing user accepts and uploads proof                                            |
@@ -1248,9 +1269,11 @@ idempotent and retried</td>
 | 8      | Refund when a provider withdraws an application?                    | No refund                                                                                           | 5.10                 |
 | 9      | More than one hire per job?                                         | Admin decides per request; poster and applicant notified                                            | 5.12                 |
 | —      | "On reserve duty" status                                            | Removed from the MVP                                                                                | 2.3                  |
-| —      | Feedback enforcement                                                | Reminders after 7 and 14 days, block after 30 days with a clear warning                             | 5.14                 |
+| —      | Feedback enforcement                                                | Reminders after 7 and 14 days; the account block was removed in v1.7 (November 1, 2026)             | 5.14                 |
 | —      | Job lifetime and refunds (v1.2)                                     | 30 + 30 days maximum; refunds only when the job ends without a hire, or unopened 30 days while open | 5.8, 5.10            |
 | —      | Duplicate ID (v1.2)                                                 | Admin approves or rejects; resolution process in Phase 1–2                                          | 5.3                  |
+| —      | Email platform (v1.7)                                               | Resend for email; Twilio stays for WhatsApp; journeys run in Supabase                               | 13                   |
+| —      | Poster required fields (v1.7)                                       | Minimum only; no separate HR profile                                                                | 5.7                  |
 
 ## 16.2 Still open
 
@@ -1258,4 +1281,4 @@ idempotent and retried</td>
 |--------|------------------------------------------|------------------------------------------------------------------------------|--------------------------------|
 | 5      | Payment processor and invoicing provider | To choose later                                                              | Founder · before public launch |
 | 7      | Credit bundle prices                     | To finalize                                                                  | Founder · before public launch |
-| 10     | Final brand name and domain              | To decide later; WhatsApp business verification and email setup depend on it | Founder                        |
+| 10     | Final brand name and domain              | To decide later; WhatsApp business verification and email setup (sending domain, SPF/DKIM/DMARC) depend on it | Founder |

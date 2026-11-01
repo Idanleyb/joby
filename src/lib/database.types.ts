@@ -973,6 +973,11 @@ export type Database = {
       notifications: {
         Row: {
           created_at: string;
+          email_attempts: number;
+          email_claimed_at: string | null;
+          email_error: string | null;
+          email_sent_at: string | null;
+          email_status: string;
           error: string | null;
           event: string;
           id: number;
@@ -988,6 +993,11 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           created_at?: string;
+          email_attempts?: number;
+          email_claimed_at?: string | null;
+          email_error?: string | null;
+          email_sent_at?: string | null;
+          email_status?: string;
           error?: string | null;
           event: string;
           id?: never;
@@ -1002,6 +1012,11 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          email_attempts?: number;
+          email_claimed_at?: string | null;
+          email_error?: string | null;
+          email_sent_at?: string | null;
+          email_status?: string;
           error?: string | null;
           event?: string;
           id?: never;

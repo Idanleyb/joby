@@ -2,7 +2,7 @@
 
 A two-sided marketplace: **verified reservists** (30+ reserve days since 7 Oct 2023) and their **approved spouses** offer services; **anyone** can post a job or approach a provider directly. Providers spend credits to apply (10) or to accept a direct request (2). Both sides rate each other after every engagement.
 
-- Product spec: [`docs/PRD.md`](docs/PRD.md) (v1.6)
+- Product spec: [`docs/PRD.md`](docs/PRD.md) (v1.7)
 - How the code is organized and why: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - Decisions made while building: [`docs/DECISIONS.md`](docs/DECISIONS.md)
 
@@ -14,7 +14,8 @@ A two-sided marketplace: **verified reservists** (30+ reserve days since 7 Oct 2
 | Hosting | Vercel |
 | Database, auth, files, scheduled jobs | Supabase (Postgres, Auth, Storage, pg_cron) |
 | Sign-in | Phone OTP (Twilio via Supabase Auth) · Google · every account also confirms a phone (SMS code) and an email (6-digit code sent by the app over SMTP) |
-| Later steps | WhatsApp Cloud API · Resend (email) · Claude API (Form 3010 + CV reading) |
+| Email | Resend over SMTP: email codes, admin invitations and the lifecycle emails (`src/lib/email`) |
+| Later steps | WhatsApp Cloud API · Claude API (Form 3010 + CV reading) |
 
 ## Project layout
 
@@ -116,7 +117,13 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
    ```
    More admins: **/admin/admins → הזמנת אדמין** (name, email, role). The invitation email is sent by the app over SMTP — see step 7.
 6. **Vercel**: import the GitHub repo, framework Next.js, and set the variables from `.env.example` (Production and Preview separately). `SUPABASE_SECRET_KEY` and `ID_HASH_SALT` are server-only — never prefix them with `NEXT_PUBLIC_`.
-7. **Email (required — sign-up email codes and admin invitations)**: every new account confirms its email with a code the app sends, so **sign-up does not work until this is set**. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` in Vercel and redeploy. Simplest for the beta is a Gmail account: turn on 2-Step Verification, create an **App password** (Google Account → Security → App passwords), then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_USER=<the gmail address>`, `SMTP_PASS=<the 16-letter app password>`, `MAIL_FROM=Joby <the gmail address>`. Any other SMTP service (Resend, Brevo…) works the same way. Gmail allows about 500 emails a day, enough for the beta; move to a sending service (Resend, Brevo…) before launch.
+7. **Email (required — sign-up email codes, admin invitations, lifecycle emails)**: every new account confirms its email with a code the app sends, so **sign-up does not work until this is set**. Production uses Resend over SMTP: verify `mail.joby-ai.com` in Resend, create an API key, then set in Vercel `SMTP_HOST=smtp.resend.com`, `SMTP_PORT=465`, `SMTP_USER=resend`, `SMTP_PASS=<Resend API key>`, `MAIL_FROM=Joby <hello@mail.joby-ai.com>`, and redeploy. Resend's free plan sends 100 emails a day; move to the paid plan once the beta grows.
+8. **Lifecycle email worker** (PRD v1.7): set `CRON_SECRET` (`openssl rand -hex 32`), `SUPPORT_EMAIL` and optionally `SUPPORT_WHATSAPP` in Vercel, and make sure `NEXT_PUBLIC_SITE_URL` is the live address. Then in the Supabase SQL Editor, once:
+   ```sql
+   select vault.create_secret('https://www.joby-ai.com/api/notifications/dispatch', 'joby_dispatch_url');
+   select vault.create_secret('<the CRON_SECRET value>', 'joby_cron_secret');
+   ```
+   pg_cron then calls the worker every 5 minutes (`private.call_email_worker`). Check with `select * from cron.job_run_details order by start_time desc limit 5;` and `select email_status, count(*) from notifications group by 1;`. Optional: `update app_settings set value = '"https://forms…"' where key = 'beta_survey_url';` turns on the beta survey emails.
 
 ## Speed
 

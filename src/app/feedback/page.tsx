@@ -8,8 +8,7 @@ import { PageShell, cx } from "@/components/ui";
 export const metadata: Metadata = { title: "משובים · Joby" };
 
 const STATE: Record<string, [string, string]> = {
-  blocked: ["החשבון חסום עד המשוב", "bg-danger-bg text-danger"],
-  warning: ["דחוף", "border border-action-border bg-action font-bold text-foreground"],
+  last: ["תזכורת אחרונה", "border border-action-border bg-action font-bold text-foreground"],
   due: ["ממתין למשוב", "bg-action text-foreground"],
   early: ["אפשר כבר עכשיו", "bg-background text-muted"],
 };
@@ -39,7 +38,6 @@ export default async function FeedbackListPage({ searchParams }: { searchParams:
               </div>
               <span className="text-sm text-muted">
                 {i.iAmPoster ? "נותן/ת השירות" : "המפרסם/ת"}: <bdi>{i.otherName}</bdi> · מ-{dmy(i.createdAt)}
-                {i.deadline && i.state !== "blocked" ? ` · עד ${dmy(i.deadline)}` : ""}
               </span>
             </Link>
           </li>
