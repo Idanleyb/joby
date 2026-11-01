@@ -365,7 +365,7 @@ select test.login('admin'); set role authenticated;
 select public.admin_adjust_credits(test.uid('noa'), 79, 'test: restore');
 reset role;
 
-\echo ' 12. feedback schedule: request, reminders, block at 30 days, blind reveal'
+\echo ' 12. feedback schedule: request, reminders, no block (v1.7), blind reveal'
 update public.engagements set created_at = now() - interval '4 days' where id = current_setting('test.eng_1')::uuid;
 select private.run_timers();
 select test.check((select count(*) from public.feedback_requests where engagement_id = current_setting('test.eng_1')::uuid) = 2, 'two feedback requests');
@@ -377,24 +377,22 @@ select private.run_timers();
 select test.check((select min(reminders_sent) from public.feedback_requests where engagement_id = current_setting('test.eng_1')::uuid) = 1, 'reminder after 7 days');
 update public.feedback_requests set requested_at = now() - interval '15 days' where engagement_id = current_setting('test.eng_1')::uuid;
 select private.run_timers();
-select test.check((select count(*) from public.notifications where event = 'feedback_block_warning'
-                   and payload ->> 'engagement_id' = current_setting('test.eng_1')) = 2, 'block warning after 14 days');
+select test.check((select count(*) from public.notifications where event = 'feedback_reminder' and (payload ->> 'final')::boolean
+                   and payload ->> 'engagement_id' = current_setting('test.eng_1')) = 2, 'last reminder after 14 days');
+select test.check((select count(*) from public.notifications where event = 'feedback_block_warning') = 0, 'no block warning (v1.7)');
 select test.login('yossi'); set role authenticated;
 select test.expect_error(format($$select public.submit_feedback(%L, 'not_yet')$$, current_setting('test.eng_1')), 'answer_required');
 reset role;
 update public.feedback_requests set requested_at = now() - interval '31 days' where engagement_id = current_setting('test.eng_1')::uuid;
 select private.run_timers();
-select test.check(public.is_feedback_blocked(test.uid('yossi')) and public.is_feedback_blocked(test.uid('avi')), 'both blocked at 30 days');
+select test.check(not public.is_feedback_blocked(test.uid('yossi')) and not public.is_feedback_blocked(test.uid('avi')), 'never blocked (v1.7)');
+select test.check((select count(*) from public.feedback_requests where blocked_at is not null) = 0, 'no block recorded');
+select test.check((select count(*) from public.notifications where event = 'account_blocked_feedback') = 0, 'no block notice');
 select test.login('yossi'); set role authenticated;
-select test.expect_error(format($$select public.apply_to_job(%L, repeat('blocked ', 10))$$, current_setting('test.job_dev')), 'feedback_blocked');
 select public.submit_feedback(current_setting('test.eng_1')::uuid, 'yes', 5::smallint, '{"brief_clarity": 5, "communication": 4, "fair_payment": 5}', true, 'Clear brief and paid on time.', null, 'Great first client');
-select test.check(not public.is_feedback_blocked(auth.uid()), 'block lifted on submit');
 select test.check((select revealed_at is null from public.feedback where author_id = auth.uid()), 'not revealed until both submit');
 reset role;
 select test.login('avi'); set role authenticated;
-select test.expect_error($$select public.create_job(test.sub('plumbing'), 'Another job while blocked',
-  'This should fail because Avi still owes feedback on the hire from last month, as per the rules.',
-  'onsite', 'Rishon LeZion', 'open_to_quotes', null, null, 'asap')$$, 'feedback_blocked');
 select public.submit_feedback(current_setting('test.eng_1')::uuid, 'yes', 4::smallint, '{"quality": 4, "communication": 5, "reliability": 4, "value_for_money": 4}', true, 'Arrived on time and fixed the leak.');
 reset role;
 select test.check((select count(*) from public.feedback where engagement_id = current_setting('test.eng_1')::uuid and revealed_at is not null) = 2, 'both revealed together');
@@ -657,6 +655,58 @@ reset role;
 select test.check(not exists (select 1 from public.admins where user_id = test.uid('admin')), 'admin removed by another admin');
 insert into public.admins (user_id, role) values (test.uid('admin'), 'admin');
 delete from public.admins where user_id = test.uid('tal');
+
+\echo ' 13f. email journeys (v1.7): outbox events and hourly lifecycle nudges'
+select test.check((select count(*) from public.notifications where event = 'welcome_provider' and user_id = test.uid('yossi')) = 1, 'welcome when the provider role is added');
+select test.check((select count(*) from public.notifications where event = 'welcome_poster' and user_id = test.uid('avi')) = 1, 'welcome when the poster role is added');
+select test.check((select count(*) from public.notifications where event = 'application_sent')
+                  = (select count(*) from public.applications), 'a receipt for every application');
+select test.check((select count(*) from public.notifications where event = 'job_published')
+                  = (select count(*) from public.jobs where poster_id is not null), 'a notice for every posted job');
+select test.check(exists (select 1 from public.notifications where event = 'hire_confirmed' and user_id = test.uid('avi')), 'poster gets a hire confirmation');
+select test.check(exists (select 1 from public.notifications where event = 'job_closed_no_hire'), 'poster told when a job ends without a hire');
+select test.check((select count(*) from public.notifications where email_status <> 'pending') = 0, 'new rows wait for the email worker');
+-- Provider who started the wizard 3 days ago and stopped.
+select test.login('omer'); set role authenticated;
+select public.start_provider_onboarding();
+reset role;
+update public.provider_profiles set onboarding_step = 3, created_at = now() - interval '3 days 1 hour' where user_id = test.uid('omer');
+select private.run_lifecycle();
+select private.run_lifecycle();
+select test.check((select count(*) from public.notifications where event = 'provider_nudge' and user_id = test.uid('omer')
+                   and (payload ->> 'day')::int = 3) = 1, 'provider nudge on day 3, once');
+-- Poster who never posted, 1 day after choosing to hire.
+update public.profiles set created_at = now() - interval '1 day 2 hours' where id = test.uid('omer');
+delete from public.poster_profiles where user_id = test.uid('omer');
+select private.run_lifecycle();
+select private.run_lifecycle();
+select test.check((select count(*) from public.notifications where event = 'poster_nudge' and user_id = test.uid('omer')
+                   and (payload ->> 'day')::int = 1) = 1, 'poster nudge on day 1, once');
+-- Surveys only when a link is set.
+select test.check(not exists (select 1 from public.notifications where event = 'beta_survey'), 'no survey without a link');
+-- Old verification request → admin SLA alert, once per 6-hour window.
+update public.verification_requests set submitted_at = now() - interval '21 hours'
+ where id = (select id from public.verification_requests where status = 'pending' limit 1);
+select private.run_lifecycle();
+select private.run_lifecycle();
+select test.check((select count(*) from public.notifications where event = 'admin_sla_alert')
+                  = (select count(*) from public.admins)
+                  or not exists (select 1 from public.verification_requests where status = 'pending'), 'SLA alert once per admin');
+
+-- Email stats: a sent email, a Resend event, and the admin report.
+update public.notifications set email_status = 'sent', email_sent_at = now() - interval '1 day',
+       email_template = 'P2_3', email_provider_id = 'resend-test-1'
+ where id = (select id from public.notifications where event = 'provider_nudge' and user_id = test.uid('omer') limit 1);
+select test.check(public.record_email_event('resend-test-1', 'email.opened') = 1, 'webhook event matched');
+select public.record_email_event('resend-test-1', 'email.clicked');
+update public.provider_profiles set onboarding_step = 8 where user_id = test.uid('omer');
+select test.login('admin'); set role authenticated;
+select test.check((select emails = 1 and opened = 1 and clicked = 1 and measurable = 1 and converted = 1
+                     from public.admin_email_stats(30) where template = 'P2_3'), 'stats per template with conversion');
+reset role;
+select test.login('omer'); set role authenticated;
+select test.expect_error('select * from public.admin_email_stats(30)', 'not_authorized');
+reset role;
 
 \echo ' 14. ledger integrity'
 select test.check(not exists (

@@ -4,10 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 
 export type FeedbackItem = {
   engagementId: string; title: string; createdAt: string; otherId: string; otherName: string; iAmPoster: boolean;
-  state: "blocked" | "warning" | "due" | "early"; requestedAt: string | null; remindersSent: number; deadline: string | null;
+  state: "last" | "due" | "early"; requestedAt: string | null; remindersSent: number;
 };
-
-const DAY = 86_400_000;
 
 /** Engagements where the signed-in user still owes feedback (PRD 5.14). */
 export const loadFeedbackDue = cache(async (userId: string): Promise<FeedbackItem[]> => {
@@ -16,7 +14,7 @@ export const loadFeedbackDue = cache(async (userId: string): Promise<FeedbackIte
     supabase.from("engagements").select("id, title, created_at, poster_id, provider_id")
       .or(`poster_id.eq.${userId},provider_id.eq.${userId}`).is("cancelled_at", null).order("created_at", { ascending: false }),
     supabase.from("feedback").select("engagement_id").eq("author_id", userId),
-    supabase.from("feedback_requests").select("engagement_id, requested_at, reminders_sent, blocked_at, completed_at").eq("user_id", userId),
+    supabase.from("feedback_requests").select("engagement_id, requested_at, reminders_sent, completed_at").eq("user_id", userId),
   ]);
   const done = new Set((mine ?? []).map((f) => f.engagement_id));
   const open = (engagements ?? []).filter((e) => !done.has(e.id));
@@ -34,11 +32,11 @@ export const loadFeedbackDue = cache(async (userId: string): Promise<FeedbackIte
     const iAmPoster = e.poster_id === userId;
     const otherId = iAmPoster ? e.provider_id : e.poster_id;
     const r = (requests ?? []).find((x) => x.engagement_id === e.id && !x.completed_at);
-    const state: FeedbackItem["state"] = !r ? "early" : r.blocked_at ? "blocked" : r.reminders_sent >= 2 ? "warning" : "due";
+    // PRD v1.7: no account block; after the last reminder the item simply stays open.
+    const state: FeedbackItem["state"] = !r ? "early" : r.reminders_sent >= 2 ? "last" : "due";
     return {
       engagementId: e.id, title: e.title, createdAt: e.created_at, otherId, otherName: names.get(otherId) ?? "", iAmPoster, state,
       requestedAt: r?.requested_at ?? null, remindersSent: r?.reminders_sent ?? 0,
-      deadline: r ? new Date(new Date(r.requested_at).getTime() + 30 * DAY).toISOString() : null,
     };
   });
 });

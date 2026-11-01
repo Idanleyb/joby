@@ -26,9 +26,10 @@ function Stars({ name, label, required }: { name: string; label: string; require
 const radio = "flex cursor-pointer items-center justify-center rounded-xl border border-border px-3 py-3 text-sm font-semibold has-[:checked]:border-foreground has-[:checked]:bg-action";
 const NO_REASONS = [["no_response", "הצד השני לא הגיב"], ["price", "מחיר"], ["availability", "זמינות"], ["not_a_fit", "לא התאים"], ["other", "אחר"]];
 
-export function FeedbackForm({ engagementId, iAmPoster, otherName, allowNotYet }: { engagementId: string; iAmPoster: boolean; otherName: string; allowNotYet: boolean }) {
+export function FeedbackForm({ engagementId, iAmPoster, otherName, allowNotYet, initialAnswer = "" }: { engagementId: string; iAmPoster: boolean; otherName: string; allowNotYet: boolean; initialAnswer?: string }) {
   const [state, action, pending] = useActionState<FeedbackState, FormData>(submitFeedback.bind(null, engagementId), {});
-  const [worked, setWorked] = useState("");
+  // The feedback email links here with ?answer=yes|not_yet|no (PRD v1.7): start with that answer chosen.
+  const [worked, setWorked] = useState(["yes", "no"].includes(initialAnswer) || (initialAnswer === "not_yet" && allowNotYet) ? initialAnswer : "");
   const [comment, setComment] = useState("");
   const scores = iAmPoster
     ? [["quality", "איכות העבודה"], ["communication", "תקשורת"], ["reliability", "אמינות ועמידה בזמנים"], ["value_for_money", "תמורה למחיר"]]
@@ -39,9 +40,9 @@ export function FeedbackForm({ engagementId, iAmPoster, otherName, allowNotYet }
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-2 font-bold">עבדתם יחד עם <bdi>{otherName}</bdi>?</legend>
         <div className={cx("grid gap-2", allowNotYet ? "grid-cols-3" : "grid-cols-2")}>
-          <label className={radio}><input type="radio" name="worked" value="yes" className="sr-only" onChange={() => setWorked("yes")} />כן</label>
-          {allowNotYet ? <label className={radio}><input type="radio" name="worked" value="not_yet" className="sr-only" onChange={() => setWorked("not_yet")} />עוד לא</label> : null}
-          <label className={radio}><input type="radio" name="worked" value="no" className="sr-only" onChange={() => setWorked("no")} />לא</label>
+          <label className={radio}><input type="radio" name="worked" value="yes" className="sr-only" checked={worked === "yes"} onChange={() => setWorked("yes")} />כן</label>
+          {allowNotYet ? <label className={radio}><input type="radio" name="worked" value="not_yet" className="sr-only" checked={worked === "not_yet"} onChange={() => setWorked("not_yet")} />עוד לא</label> : null}
+          <label className={radio}><input type="radio" name="worked" value="no" className="sr-only" checked={worked === "no"} onChange={() => setWorked("no")} />לא</label>
         </div>
       </fieldset>
 

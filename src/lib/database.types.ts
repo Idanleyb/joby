@@ -973,6 +973,18 @@ export type Database = {
       notifications: {
         Row: {
           created_at: string;
+          email_attempts: number;
+          email_bounced_at: string | null;
+          email_clicked_at: string | null;
+          email_complained_at: string | null;
+          email_delivered_at: string | null;
+          email_opened_at: string | null;
+          email_provider_id: string | null;
+          email_template: string | null;
+          email_claimed_at: string | null;
+          email_error: string | null;
+          email_sent_at: string | null;
+          email_status: string;
           error: string | null;
           event: string;
           id: number;
@@ -988,6 +1000,18 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           created_at?: string;
+          email_attempts?: number;
+          email_bounced_at?: string | null;
+          email_clicked_at?: string | null;
+          email_complained_at?: string | null;
+          email_delivered_at?: string | null;
+          email_opened_at?: string | null;
+          email_provider_id?: string | null;
+          email_template?: string | null;
+          email_claimed_at?: string | null;
+          email_error?: string | null;
+          email_sent_at?: string | null;
+          email_status?: string;
           error?: string | null;
           event: string;
           id?: never;
@@ -1002,6 +1026,18 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          email_attempts?: number;
+          email_bounced_at?: string | null;
+          email_clicked_at?: string | null;
+          email_complained_at?: string | null;
+          email_delivered_at?: string | null;
+          email_opened_at?: string | null;
+          email_provider_id?: string | null;
+          email_template?: string | null;
+          email_claimed_at?: string | null;
+          email_error?: string | null;
+          email_sent_at?: string | null;
+          email_status?: string;
           error?: string | null;
           event?: string;
           id?: never;
@@ -1813,6 +1849,14 @@ export type Database = {
           user_id: string;
         }[];
       };
+      admin_email_stats: {
+        Args: { p_days?: number };
+        Returns: {
+          template: string; emails: number; delivered: number; opened: number; clicked: number;
+          bounced: number; complained: number; measurable: number; converted: number; last_sent: string;
+        }[];
+      };
+      record_email_event: { Args: { p_provider_id: string; p_type: string; p_at?: string }; Returns: number };
       admin_remove_admin: { Args: { p_user: string }; Returns: undefined };
       admin_revoke_invite: { Args: { p_invite: string }; Returns: undefined };
       admin_purge_demo: { Args: Record<PropertyKey, never>; Returns: number };

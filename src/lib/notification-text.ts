@@ -31,11 +31,17 @@ export function notificationText(event: string, p: P): { text: string; href?: st
     case "request_declined": return { icon: "•", text: "נותן השירות לא יכול לקבל את הפנייה", href: "/poster/requests" };
     case "request_expired": return { icon: "⏳", text: "פנייה ישירה פגה בלי מענה", href: "/poster/requests" };
     case "feedback_request": return { icon: "★", text: "איך היה? נשמח למשוב קצר על העבודה", href: `/feedback/${s(p.engagement_id)}` };
-    case "feedback_reminder": return { icon: "★", text: "תזכורת: משוב על עבודה שהסתיימה", href: "/feedback" };
+    case "feedback_reminder": return { icon: "★", text: p.final ? "תזכורת אחרונה: משוב על עבודה שהסתיימה" : "תזכורת: משוב על עבודה שהסתיימה", href: "/feedback" };
     case "feedback_block_warning": return { icon: "⚠", text: "בלי משוב, החשבון ייחסם לפעולות חדשות בקרוב", href: "/feedback" };
     case "account_blocked_feedback": return { icon: "⛔", text: "החשבון חסום לפעולות חדשות עד שתשאירו משוב", href: "/feedback" };
     case "account_unblocked": return { icon: "✓", text: "תודה על המשוב! החשבון פעיל שוב", href: "/home" };
     case "feedback_revealed": return { icon: "★", text: "חוות הדעת על העבודה פורסמו", href: "/profile" };
+    case "credits_used_up": return { icon: "↺", text: "ניצלת את כל הקרדיטים — אפשר לבקש עוד מהתמיכה, בחינם", href: "/provider/credits" };
+    case "request_expiring": return { icon: "⏳", text: "פנייה ישירה תפוג בעוד יומיים — כדאי לענות", href: "/proposals?tab=requests" };
+    case "job_no_applicants": return { icon: "🔎", text: "עוד אין הגשות למשרה — אפשר לפנות ישירות לנותני שירות", href: "/providers" };
+    case "applications_unopened": return { icon: "📥", text: `${String(p.count ?? "")} הגשות מחכות שתפתחו אותן`, href: `/poster/jobs/${job}/applications` };
+    case "job_closed_no_hire": return { icon: "•", text: p.expired ? "משרה שפרסמת פגה בלי גיוס" : "משרה שפרסמת נסגרה בלי גיוס", href: "/poster/jobs" };
+    case "admin_sla_alert": return { icon: "⚠", text: `${String(p.count ?? "")} בקשות אימות ממתינות יותר מ-20 שעות`, href: "/admin/verifications" };
     case "admin_invite": return { icon: "🛡", text: "קיבלת הזמנה להיות אדמין ב-Joby — לאישור", href: `/invite/admin/${s(p.token)}` };
     case "admin_invite_accepted": return { icon: "✓", text: `${s(p.name) || "המוזמן/ת"} אישר/ה את ההזמנה והוא/היא עכשיו אדמין`, href: "/admin/admins" };
     default: return { icon: "•", text: "עדכון מ-Joby" };

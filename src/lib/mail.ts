@@ -10,7 +10,7 @@ export function mailConfigured() {
   return Boolean(process.env.SMTP_HOST);
 }
 
-export async function sendMail(msg: { to: string; subject: string; text: string; html: string }): Promise<boolean> {
+export async function sendMail(msg: { to: string; subject: string; text: string; html: string; replyTo?: string }): Promise<boolean> {
   if (!mailConfigured()) return false;
   const port = Number(process.env.SMTP_PORT ?? 587);
   const transport = nodemailer.createTransport({
