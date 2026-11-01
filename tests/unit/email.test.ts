@@ -102,3 +102,11 @@ describe("layout", () => {
     expect(m.text).toContain("לחצו: https://a.b/c?d=1&e=2");
   });
 });
+
+describe("left-to-right values", () => {
+  it("wraps phone numbers in an LTR span", () => {
+    const m = renderEmail({ subject: "s", preheader: "p", blocks: ["טלפון: **⁦+972501234567⁩**"] },
+      { site: "https://a.b", supportWhatsapp: null, settingsHref: "https://a.b/account" });
+    expect(m.html).toContain('<b><span dir="ltr" style="unicode-bidi:isolate">+972501234567</span></b>');
+  });
+});

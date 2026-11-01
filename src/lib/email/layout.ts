@@ -27,7 +27,11 @@ const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
 /** Escape, then turn **x** into <b>x</b>. */
-const rich = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>");
+const rich = (s: string) =>
+  esc(s)
+    .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
+    .replace(/\u2066(.*?)\u2069/g, '<span dir="ltr" style="unicode-bidi:isolate">$1</span>') // phones, emails
+    .replace(/\n/g, "<br>");
 const plain = (s: string) => s.replace(/\*\*(.+?)\*\*/g, "$1");
 
 const P = "padding:6px 28px;font-size:16px;line-height:1.7;color:#111";
