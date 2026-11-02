@@ -10,7 +10,6 @@ import {
   IconBriefcase, IconCalculator, IconChat, IconCheckCircle, IconChevronDown, IconCode, IconGrid, IconHome, IconInfo,
   IconMegaphone, IconMusic, IconPen, IconScale, IconShieldCheck, IconStar, IconUser, IconXCircle,
 } from "@/components/icons";
-import heroImage from "../../public/images/home-hero.jpg";
 
 // Public landing page (design: "Joby — Home page" canvas, Nov 2, 2026; Upwork as the reference).
 // Signed-in users with a finished sign-up go to their dashboard at /home.
@@ -128,11 +127,10 @@ export default async function Home() {
       <section className="px-4 pt-4 sm:px-6 sm:pt-6">
         <div className="relative mx-auto max-w-[1240px] overflow-hidden rounded-[28px] bg-brand">
           <Image
-            src={heroImage}
+            src="/images/home-hero.jpg"
             alt="מילואימניקים בעבודה: שיפוצניק, עובדת מהבית מול מחשב ועורכת דין בפגישה"
             fill
             priority
-            placeholder="blur"
             sizes="(min-width: 1240px) 1240px, 100vw"
             className="object-cover"
           />
