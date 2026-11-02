@@ -854,6 +854,8 @@ or rejects them. Meanwhile the provider can register under Others →
 | **Audit log** | Every admin action with who, what, when, and before/after values                                                       |
 | **Access**    | Roles: Admin (all) and Reviewer (queues only). 2FA is mandatory                                                        |
 | **Admins**    | Invite an admin or reviewer by email (editable Hebrew text, 7-day link, revoke); remove other admins (v1.6)            |
+| **User accounts** | Search by name, phone, email or id; fix name, email (saved as confirmed), phone (sign-in number), city and the poster role; suspend or reinstate; add or remove credits — each with a mandatory reason in the audit log. "Sign in as this user" for anything else: admins only (not reviewers, never another admin), written reason, red banner on every page, ends after 30 minutes or on "exit", every entry logged with start and end (v1.7, Nov 2) |
+| **Credit usage** | Per provider and in total for the last 7 days, last 30 days, this month (Israel time) or all time: applications, direct requests, credits deducted, refunded, net used (deducted − refunded) and current balance; demo accounts excluded unless asked (v1.7, Nov 2) |
 
 ## 5.19 Navigation, home and notifications (NAV)
 

@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { IDLE_MS, LAST_ACTIVE_COOKIE } from "@/lib/idle";
+import { IMPERSONATION_COOKIE, parseImpersonation } from "@/lib/impersonation-cookie";
 
 /**
  * Refreshes the Supabase session cookie on every request (called from src/proxy.ts),
@@ -35,6 +36,27 @@ export async function updateSession(request: NextRequest) {
     const now = Date.now();
     const last = Number(request.cookies.get(LAST_ACTIVE_COOKIE)?.value);
     const prefetch = request.headers.get("next-router-prefetch") === "1" || request.headers.get("purpose") === "prefetch";
+
+    // Admin signed in as a user: ends after 30 minutes (or if the session is gone).
+    const asUser = request.cookies.get(IMPERSONATION_COOKIE)?.value;
+    if (asUser !== undefined) {
+      const imp = parseImpersonation(asUser);
+      if (!imp || !signedIn || now > imp.expires) {
+        if (signedIn) await supabase.auth.signOut({ scope: "local" });
+        response.cookies.delete(IMPERSONATION_COOKIE);
+        response.cookies.delete(LAST_ACTIVE_COOKIE);
+        if (signedIn && request.method === "GET" && !request.headers.get("next-action") && !request.nextUrl.pathname.startsWith("/login")) {
+          const to = request.nextUrl.clone();
+          to.pathname = "/login";
+          to.search = "?reason=impersonation_ended";
+          const redirect = NextResponse.redirect(to);
+          response.cookies.getAll().forEach((c) => redirect.cookies.set(c));
+          redirect.cookies.delete(IMPERSONATION_COOKIE);
+          return redirect;
+        }
+        return response;
+      }
+    }
 
     if (signedIn && Number.isFinite(last) && last > 0 && now - last > IDLE_MS) {
       await supabase.auth.signOut({ scope: "local" }); // clears the session cookies via setAll

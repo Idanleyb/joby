@@ -19,6 +19,11 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
 
   return (
     <PageShell title="כניסה או הרשמה" subtitle="משתמשים חדשים וקיימים נכנסים באותה דרך.">
+      {reason === "impersonation_ended" ? (
+        <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">
+          הגישה לחשבון המשתמש הסתיימה ונרשמה ביומן הניהול. היכנסו שוב לחשבון שלכם.
+        </p>
+      ) : null}
       {reason === "idle" ? (
         <p role="status" className="rounded-xl bg-info px-4 py-3 text-sm">
           נותקת אחרי שעה בלי פעילות, כדי לשמור על החשבון. היכנסו שוב כדי להמשיך.

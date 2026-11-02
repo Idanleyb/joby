@@ -23,3 +23,5 @@ export async function requireAdmin() {
 export function hoursSince(iso: string) {
   return Math.floor((Date.now() - new Date(iso).getTime()) / 3_600_000);
 }
+
+export const VER_LABEL: Record<string, string> = { draft: "טיוטה", pending: "ממתין לאימות", more_info: "נדרש מידע", approved: "מאומת", rejected: "נדחה" };

@@ -9,6 +9,37 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_impersonations: {
+        Row: {
+          id: string;
+          admin_id: string;
+          user_id: string;
+          reason: string;
+          started_at: string;
+          expires_at: string;
+          ended_at: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: string;
+          admin_id: string;
+          user_id: string;
+          reason: string;
+          started_at?: string;
+          expires_at?: string;
+          ended_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          admin_id?: string;
+          user_id?: string;
+          reason?: string;
+          started_at?: string;
+          expires_at?: string;
+          ended_at?: string | null;
+        };
+        Relationships: [];
+      };
       admin_invites: {
         Row: {
           id: string;
@@ -1852,13 +1883,79 @@ export type Database = {
       admin_email_stats: {
         Args: { p_days?: number };
         Returns: {
-          template: string; emails: number; delivered: number; opened: number; clicked: number;
-          bounced: number; complained: number; measurable: number; converted: number; last_sent: string;
+          template: string;
+          emails: number;
+          delivered: number;
+          opened: number;
+          clicked: number;
+          bounced: number;
+          complained: number;
+          measurable: number;
+          converted: number;
+          last_sent: string;
         }[];
       };
-      record_email_event: { Args: { p_provider_id: string; p_type: string; p_at?: string }; Returns: number };
+      record_email_event: {
+        Args: { p_provider_id: string; p_type: string; p_at?: string };
+        Returns: number;
+      };
       admin_remove_admin: { Args: { p_user: string }; Returns: undefined };
       admin_revoke_invite: { Args: { p_invite: string }; Returns: undefined };
+      admin_search_users: {
+        Args: { p_query?: string; p_limit?: number };
+        Returns: {
+          id: string;
+          full_name: string | null;
+          email: string | null;
+          phone: string | null;
+          status: Database["public"]["Enums"]["account_status"];
+          is_provider: boolean;
+          is_poster: boolean;
+          provider_type: Database["public"]["Enums"]["provider_type"] | null;
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null;
+          balance: number | null;
+          is_admin: boolean;
+          is_demo: boolean;
+          created_at: string;
+        }[];
+      };
+      admin_update_user: {
+        Args: {
+          p_user: string;
+          p_first_name: string;
+          p_last_name: string;
+          p_email: string | null;
+          p_city: string | null;
+          p_is_poster: boolean | null;
+          p_reason: string;
+        };
+        Returns: undefined;
+      };
+      admin_check_phone_change: {
+        Args: { p_user: string; p_phone: string; p_reason: string };
+        Returns: string;
+      };
+      admin_start_impersonation: {
+        Args: { p_user: string; p_reason: string };
+        Returns: string;
+      };
+      end_impersonation: { Args: { p_id: string }; Returns: undefined };
+      admin_credit_usage: {
+        Args: { p_from?: string | null; p_include_demo?: boolean };
+        Returns: {
+          provider_id: string;
+          full_name: string | null;
+          is_demo: boolean;
+          spent: number;
+          refunded: number;
+          net_used: number;
+          applications: number;
+          requests: number;
+          balance: number | null;
+        }[];
+      };
       admin_purge_demo: { Args: Record<PropertyKey, never>; Returns: number };
       admin_post_job: {
         Args: {

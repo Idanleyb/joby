@@ -14,6 +14,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         <Link prefetch={false} href="/admin/jobs">עבודות בבדיקה</Link>
         <Link prefetch={false} href="/admin/extra-hires">גיוס נוסף</Link>
         <Link prefetch={false} href="/admin/emails">מיילים</Link>
+        {role === "admin" ? <Link prefetch={false} href="/admin/users">משתמשים</Link> : null}
+        {role === "admin" ? <Link prefetch={false} href="/admin/credits">קרדיטים</Link> : null}
         {role === "admin" ? <Link prefetch={false} href="/admin/admins">אדמינים</Link> : null}
         <span className="ms-auto text-xs font-normal text-muted">{role === "admin" ? "Admin" : "Reviewer"}</span>
       </nav>

@@ -4,6 +4,7 @@ import "@fontsource-variable/heebo";
 import "@fontsource-variable/rubik";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
+import { ImpersonationBanner } from "@/components/impersonation-banner";
 import { AppNav } from "@/components/app-nav";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="he" dir="rtl">
       <body className="font-sans antialiased">
         <SiteHeader />
+        <ImpersonationBanner />
         <div className="flex">
           <AppNav />
           <div className="min-w-0 flex-1 pb-20 md:pb-0">{children}<SiteFooter /></div>

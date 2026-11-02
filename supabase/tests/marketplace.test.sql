@@ -708,6 +708,49 @@ select test.login('omer'); set role authenticated;
 select test.expect_error('select * from public.admin_email_stats(30)', 'not_authorized');
 reset role;
 
+\echo ' 13g. admin: user accounts, sign in as a user, credit usage'
+select test.login('eli'); set role authenticated;
+select test.check(not exists (select 1 from public.admin_search_users('')), 'non-admins find nobody');
+select test.expect_error(format($$select public.admin_start_impersonation(%L, 'checking a bug')$$, test.uid('avi')), 'not_authorized');
+select test.check(not exists (select 1 from public.admin_credit_usage()), 'non-admins see no usage');
+reset role;
+select test.login('admin'); set role authenticated;
+select test.check((select count(*) from public.admin_search_users('Eli')) >= 1, 'search by name');
+select test.check(exists (select 1 from public.admin_search_users('050-000-0006') where id = test.uid('eli')), 'search by phone');
+select test.check(exists (select 1 from public.admin_search_users('eli@example') where id = test.uid('eli')), 'search by email');
+select test.expect_error(format($$select public.admin_update_user(%L, 'Eli', 'Cohen', null, null, null, '')$$, test.uid('eli')), 'reason_required');
+select test.expect_error(format($$select public.admin_update_user(%L, 'Eli', 'Cohen', 'dana@example.com', null, null, 'typo')$$, test.uid('eli')), 'email_taken');
+select public.admin_update_user(test.uid('eli'), 'Eliyahu', 'Cohen', 'eli.cohen@example.com', 'ראש העין', true, 'user asked by phone');
+select test.check((select full_name = 'Eliyahu Cohen' and email = 'eli.cohen@example.com' and email_verified and is_poster
+                     from public.profiles where id = test.uid('eli')), 'admin fixed name, email and role');
+select test.check((select display_name from public.provider_profiles where user_id = test.uid('eli')) = 'Eliyahu C.', 'public name follows');
+select test.expect_error(format($$select public.admin_check_phone_change(%L, '050-000-0004', 'new phone')$$, test.uid('eli')), 'phone_taken');
+select test.check(public.admin_check_phone_change(test.uid('eli'), '052-999-8877', 'new phone') = '+972529998877', 'phone change checked');
+select test.expect_error(format($$select public.admin_start_impersonation(%L, 'x')$$, test.uid('eli')), 'reason_required');
+select test.expect_error(format($$select public.admin_start_impersonation(%L, 'looking at a bug')$$, test.uid('admin')), 'own_profile');
+reset role;
+insert into public.admins (user_id, role) values (test.uid('dana'), 'reviewer');
+select test.login('admin'); set role authenticated;
+select test.expect_error(format($$select public.admin_start_impersonation(%L, 'looking at a bug')$$, test.uid('dana')), 'not_authorized');
+reset role;
+delete from public.admins where user_id = test.uid('dana');
+select test.login('admin'); set role authenticated;
+select public.admin_start_impersonation(test.uid('eli'), 'fixing his service cards') as imp \gset
+select test.expect_error($$select public.end_impersonation(gen_random_uuid())$$, 'permission denied');
+select test.check((select count(*) from public.admin_credit_usage()) >= 1, 'credit usage listed');
+select test.check(not exists (select 1 from public.admin_credit_usage(now() + interval '1 day')), 'empty for a future period');
+reset role;
+select test.check((select reason = 'fixing his service cards' and expires_at > now() + interval '29 minutes'
+                     from public.admin_impersonations where id = :'imp'), 'sign-in as user logged, 30 minutes');
+select test.check(exists (select 1 from public.admin_audit_log where action = 'impersonation_started'), 'audited');
+-- Usage numbers match the ledger: spent minus refunds = net.
+select test.check(not exists (
+  select 1 from public.admin_credit_usage(null, true) u
+   where u.net_used <> u.spent - u.refunded
+      or u.spent <> coalesce((select -sum(amount) from public.credit_transactions t
+                               where t.provider_id = u.provider_id and t.tx_type in ('apply', 'request_approve')), 0)), 'usage = ledger')
+  from (select set_config('request.jwt.claim.sub', test.uid('admin')::text, true)) x;
+
 \echo ' 14. ledger integrity'
 select test.check(not exists (
   select 1 from public.provider_wallets w
