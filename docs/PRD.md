@@ -924,6 +924,13 @@ or rejects them. Meanwhile the provider can register under Others →
 - All numbers come from the live settings, so the page never disagrees
   with the rules.
 
+- FAQ (November 2, 2026): 10 questions in three groups — for providers
+  (who can join, cost: free for now, verification time and documents,
+  who sees my phone, no answer from the poster, both roles), for posters
+  (posting is free, how verification is proven, payment is made directly
+  between the parties) and for everyone (why feedback is requested).
+  Published as FAQPage structured data for search engines.
+
 # 6 Category Taxonomy
 
 Providers choose as many subcategories as they work in (no limit). Job

@@ -22,7 +22,10 @@ test("intro page explains roles and credits; every apply point shows the 10-cred
     await expect(page.getByRole("heading", { name: h })).toBeVisible();
   }
   await expect(page.getByRole("row", { name: /הגשת מועמדות לעבודה/ })).toContainText("−10");
-  await expect(page.getByText("בתקופה הזו Joby חינמי לגמרי גם לנותני שירות")).toBeVisible();
+  await expect(page.locator("#credits").getByText("בתקופה הזו Joby חינמי לגמרי גם לנותני שירות")).toBeVisible();
+  const faq = page.locator("#faq");
+  await faq.getByText("איך משלמים לנותן השירות?").click();
+  await expect(faq.getByText("Joby מחבר בין הצדדים ולא מתווך תשלום", { exact: false })).toBeVisible();
   await expect(page.getByRole("row", { name: /אישור פנייה ישירה/ })).toContainText("−2");
   await expect(page.getByText("100 קרדיטים מתנה").first()).toBeVisible();
 
@@ -109,22 +112,20 @@ test("both sides leave feedback; reviews appear on both profiles", async ({ page
   await expect(page.getByText("הסבירה בדיוק מה צריך ושילמה בזמן.")).toBeVisible();
 });
 
-test("blocked for missing feedback: banner until feedback is given", async ({ page }) => {
+test("no account block for missing feedback (PRD v1.7): it simply stays open after the last reminder", async ({ page }) => {
   const eli = await userIdByPhone(ELI.e164);
   const [eng] = await serviceRest(`engagements?select=id&provider_id=eq.${eli}&source=eq.request`);
   const old = new Date(Date.now() - 31 * 86_400_000).toISOString();
   await serviceRest("feedback_requests", { method: "POST", body: JSON.stringify({
-    engagement_id: eng.id, user_id: eli, direction: "provider_to_poster", requested_at: old, reminders_sent: 2, blocked_at: new Date().toISOString() }) });
+    engagement_id: eng.id, user_id: eli, direction: "provider_to_poster", requested_at: old, reminders_sent: 2 }) });
 
   await as(page, ELI.local);
-  const banner = page.getByRole("alert").filter({ hasText: "החשבון חסום לפעולות חדשות" });
-  await expect(banner).toBeVisible();
-  await banner.getByRole("link", { name: "להשארת משוב" }).click();
+  await expect(page.getByText("החשבון חסום")).toHaveCount(0);
+  await page.goto(`/feedback/${eng.id}`);
   await expect(page.getByText("עוד לא", { exact: true })).toHaveCount(0); // after the last reminder only Yes / No
   await page.getByText("לא", { exact: true }).click();
   await page.getByLabel("מה קרה?").selectOption("availability");
   await page.getByRole("button", { name: "שליחת המשוב" }).click();
   await expectPath(page, "/feedback");
   await expect(page.getByText("רשמנו. התשובה לא מוצגת לאף אחד.")).toBeVisible();
-  await expect(page.getByRole("alert").filter({ hasText: "החשבון חסום" })).toHaveCount(0);
 });
