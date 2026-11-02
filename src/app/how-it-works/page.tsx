@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPublicRules } from "@/lib/app-settings";
+import { buildFaq, faqJsonLd } from "@/lib/faq";
 import { IconBriefcase, IconCheckList, IconDocHeart, IconIdCard, IconLink, IconMegaphone, IconPhone, IconSend, IconShieldCheck, IconSparkle, IconStar } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -48,25 +49,7 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
 
 export default async function HowItWorksPage() {
   const s = await getPublicRules();
-  // FAQ (founder, 2026-11-02). Plain text answers: also published as FAQPage structured data.
-  const faq: [string, [string, string][]][] = [
-    ["לנותני שירות", [
-      ["מי יכול להציע שירותים ב-Joby?", `מילואימניקים ששירתו לפחות ${s.eligibility_min_days} ימי מילואים מאז 7 באוקטובר 2023 (לפי טופס 3010), ובני ובנות הזוג של מילואימניק מאומת. אפשר להציע כל סוג עבודה — מגינון ושיפוצים ועד תכנות, שיווק וייעוץ.`],
-      ["כמה זה עולה לי?", "כרגע כלום. בתקופה הזו Joby חינמי לגמרי גם לנותני שירות. הקרדיטים מוצגים כדי להכיר איך המערכת תעבוד בעתיד, ואם הם נגמרים — פונים לתמיכה ומקבלים עוד, בלי עלות."],
-      ["כמה זמן לוקח האימות, ומה קורה למסמכים שלי?", "בודק/ת מהצוות מחליט/ה תוך 24 שעות. המסמכים נמחקים מיד אחרי ההחלטה. נשמרים רק תוצאת האימות וטווח ימי השירות (למשל 120+), ומספר הזהות נשמר רק כקוד מוצפן שמונע כפילויות."],
-      ["מי רואה את מספר הטלפון שלי?", "אף אחד, עד שיש התאמה: המפרסם רואה את פרטי הקשר רק אחרי שבחר ליצור איתך קשר או גייס אותך, או אחרי שאישרת פנייה ישירה שלו. בפרופיל הציבורי מופיעים שם פרטי ואות ראשונה משם המשפחה."],
-      ["הגשתי מועמדות והמפרסם לא עונה. מה עכשיו?", `אם המפרסם לא פתח את המועמדות ${s.credit_back_unopened_days} ימים והעבודה עדיין פתוחה, הקרדיטים חוזרים אליך אוטומטית. אם העבודה נסגרת בלי גיוס — כל המועמדויות מקבלות את הקרדיטים בחזרה. ברגע שהמפרסם פותח את המועמדות או מסמן אותה כמועדפת, תקבל/י התראה.`],
-      ["אפשר גם להציע שירותים וגם לגייס אחרים?", "כן. חשבון אחד יכול להחזיק את שני התפקידים, ומעבר בין \"עובד/ת\" ל\"מגייס/ת\" נעשה בלחיצה בראש המסך."],
-    ]],
-    ["למגייסים ומחפשי שירות", [
-      ["כמה עולה לפרסם עבודה או לפנות לנותן שירות?", `כלום — פרסום עבודות ופניות ישירות חינם. עבודה פתוחה ${s.job_open_days} ימים, ואפשר להאריך פעם אחת ב-${s.job_extension_days} ימים נוספים.`],
-      ["איך אדע שנותן השירות באמת מילואימניק?", "כל נותן שירות עובר אימות של הצוות לפני שהפרופיל שלו גלוי: אישור שירות מילואים (טופס 3010), או הוכחת זוגיות לבני ובנות זוג. אחרי שלוש ביקורות מופיע גם דירוג, מבוסס על משוב של מי שעבד איתו בפועל."],
-      ["איך משלמים לנותן השירות?", "ישירות ביניכם. Joby מחבר בין הצדדים ולא מתווך תשלום: את המחיר, המועד ותנאי העבודה מסכמים בטלפון או ב-WhatsApp אחרי שפרטי הקשר נחשפים."],
-    ]],
-    ["לכולם", [
-      ["למה מבקשים משוב אחרי כל עבודה?", "המשוב בונה אמון ועוזר לכולם לבחור טוב יותר. 3 ימים אחרי תחילת העבודה שני הצדדים מתבקשים לדרג, ונשלחות עד שתי תזכורות. הדירוגים נחשפים יחד, כשגם הצד השני השאיר משוב (או אחרי 14 יום), כך שאף אחד לא מגיב לדירוג של השני. אפשר גם לענות שלא עבדתם יחד בסוף — התשובה לא מוצגת לאף אחד."],
-    ]],
-  ];
+  const faq = buildFaq(s);
   const toc: [string, string][] = [["about", "מה זה Joby"], ["providers", "נותני שירות"], ["spouses", "בני ובנות זוג"], ["credits", "קרדיטים"], ["posters", "מגייסים ומחפשי שירות"], ["feedback", "משוב ואמון"], ["faq", "שאלות נפוצות"]];
 
   return (
@@ -219,10 +202,7 @@ export default async function HowItWorksPage() {
             ))}
           </div>
         ))}
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          "@context": "https://schema.org", "@type": "FAQPage",
-          mainEntity: faq.flatMap(([, items]) => items.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } }))),
-        }).replace(/</g, "\\u003c") }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd(faq) }} />
       </Section>
 
       <div className="grid gap-3 sm:grid-cols-2">

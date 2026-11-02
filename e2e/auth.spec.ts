@@ -6,9 +6,11 @@ import { createGoogleLikeUser, emailCodeFor, expectPath, formAlert, injectSessio
 
 test("home page links to sign-in and shows categories", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "המרקטפלייס של המילואים" })).toBeVisible();
-  await expect(page.getByText("תכנות וטכנולוגיה")).toBeVisible();
-  await page.getByRole("link", { name: "מצאו עבודה" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "עבודה אמיתית למילואימניקים ולמשפחות שלהם" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /תכנות וטכנולוגיה/ })).toBeVisible();
+  await page.getByRole("tab", { name: "מגייסים" }).click();
+  await expect(page.getByRole("link", { name: "פרסמו עבודה בחינם" })).toBeVisible();
+  await page.getByRole("link", { name: "מצאו עבודה" }).first().click();
   await expectPath(page, "/jobs");
 });
 
