@@ -24,3 +24,14 @@ export const IconSparkle = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><pa
 export const IconMegaphone = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><path d="M3 10.5v3a1 1 0 0 0 1 1h2.5L13 19V5L6.5 9.5H4a1 1 0 0 0-1 1z" /><path d="M16.5 9a3.5 3.5 0 0 1 0 6M19.5 6.5a7 7 0 0 1 0 11" /></svg>;
 export const IconCheckList = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><path d="m3.5 7 2 2 3.5-4M3.5 15.5l2 2 3.5-4" /><path d="M12.5 7.5h8M12.5 16h8" /></svg>;
 export const IconStar = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></svg>;
+export const IconPen = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><path d="m12 19 7-7 3 3-7 7z" /><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18z" /><path d="m2 2 7.6 7.6" /><circle cx="11" cy="11" r="2" /></svg>;
+export const IconCode = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><path d="m16 18 6-6-6-6M8 6l-6 6 6 6" /></svg>;
+export const IconMusic = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>;
+export const IconCalculator = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><rect x="4" y="2" width="16" height="20" rx="2" /><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 18.5h8" /></svg>;
+export const IconScale = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><path d="M12 3v18M7 21h10M4 7h16" /><path d="m7 7-3 7a3 3 0 0 0 6 0zM17 7l-3 7a3 3 0 0 0 6 0z" /></svg>;
+export const IconGrid = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg>;
+export const IconChat = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><path d="M21 12.5a8.5 8.5 0 0 1-12.6 7.4L3 21l1.2-5A8.5 8.5 0 1 1 21 12.5z" /></svg>;
+export const IconInfo = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>;
+export const IconCheckCircle = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><circle cx="12" cy="12" r="10" /><path d="m8 12 3 3 5-6" /></svg>;
+export const IconXCircle = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><circle cx="12" cy="12" r="10" /><path d="m9 9 6 6M15 9l-6 6" /></svg>;
+export const IconChevronDown = (p: SVGProps<SVGSVGElement>) => <svg {...base(p)}><path d="m6 9 6 6 6-6" /></svg>;
