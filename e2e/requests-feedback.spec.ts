@@ -16,7 +16,7 @@ const balance = async (id: string) => (await serviceRest(`provider_wallets?selec
 test("intro page explains roles and credits; every apply point shows the 10-credit note", async ({ page }) => {
   await page.context().clearCookies();
   await page.goto("/");
-  await page.getByRole("link", { name: "איך זה עובד?" }).click();
+  await page.getByRole("main").getByRole("link", { name: "איך Joby עובד ←" }).click();
   await expectPath(page, "/how-it-works");
   for (const h of ["איך מתחילים להציע שירותים", "בן או בת זוג של מילואימניק", "איך עובדים הקרדיטים", "צריכים מישהו לעבודה?", "משוב אחרי כל עבודה"]) {
     await expect(page.getByRole("heading", { name: h })).toBeVisible();

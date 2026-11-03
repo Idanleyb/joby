@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/heebo";
 import "@fontsource-variable/rubik";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import { SiteHeader } from "@/components/site-header";
 import { ImpersonationBanner } from "@/components/impersonation-banner";
 import { AppNav } from "@/components/app-nav";
@@ -25,6 +26,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <AppNav />
           <div className="min-w-0 flex-1 pb-20 md:pb-0">{children}<SiteFooter /></div>
         </div>
+        {/* Vercel Web Analytics (founder, 2026-11-03): visits, pages, sources; no cookies. Active once enabled in the Vercel project. */}
+        <Analytics />
       </body>
     </html>
   );
