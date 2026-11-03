@@ -267,6 +267,7 @@ Approved by the founder on October 25, 2026.
 | **Session timeout** | Automatic sign-out after 60 minutes without activity, with a warning 2 minutes before; signing in again returns to the same page                                                                                                                                           |
 | **Demo data**       | POC dataset loaded as tagged "Demo" content with four demo sign-in accounts; demo and real users never transact; removable from the admin dashboard                                                                                                                        |
 | **Favorites** | "Shortlist" renamed "מועדפים" (favorites), the common Hebrew term. The provider gets an in-app notice the first time a poster marks the application as a favorite |
+| **Beta-tester survey** | Google Form in 7 sections (about you, sign-up, navigation, ease of use and speed, experience and content, value, summary with NPS and an optional 15-minute call), emailed 3 days after sign-up (was day 7); a short follow-up on day 21. Sent only while the survey link is set (v1.7, Nov 3) |
 | **Admin invitations** | Admins invite new admins or reviewers by email from the admin console. Default Hebrew email: "Hi [name], you've been invited to be an admin on JOBY. To accept, open this link." The invitee signs in as usual and accepts from an account whose confirmed email is the invited one; links expire after 7 days and can be revoked. Admins can remove other admins, never themselves |
 
 ## 4.3 Changes in v1.5 (October 28, 2026)

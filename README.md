@@ -132,6 +132,17 @@ CI (`.github/workflows/ci.yml`) runs lint, types, build and the database tests o
 - **JWT signing keys**: in Supabase → Project Settings → JWT Keys, switch to the new (asymmetric) signing keys. The session check that runs on every request then verifies locally instead of calling the auth server.
 - Links don't prefetch; `src/app/loading.tsx` shows a skeleton while a page loads.
 
+## Beta survey
+
+The beta-tester survey is a Google Form, emailed 3 days after sign-up (and a short follow-up on day 21).
+
+1. Create the form: open https://script.google.com → New project → paste `scripts/beta-survey/create-beta-survey-form.gs` → Run `createBetaSurvey`. The execution log shows the link to send (forms.gle/…), the edit link and the answers sheet.
+2. Turn the emails on — Supabase → SQL Editor:
+   ```sql
+   update public.app_settings set value = to_jsonb('https://forms.gle/XXXX'::text) where key = 'beta_survey_url';
+   ```
+   To stop them: `update public.app_settings set value = '""' where key = 'beta_survey_url';`
+
 ## Demo data
 
 Sample data for demonstrations: 100 providers (80 reservists, 20 spouses), 28 posters, 52 jobs, 377 applications, 155 direct requests, 130 engagements with feedback, and a full credit ledger — all tagged **דמו**.

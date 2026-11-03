@@ -684,6 +684,14 @@ select test.check((select count(*) from public.notifications where event = 'post
                    and (payload ->> 'day')::int = 1) = 1, 'poster nudge on day 1, once');
 -- Surveys only when a link is set.
 select test.check(not exists (select 1 from public.notifications where event = 'beta_survey'), 'no survey without a link');
+-- With the Google Form link set: the first survey goes out 3 days after sign-up (founder, 2026-11-03), once.
+update public.app_settings set value = '"https://forms.gle/test"' where key = 'beta_survey_url';
+update public.profiles set created_at = now() - interval '3 days 2 hours' where id = test.uid('omer');
+select private.run_lifecycle();
+select private.run_lifecycle();
+select test.check((select count(*) from public.notifications where event = 'beta_survey' and user_id = test.uid('omer')
+                   and (payload ->> 'day')::int = 3 and payload ->> 'url' = 'https://forms.gle/test') = 1, 'beta survey on day 3, once');
+update public.app_settings set value = '""' where key = 'beta_survey_url';
 -- Old verification request → admin SLA alert, once per 6-hour window.
 update public.verification_requests set submitted_at = now() - interval '21 hours'
  where id = (select id from public.verification_requests where status = 'pending' limit 1);
